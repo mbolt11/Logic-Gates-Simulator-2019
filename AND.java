@@ -13,7 +13,8 @@ public class AND extends Gate
       negate = negate_in;
    }
    
-   //Calculates result of gate
+   //Calculates result of gate... 
+   //I haven't figured out where to call this from yet
    public void calculateOutput()
    {
       //Calculate result of AND for all input lines
