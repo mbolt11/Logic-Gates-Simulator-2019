@@ -87,5 +87,7 @@ public abstract class Gate
    
    public abstract void draw(Graphics g, int row, int column, int maxColumn, int maxRow);
    
+   public abstract void drawWires(Graphics g, int xFinish, int yFinish);
+   
    public abstract boolean calculateOutput();
 }

@@ -4,10 +4,13 @@ import java.awt.*;
 
 public class INPUT extends Gate
 {
+   private int xOutputWireSlot, yOutputWireSlot;
    //Constructor
    public INPUT(int num_in)
    {
       super(num_in,gatetype.INPUT);
+      xOutputWireSlot = 0;
+      yOutputWireSlot = 0;
    }
    
    //Calculates result of gate... 
@@ -30,6 +33,16 @@ public class INPUT extends Gate
       //generally placing in the correct row and column area, gate should be 10% of the total dimension in either direction
       g.drawRect(xStart, yStart, 100, 95);
       
+      xOutputWireSlot = xStart+100;
+      yOutputWireSlot = yStart + 47;
+      
       System.out.println("Input drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
+   }
+   
+   public void drawWires(Graphics g, int xFinish, int yFinish)
+   {
+      g.setColor(Color.BLACK);
+      //connect to its output
+      g.drawLine(xOutputWireSlot, yOutputWireSlot, xFinish, yFinish);
    }
 }

@@ -4,10 +4,13 @@ import java.awt.*;
 
 public class OUTPUT extends Gate
 {
+   private int xWireSlot, yWireSlot;
    //Constructor
    public OUTPUT(int num_in)
    {
       super(num_in,gatetype.OUTPUT);
+      xWireSlot = 0;
+      yWireSlot = 0;
    }
    
    //Calculates result of gate... 
@@ -28,8 +31,16 @@ public class OUTPUT extends Gate
       int yStart = (int) ((((double)row/maxRow) * 950) + 65);
       
       //generally placing in the correct row and column area, gate should be 10% of the total dimension in either direction
-      g.drawOval(xStart, yStart, 100, 95); 
+      g.drawOval(xStart, yStart, 100, 95);
+       
+      xWireSlot = xStart;
+      yWireSlot = yStart + 47;
       
       System.out.println("OUTPUT drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
+   }
+   
+   public void drawWires(Graphics g, int xFinish, int yFinish)
+   {
+      inputs.get(0).drawWires(g, xWireSlot, yWireSlot);
    }
 }

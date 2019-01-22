@@ -160,6 +160,16 @@ public class BodyGUI extends JPanel
          }
       }
       
+      //call functions to paint wires *******************************************************************************Comment this out to get rid of lines
+         for(int i = 1; i < ourCircuit.size()+1; i++)
+         {
+            //System.out.println(ourCircuit.get(i).getStringType());
+            if(ourCircuit.get(i).getStringType() == "OUTPUT")
+            {
+               ourCircuit.get(i).drawWires(g, 1, 1);
+            }
+         }
+      
       System.out.println("Done painting");
    }
 }
