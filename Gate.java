@@ -1,8 +1,10 @@
 /*Gate Class for LGS Project*/
 
 import java.util.*;
+import javax.swing.*;
+import java.awt.*;
 
-public class Gate
+public abstract class Gate
 {
    //Define enum for the gate type
    public enum gatetype {INPUT, OUTPUT, AND, OR, XOR, NOT, NOR, NAND};
@@ -76,4 +78,6 @@ public class Gate
          }
       }     
    }
+   
+   public abstract void draw(Graphics g, int row, int column, int maxColumn, int maxRow);
 }

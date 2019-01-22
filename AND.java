@@ -1,4 +1,6 @@
 /* AND and NAND Gate Class for LGS Project */
+import javax.swing.*;
+import java.awt.*;
 
 public class AND extends Gate
 {
@@ -31,5 +33,9 @@ public class AND extends Gate
       
       //Set the output variable according to result
       setOutput(result);
+   }
+   
+   public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)
+   {
    }
 }

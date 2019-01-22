@@ -1,4 +1,6 @@
 /* XOR Gate Class for LGS Project */
+import javax.swing.*;
+import java.awt.*;
 
 public class XOR extends Gate
 {
@@ -11,16 +13,22 @@ public class XOR extends Gate
       calculateOutput();
    }
    
-   //Calculates result of gate
+   //Calculates result of gate // ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    public void calculateOutput()
    {
+      boolean result = false;
       //Calculate result of XOR for all input lines
-      boolean wire1 = inputs.get(0).getOutput();
+      if(inputs.size() >= 2)
+      {boolean wire1 = inputs.get(0).getOutput();
       boolean wire2 = inputs.get(1).getOutput();
-      boolean result = ((wire1 && !wire2) || (!wire1 && wire2));
+      result = ((wire1 && !wire2) || (!wire1 && wire2));}
       //Can't do more than 2 input lines for an XOR, right??
       
       //Set the output variable according to result
       setOutput(result);
+   }
+   
+   public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)
+   {
    }
 }
