@@ -38,5 +38,20 @@ public class AND extends Gate
    
    public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
+      //System.out.println("AND drawn");
+      int xStart = ((int) (((double)column/maxColumn) * 1000)) - 150;
+      int yStart = ((int) (((double)row/maxRow) * 950)) + 65;
+      int size = 60;
+      g.drawLine(xStart, yStart, xStart, yStart + 95);
+      g.drawLine(xStart, yStart, xStart + size, yStart);
+      g.drawLine(xStart, yStart + 95, xStart + size, yStart + 95);
+      g.drawArc(xStart+(size/2), yStart, size, 95, 90, -180);
+      
+      if(negate)
+      {
+         xStart = xStart + (size/2) + size;
+         yStart = yStart + 39;
+         g.drawOval(xStart, yStart, 10, 10);
+      }
    }
 }

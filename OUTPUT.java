@@ -21,10 +21,14 @@ public class OUTPUT extends Gate
    public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
       g.setColor(Color.RED);
+      //output gates must be all the way to the right
+      column = maxColumn;
+      int xStart = (int) ((((double)column/maxColumn) * 1000) - 150);
+      int yStart = (int) ((((double)row/maxRow) * 950) + 65);
       
       //generally placing in the correct row and column area, gate should be 10% of the total dimension in either direction
-      g.drawOval((column/maxColumn) * 950 , row/maxRow * 1000, 100, 95); 
+      g.drawOval(xStart, yStart, 100, 95); 
       
-      System.out.println("Output drawn");
+      System.out.println("OUTPUT drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
    }
 }

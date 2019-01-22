@@ -22,7 +22,7 @@ public class BodyGUI extends JPanel
       //setLayout(new FlowLayout());
       
       setPreferredSize(new Dimension(1000,950));   
-      setBackground(Color.GRAY);
+      setBackground(Color.WHITE);
    }
    
    //Method to read a circuit in from an ascii file
@@ -37,6 +37,8 @@ public class BodyGUI extends JPanel
          //Create a circuit object to put our gates in
          ourCircuit = new Circuit();
          
+         System.out.println("------FILE------");
+         
          while(readfile.hasNextLine())
          {
             //Get the current line of text and assign a new scanner to read that line
@@ -46,6 +48,7 @@ public class BodyGUI extends JPanel
             //Read the info from this line
             int gatenum = readline.nextInt();
             String type = readline.next();
+            System.out.println("Gatenum:"+gatenum+" type:"+type);
             if (type.equals("true") || type.equals("false"))
             {
                //Not sure what this is supposed to be...
@@ -106,6 +109,8 @@ public class BodyGUI extends JPanel
                {
                   int inputGate = readline.nextInt();
                   theGate.addInput(ourCircuit.get(inputGate));
+                  
+                  System.out.println("--InputGate:"+inputGate);
                }
             }
          }
@@ -120,6 +125,7 @@ public class BodyGUI extends JPanel
    public void paintComponent(Graphics g)
    {
       super.paintComponent(g);
+      System.out.println("\n\n-----------DRAWING----------");
       int row = 0;
       int column = 0;
       int maxColumn = ourCircuit.getColumns();
@@ -132,9 +138,10 @@ public class BodyGUI extends JPanel
          row = 0;
          for(int j = 1; j < ourCircuit.size() + 1; j++)
          {
-            if(ourCircuit.get(j).getDepth() == i)
+            if((ourCircuit.get(j).getDepth()+1) == i)
             {
-               ourCircuit.get(i).draw(g, row, column, maxColumn, maxRow);
+               //System.out.println(ourCircuit.get(j).getType() + " at row,column: " +row+","+column+" --DEPTH:"+i);
+               ourCircuit.get(j).draw(g, row, column, maxColumn, maxRow);
                gatesDrawn++;
                row++;
             }
