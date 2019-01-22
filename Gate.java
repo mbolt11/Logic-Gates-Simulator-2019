@@ -14,7 +14,7 @@ public abstract class Gate
    private int depth = 0;
    private gatetype type;
    protected ArrayList<Gate> inputs;
-   private boolean output;
+   protected boolean output;
    
    //Constructor
    public Gate(int num_in, gatetype type_in)
@@ -41,6 +41,12 @@ public abstract class Gate
    public gatetype getType()
    {
       return type;
+   }
+   
+   public String getStringType()
+   {
+      String stringName = type.toString();
+      return stringName;
    }
 
    public boolean getOutput()
@@ -80,4 +86,6 @@ public abstract class Gate
    }
    
    public abstract void draw(Graphics g, int row, int column, int maxColumn, int maxRow);
+   
+   public abstract boolean calculateOutput();
 }

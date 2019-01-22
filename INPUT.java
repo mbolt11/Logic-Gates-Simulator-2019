@@ -12,10 +12,11 @@ public class INPUT extends Gate
    
    //Calculates result of gate... 
    //I haven't figured out where to call this from yet
-   public void calculateOutput()
+   public boolean calculateOutput()
    {
       //This changes according to user click
       setOutput(false); //default to start
+      return output;
    }
    
    public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)

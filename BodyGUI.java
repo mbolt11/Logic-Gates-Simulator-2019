@@ -114,6 +114,18 @@ public class BodyGUI extends JPanel
                }
             }
          }
+         
+         System.out.println("------------CalculateOutput-----------------");
+         //call functions for calculate output throughout the circuit
+         for(int i = 1; i < ourCircuit.size()+1; i++)
+         {
+            //System.out.println(ourCircuit.get(i).getStringType());
+            if(ourCircuit.get(i).getStringType() == "OUTPUT")
+            {
+               ourCircuit.get(i).calculateOutput();
+               System.out.println("--Result:"+ourCircuit.get(i).getOutput());
+            }
+         }
       }
       catch(IOException io)
       {

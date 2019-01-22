@@ -4,7 +4,6 @@ import java.awt.*;
 
 public class OR extends Gate
 {
-   private boolean output;
    private boolean negate;
    
    //Constructor
@@ -16,17 +15,17 @@ public class OR extends Gate
    
    //Calculates result of gate // ERROR!!!!!!!!!!!!!!!!!!!!!!
    //I haven't figured out where to call this from yet
-   public void calculateOutput()
+   public boolean calculateOutput()
    {
       boolean result = false;
       //Calculate result of OR for all input lines
       if(inputs.size() >= 2)
-      {boolean wire1 = inputs.get(0).getOutput();
-      boolean wire2 = inputs.get(1).getOutput();
+      {boolean wire1 = inputs.get(0).calculateOutput();
+      boolean wire2 = inputs.get(1).calculateOutput();
       result = wire1 || wire2;
       for(int i=2; i<inputs.size(); i++)
       {
-         result = result || inputs.get(i).getOutput();
+         result = result || inputs.get(i).calculateOutput();
       }}
       
       //Negate if it is a NOR
@@ -37,6 +36,8 @@ public class OR extends Gate
       
       //Set the output variable according to result
       setOutput(result);
+      System.out.println("OR is:"+output);
+      return output;
    }
    
    public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)

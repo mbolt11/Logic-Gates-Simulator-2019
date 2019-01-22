@@ -15,15 +15,15 @@ public class AND extends Gate
    
    //Calculates result of gate... 
    //I haven't figured out where to call this from yet
-   public void calculateOutput()
+   public boolean calculateOutput()
    {
       //Calculate result of AND for all input lines
-      boolean wire1 = inputs.get(0).getOutput();
-      boolean wire2 = inputs.get(1).getOutput();
+      boolean wire1 = inputs.get(0).calculateOutput();
+      boolean wire2 = inputs.get(1).calculateOutput();
       boolean result = wire1 && wire2;
       for(int i=2; i<inputs.size(); i++)
       {
-         result = result && inputs.get(i).getOutput();
+         result = result && inputs.get(i).calculateOutput();
       }
       
       //Negate if it is a NAND
@@ -34,6 +34,9 @@ public class AND extends Gate
       
       //Set the output variable according to result
       setOutput(result);
+      System.out.println("AND or NAND is:"+output);
+      
+      return output;
    }
    
    public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)

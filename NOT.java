@@ -3,9 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class NOT extends Gate
-{
-   private boolean output;
-   
+{  
    //Constructor
    public NOT(int num_in)
    {
@@ -14,11 +12,15 @@ public class NOT extends Gate
    
    //Calculates result of gate // ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!
    //I haven't figured out where to call this from yet
-   public void calculateOutput()
+   public boolean calculateOutput()
    {
       //This is the opposite of its input line
       if(inputs.size() > 0)
-         setOutput(inputs.get(0).getOutput());
+         setOutput(!inputs.get(0).calculateOutput());
+         
+      System.out.println("NOT is:"+output);
+         
+      return output;
    }
    
    public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)
