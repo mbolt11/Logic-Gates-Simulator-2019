@@ -10,6 +10,6 @@ public class Main_LogicGateSimulator
    {
       //Open up the frame
       LGS_JFrame theframe = new LGS_JFrame();
-      theframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);     
+      theframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);    
    }
 }

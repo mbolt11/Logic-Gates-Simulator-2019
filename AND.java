@@ -11,6 +11,11 @@ public class AND extends Gate
    public AND(int num_in, boolean negate_in)
    {
       super(num_in,gatetype.AND);
+      if(negate_in)
+      {
+         changeType(gatetype.NAND);
+      }
+      
       negate = negate_in;
       xInputWireSlot = 0;
       yInputWireSlot = 0;

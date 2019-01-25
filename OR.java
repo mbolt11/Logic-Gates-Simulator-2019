@@ -11,6 +11,11 @@ public class OR extends Gate
    public OR(int num_in, boolean negate_in)
    {
       super(num_in,gatetype.OR);
+      if(negate_in)
+      {
+         changeType(gatetype.NOR);
+      }
+      
       negate = negate_in;
       xInputWireSlot = 0;
       yInputWireSlot = 0;

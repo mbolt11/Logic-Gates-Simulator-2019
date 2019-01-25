@@ -1,6 +1,7 @@
 /* Circuit class for LGS Project */
 
 import java.util.*;
+import java.io.*;
 
 public class Circuit
 {
@@ -33,7 +34,15 @@ public class Circuit
    //Accessor for specific gates according to their gate number
    public Gate get(int gatenum)
    {
-         return allGates.get(gatenum-1);
+      for(int i=0; i < allGates.size(); i++)
+      {
+         if(allGates.get(i).getGateNum() == gatenum)
+         {
+            return allGates.get(i);
+         }
+      }
+      System.out.println("Gate number was not found.");
+      return null;
    }
    
    public int size()
@@ -60,6 +69,7 @@ public class Circuit
       return columns;
    }
    
+   //Method to calculate the total number of rows needed for this circuit
    public void calculateRows()
    {
       int maxRows = 0;
@@ -82,5 +92,39 @@ public class Circuit
    public int getRows()
    {
       return rows;
+   }
+   
+   //Method to save circuit to ascii file
+   public void saveToASCII()
+   {
+      try
+      {
+         //Open the file writer and create buffered writer
+         FileWriter save = new FileWriter("SaveASCII.txt");
+         BufferedWriter writer = new BufferedWriter(save);
+         
+         for(int i=0; i<allGates.size(); i++)
+         {
+            //Get the info from this gate to write
+            int gatenum = allGates.get(i).getGateNum();
+            String gatetype = allGates.get(i).getStringType().toLowerCase();
+            ArrayList<Integer> inputs = allGates.get(i).getInputInts();
+            
+            //Write the info in the correct format
+            writer.write(gatenum + " " + gatetype);
+            for(int j=0; j < inputs.size(); j++)
+            {
+               writer.write(" " + inputs.get(j));
+            }
+            writer.newLine();
+         }
+         
+         writer.close();
+      }
+      catch(IOException io)
+      {
+         System.out.println("File could not be opened.");
+      }
+      
    }
 }

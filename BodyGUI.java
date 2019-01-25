@@ -17,6 +17,7 @@ public class BodyGUI extends JPanel
       //configure the Circuit data structure from specified file
       //for now just an ASCII file
       ReadASCII();
+      ourCircuit.saveToASCII();
       
       //do not think we need any layout because will just be drawing
       //setLayout(new FlowLayout());
@@ -104,15 +105,26 @@ public class BodyGUI extends JPanel
                //Add this gate to the circuit
                ourCircuit.addGate(theGate);
                
-               //If this gate has any inputs from previous gates, record them
+               //If this gate has any inputs from previous gates, record them (just the numbers)
                while(readline.hasNextInt())
                {
-                  int inputGate = readline.nextInt();
-                  theGate.addInput(ourCircuit.get(inputGate));
-                  
-                  System.out.println("--InputGate:"+inputGate);
+                  theGate.addInputInt(readline.nextInt());
                }
             }
+         }
+         
+         //Now that all gates have been made we can fill the ArrayList of input Gates for each one
+         //For every gate in the circuit
+         for(int i=1; i < ourCircuit.size()+1; i++)
+         {
+            //For every input line of that gate
+            for(int j=0; j < ourCircuit.get(i).getInputInts().size(); j++)
+            {
+               int inGateIndex = ourCircuit.get(i).getInputInts().get(j);
+               ourCircuit.get(i).addInput(ourCircuit.get(inGateIndex));
+            }
+            //Now calculate the depth of this gate
+            ourCircuit.get(i).calculateDepth();
          }
          
          System.out.println("------------CalculateOutput-----------------");

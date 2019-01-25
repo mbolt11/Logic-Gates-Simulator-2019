@@ -13,6 +13,7 @@ public abstract class Gate
    private int gatenum;
    private int depth = 0;
    private gatetype type;
+   private ArrayList<Integer> inputints;
    protected ArrayList<Gate> inputs;
    protected boolean output;
    
@@ -23,7 +24,8 @@ public abstract class Gate
       gatenum = num_in;
       type = type_in;
             
-      //Instantiate the inputs ArrayList
+      //Instantiate both the input ArrayLists (ints and Gates)
+      inputints = new ArrayList<Integer>();
       inputs = new ArrayList<Gate>();
    }
    
@@ -43,6 +45,11 @@ public abstract class Gate
       return type;
    }
    
+   public int getGateNum()
+   {
+      return gatenum;
+   }
+   
    public String getStringType()
    {
       String stringName = type.toString();
@@ -60,18 +67,37 @@ public abstract class Gate
       output = output_in;
    }
    
-   //Adding and removing an input Gate
+   //Method to change gate type- needed for constructing NAND and NOR
+   public void changeType(gatetype gt)
+   {
+      type = gt;
+   }
+   
+   //Adding and removing an input Gate (the actual Gate object)
+   //Must remember to call calculateDepth after every time you call one of these methods
    public void addInput(Gate inGate)
    {
       inputs.add(inGate);
-      calculateDepth();
+      System.out.println("Gate " + gatenum + " input: " + inGate.getGateNum());
    }
    
    public void removeInput(Gate inGate)
    {
       inputs.remove(inGate);
-      calculateDepth();
-   } 
+   }
+   
+   //Adding to the ArrayList of Integers which represent input gates
+   //This is to be used when a file is loaded in, in case the gates are
+   //listed out of order in the file
+   public void addInputInt(int num)
+   {
+      inputints.add(num);
+   }
+   
+   public ArrayList<Integer> getInputInts()
+   {
+      return inputints;
+   }
    
    //Placeholder method for where we can calculate the depth of the gate
    public void calculateDepth()
