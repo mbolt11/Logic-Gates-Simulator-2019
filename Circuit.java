@@ -127,4 +127,39 @@ public class Circuit
       }
       
    }
+   
+   //Method to save circuit to binary file
+   public void saveToBinary()
+   {
+      try
+      {
+         DataOutputStream ostream = new DataOutputStream(new BufferedOutputStream(
+              new FileOutputStream("SaveBinary.bin")));
+         
+         for(int i=0; i<allGates.size(); i++)
+         {
+            //Get the info from this gate to write
+            int gatenum = allGates.get(i).getGateNum();
+            String gatetype = allGates.get(i).getStringType().toLowerCase();
+            ArrayList<Integer> inputs = allGates.get(i).getInputInts();
+            
+            //Write the info in the correct format
+            ostream.writeInt(gatenum);
+            ostream.writeBytes(" " + gatetype);
+            for(int j=0; j < inputs.size(); j++)
+            {
+               ostream.writeBytes(" ");
+               ostream.writeInt(inputs.get(j));
+            }
+            ostream.writeBytes("\n");
+         }
+         
+         ostream.close();
+      }
+      catch(IOException io)
+      {
+         System.out.println("File could not be opened.");
+      }
+      
+   }
 }

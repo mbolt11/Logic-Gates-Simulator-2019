@@ -17,7 +17,7 @@ public class BodyGUI extends JPanel
       //configure the Circuit data structure from specified file
       //for now just an ASCII file
       ReadASCII();
-      ourCircuit.saveToASCII();
+      ourCircuit.saveToBinary();
       
       //do not think we need any layout because will just be drawing
       //setLayout(new FlowLayout());
