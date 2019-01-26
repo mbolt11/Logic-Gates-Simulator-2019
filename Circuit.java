@@ -2,6 +2,7 @@
 
 import java.util.*;
 import java.io.*;
+import java.nio.ByteBuffer;
 
 public class Circuit
 {
@@ -133,8 +134,9 @@ public class Circuit
    {
       try
       {
-         DataOutputStream ostream = new DataOutputStream(new BufferedOutputStream(
-              new FileOutputStream("SaveBinary.bin")));
+         OutputStream ostream = new BufferedOutputStream(new FileOutputStream("SaveBinary.cir"));
+         //DataOutputStream ostream = new DataOutputStream(new BufferedOutputStream(
+              //new FileOutputStream("SaveBinary.cir")));
          
          for(int i=0; i<allGates.size(); i++)
          {
@@ -143,15 +145,22 @@ public class Circuit
             String gatetype = allGates.get(i).getStringType().toLowerCase();
             ArrayList<Integer> inputs = allGates.get(i).getInputInts();
             
-            //Write the info in the correct format
-            ostream.writeInt(gatenum);
-            ostream.writeBytes(" " + gatetype);
+            //Convert to byte arrays
+            byte[] array1 = ByteBuffer.allocate(4).putInt(gatenum).array();
+            byte[] array2 = (" " + gatetype).getBytes();
+            
+            //Write the byte arrays
+            ostream.write(array1);
+            ostream.write(array2);
             for(int j=0; j < inputs.size(); j++)
             {
-               ostream.writeBytes(" ");
-               ostream.writeInt(inputs.get(j));
+               byte[] array3 = ByteBuffer.allocate(4).putInt(inputs.get(j)).array();
+               byte[] array4 = (" ").getBytes();
+               ostream.write(array3);
+               ostream.write(array4);
             }
-            ostream.writeBytes("\n");
+            byte[] array5 = ("\n").getBytes();
+            ostream.write(array5);
          }
          
          ostream.close();
