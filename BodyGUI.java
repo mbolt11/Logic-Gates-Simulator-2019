@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
+import java.nio.*;
 
 public class BodyGUI extends JPanel
 {
@@ -133,75 +134,73 @@ public class BodyGUI extends JPanel
    {
       try
       {
-         //Open the file and assign a scanner to it
-         File infile = new File("SaveBinary.cir");
-         Scanner readfile = new Scanner(infile);
-         
          //Create a circuit object to put our gates in
          ourCircuit = new Circuit();
          
          System.out.println("------FILE------");
          
-         while(readfile.hasNextLine())
+         //Open a new inputstream for the file
+         FileInputStream istream = new FileInputStream("SaveBinary.cir");
+         
+         while(istream.available() > 0)
          {
-            //Get the current line of text and make it an input stream for the DataInputStream
-            String line = readfile.nextLine();
-            InputStream targetStream = new ByteArrayInputStream(line.getBytes());
-            DataInputStream distream = new DataInputStream(targetStream);
+            //Read the first two bytes into the gate number, cast to integer
+            byte[] gatenum = new byte[2];
+            istream.read(gatenum);
+            int numInt = (gatenum[1] << 8) | gatenum[0];
             
-            //Read the info from this line
-            int gatenum = distream.readInt();
-            String typeWithSpace = distream.readUTF();
-            String type = typeWithSpace.substring(1);
-            System.out.println("Gatenum:"+gatenum+" type:"+type);
-            if (type.equals("true") || type.equals("false"))
-            {
-               //Not sure what this is supposed to be...
-            }
-            else
+            //Read the second two bytes into gate type number according to enum index
+            byte[] gatetype = new byte[2];
+            istream.read(gatetype);
+            int typeInt = (gatetype[1] << 8) | gatetype[0];
+            
+            //Test statement
+            System.out.println("Gatenum:"+numInt+" type:"+typeInt);
+            
+            //Instantiate the appropriate type of gate according to the type number
+            if(typeInt >= 0 && typeInt <= 8)
             {               
-               //Create the appropriate gate type according to string
                Gate theGate;
-               switch(type)
+               switch(typeInt)
                {
-                  case "input":
+                  case 0:
                   {
-                     theGate = new INPUT(gatenum);
+                     theGate = new INPUT(numInt);
                      break;
                   }
-                  case "and":
+                  case 1:
                   {
-                     theGate = new AND(gatenum,false);
+                     theGate = new OUTPUT(numInt);
                      break;
                   }
-                  case "or":
+                  case 2:
                   {
-                     theGate = new OR(gatenum,false);
+                     theGate = new AND(numInt,false);
                      break;
                   }
-                  case "xor":
+                  case 3:
                   {
-                     theGate = new XOR(gatenum);
+                     theGate = new OR(numInt,false);
                      break;
                   }
-                  case "not":
+                  case 4:
                   {
-                     theGate = new NOT(gatenum);
+                     theGate = new XOR(numInt);
                      break;
                   }
-                  case "nor":
+                  case 5:
                   {
-                     theGate = new OR(gatenum,true);
+                     theGate = new NOT(numInt);
                      break;
                   }
-                  case "nand":
+                  case 6:
                   {
-                     theGate = new AND(gatenum,true);
+                     theGate = new OR(numInt,true);
                      break;
                   }
-                  default: //case: "output"
+                  default: //case 7 aka NAND
                   {
-                     theGate = new OUTPUT(gatenum);
+                     theGate = new AND(numInt,true);
                      break;
                   }
                }
@@ -209,19 +208,26 @@ public class BodyGUI extends JPanel
                //Add this gate to the circuit
                ourCircuit.addGate(theGate);
                
-               //If this gate has any inputs from previous gates, record them (just the numbers)
-               try
+               //Read the rest of the bytes as inputs 2 at a time until you read -1
+               //Fill in arraylist of input integers with the values
+               int inputInt = 0;
+               while(inputInt != -1)
                {
-                  while(true)
+                  //Get the next int value and save it to inputInt
+                  byte[] input = new byte[2];
+                  istream.read(input);
+                  inputInt = (input[1] << 8) | input[0];
+                  
+                  //If the value is -1, we have reached the "end of the line"
+                  if(inputInt != -1)
                   {
-                     distream.readUTF(); //Get the spaces out of the way
-                     theGate.addInputInt(distream.readInt());
+                     theGate.addInputInt(inputInt);
                   }
                }
-               catch(EOFException eof)
-               {
-                  System.out.println("Encountered end of line stream");
-               }
+            }
+            else
+            {
+               System.out.println("Invalid gate type number");
             }
          }
          

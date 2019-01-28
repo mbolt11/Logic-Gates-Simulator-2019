@@ -135,27 +135,44 @@ public class Circuit
       try
       {
          FileOutputStream fostream = new FileOutputStream("SaveBinary.cir");
-         DataOutputStream dostream = new DataOutputStream(fostream);
                   
          for(int i=0; i<allGates.size(); i++)
          {
-            //Get the info from this gate to write
+            //Get the gate number of this gate and convert into 2 bytes to write
             int gatenum = allGates.get(i).getGateNum();
-            String gatetype = allGates.get(i).getStringType().toLowerCase();
-            ArrayList<Integer> inputs = allGates.get(i).getInputInts();
+            byte[] array1 = new byte[2];
+            array1[0] = (byte) (gatenum & 0xFF);
+            array1[1] = (byte) ((gatenum >> 8) & 0xFF);
+            fostream.write(array1);
             
-            //Write the data according to the data type
-            dostream.writeInt(gatenum);
-            dostream.writeUTF(" " + gatetype);
+            //Get the gate type, convert to numerical value to be stored in 2 bytes
+            int gatetype = allGates.get(i).getType().ordinal();
+            byte[] array2 = new byte[2];
+            array2[0] = (byte) (gatetype & 0xFF);
+            array2[1] = (byte) ((gatetype >> 8) & 0xFF);
+            fostream.write(array2);
+            
+            //Get the arraylist of inputs and write them
+            ArrayList<Integer> inputs = allGates.get(i).getInputInts();
             for(int j=0; j < inputs.size(); j++)
             {
-               dostream.writeUTF(" ");
-               dostream.writeInt(inputs.get(j));
+               int inputline = inputs.get(j);
+               byte[] array3 = new byte[2];
+               array3[0] = (byte) (inputline & 0xFF);
+               array3[1] = (byte) ((inputline >> 8) & 0xFF);
+               fostream.write(array3);
             }
-            dostream.writeUTF("\n");
+            
+            //Write a -1 to indicate a new line
+            int eol = -1;
+            byte[] array4 = new byte[2];
+            array4[0] = (byte) (eol & 0xFF);
+            array4[1] = (byte) ((eol >> 8) & 0xFF);
+            fostream.write(array4);
          }
+         //Flush and close stream
+         fostream.flush();
          fostream.close();
-         dostream.close();
       }
       catch(IOException io)
       {
