@@ -134,10 +134,9 @@ public class Circuit
    {
       try
       {
-         OutputStream ostream = new BufferedOutputStream(new FileOutputStream("SaveBinary.cir"));
-         //DataOutputStream ostream = new DataOutputStream(new BufferedOutputStream(
-              //new FileOutputStream("SaveBinary.cir")));
-         
+         FileOutputStream fostream = new FileOutputStream("SaveBinary.cir");
+         DataOutputStream dostream = new DataOutputStream(fostream);
+                  
          for(int i=0; i<allGates.size(); i++)
          {
             //Get the info from this gate to write
@@ -145,25 +144,18 @@ public class Circuit
             String gatetype = allGates.get(i).getStringType().toLowerCase();
             ArrayList<Integer> inputs = allGates.get(i).getInputInts();
             
-            //Convert to byte arrays
-            byte[] array1 = ByteBuffer.allocate(4).putInt(gatenum).array();
-            byte[] array2 = (" " + gatetype).getBytes();
-            
-            //Write the byte arrays
-            ostream.write(array1);
-            ostream.write(array2);
+            //Write the data according to the data type
+            dostream.writeInt(gatenum);
+            dostream.writeUTF(" " + gatetype);
             for(int j=0; j < inputs.size(); j++)
             {
-               byte[] array3 = ByteBuffer.allocate(4).putInt(inputs.get(j)).array();
-               byte[] array4 = (" ").getBytes();
-               ostream.write(array3);
-               ostream.write(array4);
+               dostream.writeUTF(" ");
+               dostream.writeInt(inputs.get(j));
             }
-            byte[] array5 = ("\n").getBytes();
-            ostream.write(array5);
+            dostream.writeUTF("\n");
          }
-         
-         ostream.close();
+         fostream.close();
+         dostream.close();
       }
       catch(IOException io)
       {
