@@ -20,8 +20,8 @@ public class BodyGUI extends JPanel
       //ourCircuit.saveToASCII();
       
       //Binary read/save tests
-      ourCircuit.saveToBinary();
-      ReadBinary();
+      //ourCircuit.saveToBinary();
+      //ReadBinary();
       
       //do not think we need any layout because will just be drawing
       //setLayout(new FlowLayout());
@@ -253,6 +253,12 @@ public class BodyGUI extends JPanel
    //Method to populate the array of input Gates for each gate once file has been loaded
    public void populateInputGates(Circuit circuit_in)
    {
+      System.out.println("********************POLPULATE_INPUT_GATES");
+      for(int i = 1; i < circuit_in.size() + 1; i++)
+      {
+         System.out.println("Before calculation: "+circuit_in.get(i).getType()+" at depth: "+ circuit_in.get(i).getDepth()+1);
+      }
+      System.out.println("*****");
       //For every gate in the circuit
       for(int i=1; i < circuit_in.size()+1; i++)
       {
@@ -262,9 +268,19 @@ public class BodyGUI extends JPanel
             int inGateIndex = circuit_in.get(i).getInputInts().get(j);
             circuit_in.get(i).addInput(circuit_in.get(inGateIndex));
          }
-         //Now calculate the depth of this gate
-         circuit_in.get(i).calculateDepth();
+         
+         //Now calculate the depth of only the outputs so it recursively calculates other gates as well
+            if(circuit_in.get(i).getStringType() == "OUTPUT")
+            { 
+               circuit_in.get(i).calculateDepth();
+            }
       }
+      
+      for(int i = 1; i < circuit_in.size() + 1; i++)
+      {
+         System.out.println("After calculation: "+circuit_in.get(i).getType()+" at depth: "+ circuit_in.get(i).getDepth()+1);
+      }
+      System.out.println("******************************");
    }
    
    //Method to calculate outputs of our circuit
@@ -287,12 +303,14 @@ public class BodyGUI extends JPanel
    public void paintComponent(Graphics g)
    {
       super.paintComponent(g);
-      System.out.println("\n\n-----------DRAWING----------");
+      System.out.println("\n\n-----------DRAWING---------- Circuit of size "+ourCircuit.size());
       int row = 0;
       int column = 0;
       int maxColumn = ourCircuit.getColumns();
       int maxRow = ourCircuit.getRows();
       int gatesDrawn = 0;
+      
+      System.out.println("columns: " + maxColumn + " rows: " + maxRow);
       
       for(int i = 1; i <= maxColumn; i++)
       {
@@ -300,9 +318,10 @@ public class BodyGUI extends JPanel
          row = 0;
          for(int j = 1; j < ourCircuit.size() + 1; j++)
          {
+               System.out.println("Before call: "+ourCircuit.get(j).getType()+" at depth: "+ ourCircuit.get(j).getDepth()+1);
             if((ourCircuit.get(j).getDepth()+1) == i)
             {
-               //System.out.println(ourCircuit.get(j).getType() + " at row,column: " +row+","+column+" --DEPTH:"+i);
+               System.out.println("Call draw on: "+ourCircuit.get(j).getType() + " at row,column: " +row+","+column+" --DEPTH:"+i);
                ourCircuit.get(j).draw(g, row, column, maxColumn, maxRow);
                gatesDrawn++;
                row++;
@@ -311,14 +330,14 @@ public class BodyGUI extends JPanel
       }
       
       //call functions to paint wires *******************************************************************************Comment this out to get rid of lines
-         for(int i = 1; i < ourCircuit.size()+1; i++)
+         /*for(int i = 1; i < ourCircuit.size()+1; i++)
          {
             //System.out.println(ourCircuit.get(i).getStringType());
             if(ourCircuit.get(i).getStringType() == "OUTPUT")
             {
-               ourCircuit.get(i).drawWires(g, 1, 1);
+               ourCircuit.get(i).drawWires(g, 1, 1, 0);
             }
-         }
+         }*/
       
       System.out.println("Done painting");
    }

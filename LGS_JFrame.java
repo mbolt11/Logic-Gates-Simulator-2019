@@ -24,7 +24,7 @@ public class LGS_JFrame extends JFrame
       
       //Set the size, visibility and layout
       setLayout(fl);
-      setSize(1000,1000);
+      setSize(1000,950);
       setVisible(true);
    }
 }

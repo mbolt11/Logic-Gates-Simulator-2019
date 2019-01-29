@@ -102,18 +102,26 @@ public abstract class Gate
    //Placeholder method for where we can calculate the depth of the gate
    public void calculateDepth()
    {
+      depth = 0;
+      System.out.println("----(OutsideLoop) "+getStringType()+" depth: "+depth);
       for(int i=0; i<inputs.size(); i++)
       {
+         inputs.get(i).calculateDepth(); //calculate the input's depth first
          if(inputs.get(i).getDepth() >= depth)
          {
             depth = inputs.get(i).getDepth() + 1;
+            System.out.println("----"+getStringType()+" depth: "+depth);
          }
       }     
    }
    
    public abstract void draw(Graphics g, int row, int column, int maxColumn, int maxRow);
    
-   public abstract void drawWires(Graphics g, int xFinish, int yFinish);
+   public abstract void drawWires(Graphics g, int xFinish, int yFinish, int branchNumber);
    
    public abstract boolean calculateOutput();
+   
+   public abstract int getxOutputSlot();
+   
+   public abstract int getyOutputSlot();
 }

@@ -13,6 +13,13 @@ public class OUTPUT extends Gate
       yWireSlot = 0;
    }
    
+   //had to override the abstract method, but no use for these in this child class
+   public int getxOutputSlot()
+   { return -1; }
+   
+   public int getyOutputSlot()
+   { return -1; }
+   
    //Calculates result of gate... 
    //I haven't figured out where to call this from yet
    public boolean calculateOutput()
@@ -39,8 +46,9 @@ public class OUTPUT extends Gate
       System.out.println("OUTPUT drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
    }
    
-   public void drawWires(Graphics g, int xFinish, int yFinish)
+   public void drawWires(Graphics g, int xFinish, int yFinish, int branchNumber)
    {
-      inputs.get(0).drawWires(g, xWireSlot, yWireSlot);
+      //connect to its input
+      inputs.get(0).drawWires(g, xWireSlot, yWireSlot, branchNumber);
    }
 }

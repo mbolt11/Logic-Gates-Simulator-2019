@@ -13,6 +13,12 @@ public class INPUT extends Gate
       yOutputWireSlot = 0;
    }
    
+   public int getxOutputSlot()
+   { return xOutputWireSlot; }
+   
+   public int getyOutputSlot()
+   { return yOutputWireSlot; }
+   
    //Calculates result of gate... 
    //I haven't figured out where to call this from yet
    public boolean calculateOutput()
@@ -39,9 +45,43 @@ public class INPUT extends Gate
       System.out.println("Input drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
    }
    
-   public void drawWires(Graphics g, int xFinish, int yFinish)
+   
+   public void drawWires(Graphics g, int xFinish, int yFinish, int branchNumber)
    {
       g.setColor(Color.BLACK);
+      
+      //draw trunk line outwards by 30 units
+      g.drawLine(xOutputWireSlot, yOutputWireSlot, xOutputWireSlot + 30, yOutputWireSlot);
+      
+      //set new start xOutput
+      xOutputWireSlot = xOutputWireSlot + 30;
+      
+      //if the branch number is > 0, then an additional gate requires the output and a "branch" must be made
+      //if the branch number = 0, then this is the original output wire "trunk"
+      if(branchNumber > 0)
+      {
+         int mult = branchNumber/2;
+         //if branch is even then it's an upper branch and the integer division of 2 is how much the branch distance should be multiplied
+         if(branchNumber % 2 == 0)
+         {
+            //draw upwards the branch interval(10) * mult starting at the trunk
+            g.drawLine(xOutputWireSlot, yOutputWireSlot, xOutputWireSlot, yOutputWireSlot - (mult * 10));
+            
+            //set new ystart to draw from to the finish
+            yOutputWireSlot = yOutputWireSlot - (mult * 10);
+         }
+         else
+         {
+            //draw downwards the branch interval * mult starting at the trunk
+            mult++;
+            g.drawLine(xOutputWireSlot, yOutputWireSlot, xOutputWireSlot, yOutputWireSlot + (mult * 10));
+            
+            //set new ystart to draw from to the finish
+            yOutputWireSlot = yOutputWireSlot + (mult * 10);
+         }   
+      }
+      
+      
       //connect to its output
       g.drawLine(xOutputWireSlot, yOutputWireSlot, xFinish, yFinish);
    }
