@@ -4,20 +4,11 @@ import java.awt.*;
 
 public class INPUT extends Gate
 {
-   private int xOutputWireSlot, yOutputWireSlot;
    //Constructor
    public INPUT(int num_in)
    {
       super(num_in,gatetype.INPUT);
-      xOutputWireSlot = 0;
-      yOutputWireSlot = 0;
    }
-   
-   public int getxOutputSlot()
-   { return xOutputWireSlot; }
-   
-   public int getyOutputSlot()
-   { return yOutputWireSlot; }
    
    //Calculates result of gate... 
    //I haven't figured out where to call this from yet
@@ -26,15 +17,6 @@ public class INPUT extends Gate
       //This changes according to user click
       setOutput(false); //default to start
       return output;
-   }
-   
-   public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)
-   {
-       //first draw the gate
-       drawGate(g, row, column, maxColumn, maxRow);
-       
-       //drawWires from its inputs to itself
-       //drawWires(g);
    }
    
    public void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow)
@@ -52,10 +34,5 @@ public class INPUT extends Gate
       yOutputWireSlot = yStart + 47;
       
       System.out.println("Input drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
-   }
-   
-   public void drawWires(Graphics g)
-   {
-      //do nothing
    }
 }

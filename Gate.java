@@ -16,6 +16,7 @@ public abstract class Gate
    private ArrayList<Integer> inputints;
    protected ArrayList<Gate> inputs;
    protected boolean output;
+   protected int xInputWireSlot, yInputWireSlot, xOutputWireSlot, yOutputWireSlot;
    
    //Constructor
    public Gate(int num_in, gatetype type_in)
@@ -27,6 +28,11 @@ public abstract class Gate
       //Instantiate both the input ArrayLists (ints and Gates)
       inputints = new ArrayList<Integer>();
       inputs = new ArrayList<Gate>();
+      
+      xInputWireSlot = 0;
+      yInputWireSlot = 0;
+      xOutputWireSlot = 0;
+      yOutputWireSlot = 0;
    }
    
    //Accessors for member variables
@@ -60,6 +66,12 @@ public abstract class Gate
    {
       return output;
    }
+   
+   public int getxOutputSlot()
+   { return xOutputWireSlot; }
+   
+   public int getyOutputSlot()
+   { return yOutputWireSlot; }
    
    //Setter method for output- this is calculated in child class
    public void setOutput(boolean output_in)
@@ -112,17 +124,55 @@ public abstract class Gate
          }
       }
       depth = temp;
-      System.out.println(getStringType()+" depth: "+getDepth());
+      //System.out.println(getStringType()+" depth: "+getDepth());
    }
 
    
-   public abstract void draw(Graphics g, int row, int column, int maxColumn, int maxRow);
+   public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)
+   {
+       //first draw the gate
+       drawGate(g, row, column, maxColumn, maxRow);
+       
+       //drawWires from its inputs to itself
+       drawWires(g);
+   }
    
-   public abstract void drawWires(Graphics g);
+   //draws wires from each input gate to the current gate
+   public void drawWires(Graphics g)
+   {
+      g.setColor(Color.BLACK);
+      
+      ////////////////////////////////////CONNECTING INPUTS      
+      int xWireStart, yWireStart, xWireFinish, yWireFinish;
+      xWireFinish = xInputWireSlot;
+      yWireFinish = yInputWireSlot;
+      
+      int totalInputs = inputs.size();
+      double interval = 85.0/totalInputs;
+      
+      //connect to its inputs
+      for(int i = 0; i < inputs.size(); i++)
+      {
+         xWireStart = inputs.get(i).getxOutputSlot();
+         yWireStart = inputs.get(i).getyOutputSlot();
+         
+         //draw trunk line outwards by 30 units on each input
+         g.drawLine(xWireStart, yWireStart, xWireStart + 15, yWireStart);
+         
+         xWireStart += 15;       
+         
+         //draws the connecting line
+         g.drawLine(xWireStart, yWireStart, xWireFinish, yWireFinish);
+         
+         //sets up the correct finish coordinate for the next input
+         if(i%2 == 0)
+          yWireFinish+=(interval*(i+1));
+         else
+          yWireFinish-=(interval*(i+1));
+      }  
+   }
+   
+   public abstract void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow);
    
    public abstract boolean calculateOutput();
-   
-   public abstract int getxOutputSlot();
-   
-   public abstract int getyOutputSlot();
 }
