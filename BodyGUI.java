@@ -325,6 +325,9 @@ public class BodyGUI extends JPanel
       
       System.out.println("columns: " + maxColumn + " rows: " + maxRow);
       
+      //must create a list of the gates drawn so far in order to check drawing wires against gate boundaries as drawing progresses
+      ArrayList<Gate> drawnGates = new ArrayList<Gate>();
+      
       //draws the gates in order
       for(int i = 1; i <= maxColumn; i++)
       {
@@ -335,7 +338,8 @@ public class BodyGUI extends JPanel
             if(ourCircuit.get(j).getDepth() == i)
             {
                //should draw the gate first and if the gate has inputs then the lines are drawn to connect them
-               ourCircuit.get(j).draw(g, row, column, maxColumn, maxRow);
+               ourCircuit.get(j).draw(g, row, column, maxColumn, maxRow, drawnGates);
+               drawnGates.add(ourCircuit.get(j));
                gatesDrawn++;
                row++;
             }

@@ -24,8 +24,10 @@ public class OUTPUT extends Gate
       g.setColor(Color.RED);
       //output gates must be all the way to the right
       column = maxColumn;
-      int xStart = (int) ((((double)column/maxColumn) * 1000) - 150);
-      int yStart = (int) ((((double)row/maxRow) * 950) + 65);
+      xStart = (int) ((((double)column/maxColumn) * 1000) - 150);
+      yStart = (int) ((((double)row/maxRow) * 950) + 65) + ((column-1)*10);
+      xFinish = xStart + 100;
+      yFinish = yStart + 95;
       
       //generally placing in the correct row and column area, gate should be 10% of the total dimension in either direction
       g.drawOval(xStart, yStart, 100, 95);

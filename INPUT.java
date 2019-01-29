@@ -24,8 +24,10 @@ public class INPUT extends Gate
       g.setColor(Color.RED);
       //input gates must be all the way to the left
       column = 1;
-      int xStart = ((int) (((double)column/maxColumn) * 1000)) - 150;
-      int yStart = ((int) (((double)row/maxRow) * 950)) + 65;
+      xStart = ((int) (((double)column/maxColumn) * 1000)) - 150;
+      yStart = ((int) (((double)row/maxRow) * 950)) + 65 + (column*10);
+      xFinish = xStart + 100;
+      yFinish = yStart + 95;
       
       //generally placing in the correct row and column area, gate should be 10% of the total dimension in either direction
       g.drawRect(xStart, yStart, 100, 95);
