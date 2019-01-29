@@ -43,6 +43,15 @@ public class XOR extends Gate
    
    public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
+       //first draw the gate
+       drawGate(g, row, column, maxColumn, maxRow);
+       
+       //drawWires from its inputs to itself
+       drawWires(g);
+   }
+   
+   public void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow)
+   {
       //System.out.println("XOR drawn");
       int xStart = ((int) (((double)column/maxColumn) * 1000)) - 150;
       int yStart = ((int) (((double)row/maxRow) * 950)) + 65;
@@ -63,91 +72,38 @@ public class XOR extends Gate
       System.out.println("XOR drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
    }
    
-   public void drawWires(Graphics g, int xFinish, int yFinish, int branchNumber)
+  //draws wires from each input gate to the current gate
+   public void drawWires(Graphics g)
    {
       g.setColor(Color.BLACK);
       
-      //draw trunk line outwards by 30 units
-      g.drawLine(xOutputWireSlot, yOutputWireSlot, xOutputWireSlot + 30, yOutputWireSlot);
+      ////////////////////////////////////CONNECTING INPUTS      
+      int xWireStart, yWireStart, xWireFinish, yWireFinish;
+      xWireFinish = xInputWireSlot;
+      yWireFinish = yInputWireSlot;
       
-      //set new start xOutput
-      xOutputWireSlot = xOutputWireSlot + 30;
-      
-      //if the branch number is > 0, then an additional gate requires the output and a "branch" must be made
-      //if the branch number = 0, then this is the original output wire "trunk"
-      if(branchNumber > 0)
-      {
-         int mult = branchNumber/2;
-         //if branch is even then it's an upper branch and the integer division of 2 is how much the branch distance should be multiplied
-         if(branchNumber % 2 == 0)
-         {
-            //draw upwards the branch interval(10) * mult starting at the trunk
-            g.drawLine(xOutputWireSlot, yOutputWireSlot, xOutputWireSlot, yOutputWireSlot - (mult * 10));
-            
-            //set new ystart to draw from to the finish
-            yOutputWireSlot = yOutputWireSlot - (mult * 10);
-         }
-         else
-         {
-            //draw downwards the branch interval * mult starting at the trunk
-            mult++;
-            g.drawLine(xOutputWireSlot, yOutputWireSlot, xOutputWireSlot, yOutputWireSlot + (mult * 10));
-            
-            //set new ystart to draw from to the finish
-            yOutputWireSlot = yOutputWireSlot + (mult * 10);
-         }   
-      }
-      
-      
-      //connect to its output
-      g.drawLine(xOutputWireSlot, yOutputWireSlot, xFinish, yFinish);
-      
-      ////////////////////////////////////CONNECTING INPUTS
       int totalInputs = inputs.size();
       double interval = 85.0/totalInputs;
       
-      int upBranches = 0;
-      int downBranches = 0;
       //connect to its inputs
       for(int i = 0; i < inputs.size(); i++)
       {
-         //upwards branch
-         if(inputs.get(i).getyOutputSlot() < yInputWireSlot)
-         {
-            inputs.get(i).drawWires(g, xInputWireSlot, yInputWireSlot, upBranches);
-            
-            //after the trunk, the next input must be recognized as the first branch
-            if(upBranches == 0 && downBranches == 0)
-            {
-               upBranches = 2;
-               downBranches = 1;
-            }
-            else //all following branches will be incremented by 2
-            {
-               upBranches += 2;
-            }
-         }
-         //downwards branch
-         else
-         {
-            inputs.get(i).drawWires(g, xInputWireSlot, yInputWireSlot, downBranches);
-            
-            //after the trunk, the next input must be recognized as the first branch
-            if(upBranches == 0 && downBranches == 0)
-            {
-               upBranches = 2;
-               downBranches = 1;
-            }
-            else //all following branches will be incremented by 2
-            {
-               downBranches += 2;
-            }
-         }
+         xWireStart = inputs.get(i).getxOutputSlot();
+         yWireStart = inputs.get(i).getyOutputSlot();
          
+         //draw trunk line outwards by 30 units on each input
+         g.drawLine(xWireStart, yWireStart, xWireStart + 15, yWireStart);
+         
+         xWireStart += 15;       
+         
+         //draws the connecting line
+         g.drawLine(xWireStart, yWireStart, xWireFinish, yWireFinish);
+         
+         //sets up the correct finish coordinate for the next input
          if(i%2 == 0)
-          yInputWireSlot+=(interval*(i+1));
+          yWireFinish+=(interval*(i+1));
          else
-          yInputWireSlot-=(interval*(i+1));
-      }
+          yWireFinish-=(interval*(i+1));
+      }  
    }
 }

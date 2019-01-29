@@ -325,16 +325,16 @@ public class BodyGUI extends JPanel
       
       System.out.println("columns: " + maxColumn + " rows: " + maxRow);
       
+      //draws the gates in order
       for(int i = 1; i <= maxColumn; i++)
       {
          column = i;
          row = 0;
          for(int j = 1; j < ourCircuit.size() + 1; j++)
          {
-               System.out.println("Before call: "+ourCircuit.get(j).getType()+" at depth: "+ ourCircuit.get(j).getDepth());
             if(ourCircuit.get(j).getDepth() == i)
             {
-               System.out.println("Call draw on: "+ourCircuit.get(j).getType() + " at row,column: " +row+","+column+" --DEPTH:"+i);
+               //should draw the gate first and if the gate has inputs then the lines are drawn to connect them
                ourCircuit.get(j).draw(g, row, column, maxColumn, maxRow);
                gatesDrawn++;
                row++;
@@ -342,16 +342,6 @@ public class BodyGUI extends JPanel
          }
       }
       
-      //call functions to paint wires *******************************************************************************Comment this out to get rid of lines
-         for(int i = 1; i < ourCircuit.size()+1; i++)
-         {
-            //System.out.println(ourCircuit.get(i).getStringType());
-            if(ourCircuit.get(i).getStringType() == "OUTPUT")
-            {
-               ourCircuit.get(i).drawWires(g, 1, 1, 0);
-            }
-         }
-      
-      System.out.println("Done painting");
+      System.out.println("made it");
    }
 }

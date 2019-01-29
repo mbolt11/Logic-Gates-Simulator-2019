@@ -5,7 +5,7 @@ import java.awt.*;
 public class AND extends Gate
 {
    private boolean negate;
-   private int xInputWireSlot, yInputWireSlot, xOutputWireSlot, yOutputWireSlot;
+   private int xInputWireSlot, yInputWireSlot, xOutputWireSlot, yOutputWireSlot, xStart, yStart;
    
    //Constructor
    public AND(int num_in, boolean negate_in)
@@ -57,9 +57,18 @@ public class AND extends Gate
    
    public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
+       //first draw the gate
+       drawGate(g, row, column, maxColumn, maxRow);
+       
+       //drawWires from its inputs to itself
+       drawWires(g);
+   }
+   
+   public void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow)
+   {
       //System.out.println("AND drawn");
-      int xStart = ((int) (((double)column/maxColumn) * 1000)) - 150;
-      int yStart = ((int) (((double)row/maxRow) * 950)) + 65;
+      xStart = ((int) (((double)column/maxColumn) * 1000)) - 150;
+      yStart = ((int) (((double)row/maxRow) * 950)) + 65;
       int size = 60;
       g.drawLine(xStart, yStart, xStart, yStart + 95);
       g.drawLine(xStart, yStart, xStart + size, yStart);
@@ -82,10 +91,45 @@ public class AND extends Gate
          xOutputWireSlot += 10;
          
          System.out.println("NAND drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
-      }      
+      }   
    }
    
-   public void drawWires(Graphics g, int xFinish, int yFinish, int branchNumber)
+   //draws wires from each input gate to the current gate
+   public void drawWires(Graphics g)
+   {
+      g.setColor(Color.BLACK);
+      
+      ////////////////////////////////////CONNECTING INPUTS      
+      int xWireStart, yWireStart, xWireFinish, yWireFinish;
+      xWireFinish = xInputWireSlot;
+      yWireFinish = yInputWireSlot;
+      
+      int totalInputs = inputs.size();
+      double interval = 85.0/totalInputs;
+      
+      //connect to its inputs
+      for(int i = 0; i < inputs.size(); i++)
+      {
+         xWireStart = inputs.get(i).getxOutputSlot();
+         yWireStart = inputs.get(i).getyOutputSlot();
+         
+         //draw trunk line outwards by 30 units on each input
+         g.drawLine(xWireStart, yWireStart, xWireStart + 15, yWireStart);
+         
+         xWireStart += 15;       
+         
+         //draws the connecting line
+         g.drawLine(xWireStart, yWireStart, xWireFinish, yWireFinish);
+         
+         //sets up the correct finish coordinate for the next input
+         if(i%2 == 0)
+          yWireFinish+=(interval*(i+1));
+         else
+          yWireFinish-=(interval*(i+1));
+      }  
+   }
+   
+   /*public void drawWires(Graphics g, int xFinish, int yFinish, int branchNumber)
    {
       g.setColor(Color.BLACK);
       
@@ -172,5 +216,5 @@ public class AND extends Gate
          else
           yInputWireSlot-=(interval*(i+1));
       }
-   }
+   }*/
 }
