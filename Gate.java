@@ -37,7 +37,7 @@ public abstract class Gate
    
    public int getDepth()
    {
-      return depth;
+      return (depth+1);
    }
    
    public gatetype getType()
@@ -102,18 +102,19 @@ public abstract class Gate
    //Placeholder method for where we can calculate the depth of the gate
    public void calculateDepth()
    {
-      depth = 0;
-      System.out.println("----(OutsideLoop) "+getStringType()+" depth: "+depth);
-      for(int i=0; i<inputs.size(); i++)
+      int temp = 0;
+      for(int i=0; i < inputs.size(); i++)
       {
-         inputs.get(i).calculateDepth(); //calculate the input's depth first
-         if(inputs.get(i).getDepth() >= depth)
+         if((inputs.get(i).getDepth()-1) >= temp)
          {
-            depth = inputs.get(i).getDepth() + 1;
-            System.out.println("----"+getStringType()+" depth: "+depth);
+            temp = (inputs.get(i).getDepth()-1);
+            temp++;
          }
-      }     
+      }
+      depth = temp;
+      System.out.println(getStringType()+" depth: "+getDepth());
    }
+
    
    public abstract void draw(Graphics g, int row, int column, int maxColumn, int maxRow);
    

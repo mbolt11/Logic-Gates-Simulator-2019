@@ -21,15 +21,11 @@ public class Circuit
    public void addGate(Gate gate_in)
    {
       allGates.add(gate_in);
-      calculateColumns(); //Not sure if recalculating this every time will slow it 
-      calculateRows();   //down too much... might have to move this later
    }
    
    public void removeGate(Gate gate_in)
    {
-      allGates.remove(gate_in);
-      calculateColumns(); //Same note as above
-      calculateRows();
+      allGates.remove(gate_in);  
    }
    
    //Accessor for specific gates according to their gate number
@@ -49,6 +45,37 @@ public class Circuit
    public int size()
    {
       return allGates.size();
+   }
+   
+   //Method to sort the gates into number order
+   public void sortCircuit()
+   {
+      ArrayList<Gate> temp = new ArrayList<Gate>();
+      int counter = 1;
+      while(allGates.size() > 0)
+      {
+         for(int i = 0; i < allGates.size(); i++)
+         {
+            if(allGates.get(i).getGateNum() == counter)
+            {
+               temp.add(allGates.get(i));
+               allGates.remove(i);
+               break;
+            }
+         }
+         counter++;
+      }
+      allGates = temp;
+   }
+   
+   //Method to calculate the depth for all the gates in the circuit
+   public void calculateAllDepths()
+   {
+      System.out.println("&&&&&&&&&&&&&&&&&_Starting calculate depth");
+      for(int i = 0; i < allGates.size(); i++)
+      {
+         allGates.get(i).calculateDepth();
+      }
    }
    
    //Method to calculate the total number of columns needed for this circuit
