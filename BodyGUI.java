@@ -123,21 +123,7 @@ public class BodyGUI extends JPanel
          //Sort the circuit, then calculate depths
          ourCircuit.sortCircuit();
          
-         System.out.println("********************BEFORE CALCULATE");
-         for(int i = 1; i < ourCircuit.size() + 1; i++)
-         {
-            System.out.println("Before calculation: "+ourCircuit.get(i).getType()+" at depth: "+ ourCircuit.get(i).getDepth());
-         }
-         System.out.println("*****");
-         
          ourCircuit.calculateAllDepths();
-         
-         System.out.println("********************AFTER CALCULATE");
-         for(int i = 1; i < ourCircuit.size() + 1; i++)
-         {
-            System.out.println("Before calculation: "+ourCircuit.get(i).getType()+" at depth: "+ ourCircuit.get(i).getDepth());
-         }
-         System.out.println("*****");
          
          //calculate columns and rows
          ourCircuit.calculateColumns();
@@ -337,14 +323,22 @@ public class BodyGUI extends JPanel
          {
             if(ourCircuit.get(j).getDepth() == i)
             {
-               //should draw the gate first and if the gate has inputs then the lines are drawn to connect them
-               ourCircuit.get(j).draw(g, row, column, maxColumn, maxRow, drawnGates);
+               //draws the gates and places drawn gates in another arraylist
+               ourCircuit.get(j).draw(g, row, column, maxColumn, maxRow);
                drawnGates.add(ourCircuit.get(j));
                gatesDrawn++;
                row++;
             }
          }
       }
+      
+      /*
+      //draws the wires to the gates
+      for(int i = 0; i < drawnGates.size(); i++)
+      {
+         drawnGates.get(i).drawWires(g, drawnGates);
+      }
+      */
       
       System.out.println("made it");
    }

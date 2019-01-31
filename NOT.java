@@ -48,6 +48,9 @@ public class NOT extends Gate
       xOutputWireSlot = (int)(xBaseCoord + ((95*Math.sqrt(3))/2) + 10);
       yOutputWireSlot = yInputWireSlot;
       
+      g.setColor(Color.BLACK);
+      g.drawString(Integer.toString(getOutputInt()),xStart + ((xFinish-xStart)/2),yStart + ((yFinish-yStart)/2));
+      
       System.out.println("NOT drawn at row,column: "+ row + "," +column + " at coord: "+ (int)xBaseCoord + "," + (int)yBaseCoord);
    }
 }

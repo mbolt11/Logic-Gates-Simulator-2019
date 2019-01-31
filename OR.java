@@ -65,6 +65,9 @@ public class OR extends Gate
       xOutputWireSlot = xInputWireSlot + 100;
       yOutputWireSlot = yInputWireSlot;
       
+      g.setColor(Color.BLACK);
+      g.drawString(Integer.toString(getOutputInt()),xStart + ((xFinish-xStart)/2),yStart + ((yFinish-yStart)/2));
+      
       System.out.println("OR drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
    }
 }

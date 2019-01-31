@@ -75,6 +75,9 @@ public class AND extends Gate
          xOutputWireSlot += 10;
          
          System.out.println("NAND drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
-      }   
+      }
+      
+      g.setColor(Color.BLACK);
+      g.drawString(Integer.toString(getOutputInt()),xStart + ((xFinish-xStart)/2),yStart + ((yFinish-yStart)/2));   
    }
 }

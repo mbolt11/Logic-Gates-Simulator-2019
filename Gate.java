@@ -68,6 +68,16 @@ public abstract class Gate
       return output;
    }
    
+   public int getOutputInt()
+   {
+      int value = 0;
+      
+      if(output)
+         value = 1;
+      
+      return value;
+   }
+   
    public int getxStart()
    { return xStart; }
    
@@ -161,13 +171,10 @@ public abstract class Gate
    }
 
    
-   public void draw(Graphics g, int row, int column, int maxColumn, int maxRow, ArrayList<Gate> drawnGates)
+   public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
        //first draw the gate
        drawGate(g, row, column, maxColumn, maxRow);
-       
-       //drawWires from its inputs to itself
-       drawWires(g, drawnGates);
    }
    
    //draws wires from each input gate to the current gate
@@ -241,7 +248,7 @@ public abstract class Gate
             xStart_in = drawnGates.get(i).getyFinish() + 7;
             
             //reset i so that all gates can be checked again...not sure if this is the best way to do this??
-            //i = 1;
+            i = 1;
          }
          //if the line path will intersect with a gate on horizontal
          //adjust vertically to pass around the gate 
@@ -269,17 +276,17 @@ public abstract class Gate
             }
 
             //reset i so that all gates can be checked again...not sure if this is the best way to do this??
-            //i = 1;
+            i = 1;
          }
          
          System.out.println("Loop at i = "+ i);
       }
       
-      //finish to the destination gate
-      //draw vertical line
-      g.drawLine(xStart_in, yStart_in, xStart_in, yFinish_in);
+      //finish to the destination gate && work on this more!!!!!!!!!!!!!!!!!!!
       //draw horizontal line
       g.drawLine(xStart_in, yFinish_in, xFinish_in, yFinish_in);
+      //draw vertical line
+      g.drawLine(xStart_in, yStart_in, xStart_in, yFinish_in);
    }
    
    public abstract void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow);

@@ -35,6 +35,9 @@ public class INPUT extends Gate
       xOutputWireSlot = xStart+100;
       yOutputWireSlot = yStart + 47;
       
+      g.setColor(Color.BLACK);
+      g.drawString(Integer.toString(getOutputInt()),xStart + ((xFinish-xStart)/2),yStart + ((yFinish-yStart)/2));
+      
       System.out.println("Input drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
    }
 }
