@@ -11,17 +11,32 @@ public abstract class Gate
    
    //Class member variables
    private int gatenum;
+   private static int colorCount = 0;
+   private static int trunkLength = 15;
+   private ArrayList<Color> colors;
    private int depth = 0;
    private gatetype type;
    private ArrayList<Integer> inputints;
    protected ArrayList<Gate> inputs;
    protected boolean output;
+   
+   //gate GUI measurements
    protected int xInputWireSlot, yInputWireSlot, xOutputWireSlot, yOutputWireSlot;
    protected int xStart, yStart, xFinish, yFinish;
+   protected int columnShift = 20;
    
    //Constructor
    public Gate(int num_in, gatetype type_in)
    {
+      colors = new ArrayList<Color>();
+      colors.add(Color.MAGENTA);
+      colors.add(Color.BLUE);
+      colors.add(Color.RED);
+      colors.add(Color.YELLOW);
+      colors.add(Color.PINK);
+      colors.add(Color.GREEN);
+      colors.add(Color.ORANGE);
+      
       //Assign num and type
       gatenum = num_in;
       type = type_in;
@@ -164,10 +179,10 @@ public abstract class Gate
        int oleft = xStart_in;
        int oright = xFinish_in;           
          
-        return !(  (bottom < otop) || 
-                  (top > obottom) ||
-                  (left > oright) ||
-                  (right < oleft) );
+        return !(  (bottom <= otop) || 
+                  (top >= obottom) ||
+                  (left >= oright) ||
+                  (right <= oleft) );
    }
 
    
@@ -175,13 +190,16 @@ public abstract class Gate
    {
        //first draw the gate
        drawGate(g, row, column, maxColumn, maxRow);
+       
+       //draw the output in the gate
+       g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+       g.setColor(Color.BLACK);
+       g.drawString(Integer.toString(getOutputInt()),(xStart + ((xFinish-xStart)/2) - 10), (yStart + ((yFinish-yStart)/2) + 10));
    }
    
    //draws wires from each input gate to the current gate
    public void drawWires(Graphics g, ArrayList<Gate> drawnGates)
-   {
-      g.setColor(Color.BLACK);
-      
+   {  
       ////////////////////////////////////CONNECTING INPUTS      
       int xWireStart, yWireStart, xWireFinish, yWireFinish;
       xWireFinish = xInputWireSlot;
@@ -190,21 +208,32 @@ public abstract class Gate
       int totalInputs = inputs.size();
       double interval = 85.0/totalInputs;
       
+      g.setColor(colors.get(colorCount));
+      colorCount++;
+      if(colorCount>=colors.size())
+         colorCount = 0;
       //connect to its inputs
       for(int i = 0; i < inputs.size(); i++)
       {
          xWireStart = inputs.get(i).getxOutputSlot();
          yWireStart = inputs.get(i).getyOutputSlot();
+      
+  
          
          //draw trunk line outwards by 15 units on each input
          //the trunk may be drawn multiple times though...might want to fix later
-         g.drawLine(xWireStart, yWireStart, xWireStart + 15, yWireStart);
+         g.drawLine(xWireStart, yWireStart, xWireStart + trunkLength, yWireStart); 
          
-         xWireStart += 15;       
+         xWireStart += trunkLength;            
          
          //draws the connecting line
          drawNonDiagLine(g, xWireStart, yWireStart, xWireFinish, yWireFinish, drawnGates);
          
+         //adjust trunk length
+         trunkLength += 4;
+         if(trunkLength > 30)
+            trunkLength = 15;
+            
          //sets up the correct finish coordinate for the next input
          if(i%2 == 0)
           yWireFinish+=(interval*(i+1));
@@ -225,58 +254,63 @@ public abstract class Gate
          startChanged = false;
          //if the line path will intersect with a gate on vertical
          //adjust horizontally to pass around the gate 
-         if(drawnGates.get(i).inPath(xStart_in, yStart_in, xStart_in, yFinishTemp) && !startChanged)
+         if(drawnGates.get(i) != this)
          {
-            System.out.println("collision in the y detected");
-            startChanged = true;
-            //draw vertical to stop near the gate it may intersect with if higher than gate
-            if(yStart_in < drawnGates.get(i).getyStart())
+            if(drawnGates.get(i).inPath(xStart_in, yStart_in, xStart_in, yFinishTemp) && !startChanged)
             {
-               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyStart() - 7);
-               yStart_in = drawnGates.get(i).getyStart() - 7;
-            }
-            //draw vertical to stop near the gate it may intersect with if lower than gate
-            else
-            {
-               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyFinish() + 7);
-               yStart_in = drawnGates.get(i).getyFinish() + 7;
-            }
+               System.out.println("collision in the y detected");
+               startChanged = true;
+               //draw vertical to stop near the gate it may intersect with if higher than gate
+               if(yStart_in < drawnGates.get(i).getyStart())
+               {
+                  g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyStart() - 7);
+                  yStart_in = drawnGates.get(i).getyStart() - 7;
+               }
+               //draw vertical to stop near the gate it may intersect with if lower than gate
+               else
+               {
+                  g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyFinish() + 7);
+                  yStart_in = drawnGates.get(i).getyFinish() + 7;
+               }
+                  
+               //need to adjust the line around the gate by adjusting horizontally
+               //always draws from input to output gate so ALWAYS right direction past the obstacle gate
+               g.drawLine(xStart_in, yStart_in, drawnGates.get(i).getxFinish() + 7, yStart_in);
+               xStart_in = drawnGates.get(i).getyFinish() + 7;
                
-            //need to adjust the line around the gate by adjusting horizontally
-            //always draws from input to output gate so ALWAYS right direction past the obstacle gate
-            g.drawLine(xStart_in, yStart_in, drawnGates.get(i).getxFinish() + 7, yStart_in);
-            xStart_in = drawnGates.get(i).getyFinish() + 7;
-            
-            //reset i so that all gates can be checked again...not sure if this is the best way to do this??
-            i = 1;
-         }
-         //if the line path will intersect with a gate on horizontal
-         //adjust vertically to pass around the gate 
-         if(drawnGates.get(i).inPath(xStart_in, yStart_in, xFinish_in, yStart_in) && !startChanged)
-         {
-            startChanged = true;
-            System.out.println("collision in the x detected");
-            //draw horizontal to stop near the gate it may intersect with if higher than gate
-            //always draws from input to output gate so ALWAYS right direction past the obstacle gate
-            g.drawLine(xStart_in, yStart_in, drawnGates.get(i).getxStart() - 10, yStart_in);
-            xStart_in = drawnGates.get(i).getxStart() - 10;
-            
-            //need to adjust the line around the gate by adjusting vertically
-            //if closer to top of gate then go over top
-            if(yStart_in < (drawnGates.get(i).getyStart() + 42))
-            {
-               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyStart() - 10);
-               yStart_in = drawnGates.get(i).getyStart() - 10;
+               //reset i so that all gates can be checked again...not sure if this is the best way to do this??
+               i = 1;
             }
-            //if closer to the bottom then go under the gate
-            else
+            //if the line path will intersect with a gate on horizontal
+            //adjust vertically to pass around the gate 
+            if(drawnGates.get(i).inPath(xStart_in, yStart_in, xFinish_in, yStart_in) && !startChanged)
             {
-               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyFinish() + 10);
-               yStart_in = drawnGates.get(i).getyFinish() + 10;
+               System.out.println("From: " + xStart_in + "," + yStart_in +" To: " + xFinish_in + "," + yStart_in);
+               System.out.println("Interferes with "+ drawnGates.get(i).getStringType() +" Top: "+drawnGates.get(i).getxStart()+","+drawnGates.get(i).getyStart()+" Bottom: "+drawnGates.get(i).getxFinish()+","+drawnGates.get(i).getyFinish());
+               startChanged = true;
+               System.out.println("collision in the x detected");
+               //draw horizontal to stop near the gate it may intersect with if higher than gate
+               //always draws from input to output gate so ALWAYS right direction past the obstacle gate
+               g.drawLine(xStart_in, yStart_in, drawnGates.get(i).getxStart() - 10, yStart_in);
+               xStart_in = drawnGates.get(i).getxStart() - 10;
+               
+               //need to adjust the line around the gate by adjusting vertically
+               //if closer to top of gate then go over top
+               if(yStart_in < (drawnGates.get(i).getyStart() + 42))
+               {
+                  g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyStart() - 10);
+                  yStart_in = drawnGates.get(i).getyStart() - 10;
+               }
+               //if closer to the bottom then go under the gate
+               else
+               {
+                  g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyFinish() + 10);
+                  yStart_in = drawnGates.get(i).getyFinish() + 10;
+               }
+   
+               //reset i so that all gates can be checked again...not sure if this is the best way to do this??
+               i = 1;
             }
-
-            //reset i so that all gates can be checked again...not sure if this is the best way to do this??
-            i = 1;
          }
          
          System.out.println("Loop at i = "+ i);

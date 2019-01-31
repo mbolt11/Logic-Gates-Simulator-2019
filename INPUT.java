@@ -25,7 +25,7 @@ public class INPUT extends Gate
       //input gates must be all the way to the left
       column = 1;
       xStart = ((int) (((double)column/maxColumn) * 1000)) - 150;
-      yStart = ((int) (((double)row/maxRow) * 950)) + 65 + (column*10);
+      yStart = ((int) (((double)row/maxRow) * 950)) + 65 + (column*columnShift);
       xFinish = xStart + 100;
       yFinish = yStart + 95;
       
@@ -34,9 +34,6 @@ public class INPUT extends Gate
       
       xOutputWireSlot = xStart+100;
       yOutputWireSlot = yStart + 47;
-      
-      g.setColor(Color.BLACK);
-      g.drawString(Integer.toString(getOutputInt()),xStart + ((xFinish-xStart)/2),yStart + ((yFinish-yStart)/2));
       
       System.out.println("Input drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
    }

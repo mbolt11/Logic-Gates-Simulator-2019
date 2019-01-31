@@ -50,7 +50,7 @@ public class AND extends Gate
       int size = 60;
       
       xStart = ((int) (((double)column/maxColumn) * 1000)) - 150;
-      yStart = ((int) (((double)row/maxRow) * 950)) + 65 + (column*10);
+      yStart = ((int) (((double)row/maxRow) * 950)) + 65 + (column*columnShift);
       xFinish = xStart + size + (size/2) + 10;
       yFinish = yStart + 95;
       
@@ -75,9 +75,6 @@ public class AND extends Gate
          xOutputWireSlot += 10;
          
          System.out.println("NAND drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
-      }
-      
-      g.setColor(Color.BLACK);
-      g.drawString(Integer.toString(getOutputInt()),xStart + ((xFinish-xStart)/2),yStart + ((yFinish-yStart)/2));   
+      }   
    }
 }

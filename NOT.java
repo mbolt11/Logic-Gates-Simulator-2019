@@ -30,7 +30,7 @@ public class NOT extends Gate
       //generally placing in the correct row and column area, gate should be 10% of the total dimension in either direction
       //drawing polygon to make a triangle shape
       double xBaseCoord = (((double)column/maxColumn) * 1000) - 150;
-      double yBaseCoord = (((double)row/maxRow) * 950) + 65 + (column*10);
+      double yBaseCoord = (((double)row/maxRow) * 950) + 65 + (column*columnShift);
       int [] xPoints = {(int)xBaseCoord, (int) (xBaseCoord + ((95*Math.sqrt(3))/2)), (int) xBaseCoord};
       int [] yPoints = {(int)yBaseCoord, (int) (yBaseCoord + (0.5*95)), (int) (yBaseCoord + 95)};
       g.drawPolygon(xPoints,yPoints,3);
@@ -47,9 +47,6 @@ public class NOT extends Gate
       yInputWireSlot = (int)(yBaseCoord + (0.5*95));
       xOutputWireSlot = (int)(xBaseCoord + ((95*Math.sqrt(3))/2) + 10);
       yOutputWireSlot = yInputWireSlot;
-      
-      g.setColor(Color.BLACK);
-      g.drawString(Integer.toString(getOutputInt()),xStart + ((xFinish-xStart)/2),yStart + ((yFinish-yStart)/2));
       
       System.out.println("NOT drawn at row,column: "+ row + "," +column + " at coord: "+ (int)xBaseCoord + "," + (int)yBaseCoord);
    }

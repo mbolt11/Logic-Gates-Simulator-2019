@@ -49,7 +49,7 @@ public class OR extends Gate
    {
       //System.out.println("OR drawn");
       xStart = ((int) (((double)column/maxColumn) * 1000)) - 150;
-      yStart = ((int) (((double)row/maxRow) * 950)) + 65 + (column*10);
+      yStart = ((int) (((double)row/maxRow) * 950)) + 65 + (column*columnShift);
       //The finish points are estimates for now
       xFinish = xStart + 100;
       yFinish = yStart + 95;
@@ -64,9 +64,6 @@ public class OR extends Gate
       yInputWireSlot = yStart + 47;
       xOutputWireSlot = xInputWireSlot + 100;
       yOutputWireSlot = yInputWireSlot;
-      
-      g.setColor(Color.BLACK);
-      g.drawString(Integer.toString(getOutputInt()),xStart + ((xFinish-xStart)/2),yStart + ((yFinish-yStart)/2));
       
       System.out.println("OR drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
    }
