@@ -15,7 +15,7 @@ public class AND extends Gate
          changeType(gatetype.NAND);
       }
       
-      negate = negate_in; 
+      negate = negate_in;
    }
    
    //Calculates result of gate... 

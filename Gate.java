@@ -24,6 +24,7 @@ public abstract class Gate
    protected int xInputWireSlot, yInputWireSlot, xOutputWireSlot, yOutputWireSlot;
    protected int xStart, yStart, xFinish, yFinish;
    protected int columnShift = 20;
+   protected Rectangle area;
    
    //Constructor
    public Gate(int num_in, gatetype type_in)
@@ -49,6 +50,9 @@ public abstract class Gate
       yInputWireSlot = 0;
       xOutputWireSlot = 0;
       yOutputWireSlot = 0;
+      
+      //Instantiate the area rectangle
+      area = new Rectangle();
    }
    
    //Accessors for member variables
@@ -110,6 +114,17 @@ public abstract class Gate
    
    public int getyOutputSlot()
    { return yOutputWireSlot; }
+   
+   public Rectangle getAreaRect()
+   {
+      //Re-draw the rectangle according to the x and y start positions
+      int width = xFinish-xStart;
+      int height = yFinish-yStart;
+      area.setBounds(xStart,yStart,width,height);
+      
+      //Return the rectangle
+      return area;
+   }
    
    //Setter method for output- this is calculated in child class
    public void setOutput(boolean output_in)

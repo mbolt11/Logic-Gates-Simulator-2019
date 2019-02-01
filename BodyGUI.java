@@ -11,6 +11,20 @@ public class BodyGUI extends JPanel
 {
    private Circuit ourCircuit;
    
+   //Singleton for the circuit
+   public Circuit getCircuit()
+   {
+      if(ourCircuit == null)
+      {
+         ourCircuit = new Circuit();
+         return ourCircuit;
+      }
+      else
+      {
+         return ourCircuit;
+      }
+   }
+   
    public BodyGUI()
    {
       super();
@@ -330,15 +344,13 @@ public class BodyGUI extends JPanel
                row++;
             }
          }
-      }
-      
+      } 
       
       //draws the wires to the gates
       for(int i = 0; i < drawnGates.size(); i++)
       {
          drawnGates.get(i).drawWires(g, drawnGates);
       }
-      
       
       System.out.println("made it");
    }
