@@ -42,6 +42,12 @@ public class Circuit
       return null;
    }
    
+   //Accessor for gates according to their index in the arraylist
+   public Gate getAtIndex(int index)
+   {
+      return allGates.get(index);
+   }
+   
    public int size()
    {
       return allGates.size();

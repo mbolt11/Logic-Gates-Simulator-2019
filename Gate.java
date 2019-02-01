@@ -100,8 +100,14 @@ public abstract class Gate
    public int getxStart()
    { return xStart; }
    
+   public void setxStart(int x)
+   { xStart = x; }
+   
    public int getyStart()
    { return yStart; }
+   
+   public void setyStart(int y)
+   { yStart = y; }
    
    public int getxFinish()
    { return xFinish; }
@@ -200,7 +206,7 @@ public abstract class Gate
                   (right <= oleft) );
    }
 
-   
+   //This method is used when opening a file or optimizing
    public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
        //first draw the gate
@@ -210,6 +216,17 @@ public abstract class Gate
        g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
        g.setColor(Color.BLACK);
        g.drawString(Integer.toString(getOutputInt()),(xStart + ((xFinish-xStart)/2) - 10), (yStart + ((yFinish-yStart)/2) + 10));
+   }
+   
+   //This is used for repainting when editing
+   public void redraw(Graphics g)
+   {
+      redrawGate(g);
+      
+      //draw the output in the gate
+      g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+      g.setColor(Color.BLACK);
+      g.drawString(Integer.toString(getOutputInt()),(xStart + ((xFinish-xStart)/2) - 10), (yStart + ((yFinish-yStart)/2) + 10));
    }
    
    //draws wires from each input gate to the current gate
@@ -339,6 +356,8 @@ public abstract class Gate
    }
    
    public abstract void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow);
-   
+  
+   public abstract void redrawGate(Graphics g);
+  
    public abstract boolean calculateOutput();
 }

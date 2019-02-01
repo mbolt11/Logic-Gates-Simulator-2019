@@ -38,4 +38,19 @@ public class OUTPUT extends Gate
       System.out.println("OUTPUT drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
    }
    
+   public void redrawGate(Graphics g)
+   {
+      g.setColor(Color.RED);
+      
+      //Recalculate finish spots based on updated starts
+      xFinish = xStart + 100;
+      yFinish = yStart + 95;
+      
+      //generally placing in the correct row and column area, gate should be 10% of the total dimension in either direction
+      g.drawOval(xStart, yStart, 100, 95);
+       
+      xInputWireSlot = xStart;
+      yInputWireSlot = yStart + 47;
+   }
+   
 }

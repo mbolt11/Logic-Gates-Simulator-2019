@@ -5,6 +5,7 @@ import java.awt.*;
 public class AND extends Gate
 {
    private boolean negate;
+   private int size;
    
    //Constructor
    public AND(int num_in, boolean negate_in)
@@ -47,7 +48,7 @@ public class AND extends Gate
    public void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
       //System.out.println("AND drawn");
-      int size = 60;
+      size = 60;
       
       xStart = ((int) (((double)column/maxColumn) * 1000)) - 150;
       yStart = ((int) (((double)row/maxRow) * 950)) + 65 + (column*columnShift);
@@ -77,4 +78,29 @@ public class AND extends Gate
          System.out.println("NAND drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
       }   
    }
+   
+   public void redrawGate(Graphics g)
+   {
+      //Recalculate finish spots based on updated starts
+      xFinish = xStart + size + (size/2) + 10;
+      yFinish = yStart + 95;
+      
+      g.drawLine(xStart, yStart, xStart, yStart + 95);
+      g.drawLine(xStart, yStart, xStart + size, yStart);
+      g.drawLine(xStart, yStart + 95, xStart + size, yStart + 95);
+      g.drawArc(xStart+(size/2), yStart, size, 95, 90, -180);
+      
+      xInputWireSlot = xStart;
+      yInputWireSlot = yStart + 47;
+      xOutputWireSlot = xStart + (size/2) + size;
+      yOutputWireSlot = yInputWireSlot;
+      
+      if(negate)
+      {
+         int circleXStart = xStart + (size/2) + size;
+         int circleYStart = yStart + 42;
+         g.drawOval(circleXStart, circleYStart, 10, 10);
+         xOutputWireSlot += 10;
+      }   
+   }  
 }

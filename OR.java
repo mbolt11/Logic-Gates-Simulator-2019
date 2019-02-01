@@ -67,4 +67,23 @@ public class OR extends Gate
       
       System.out.println("OR drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
    }
+   
+   public void redrawGate(Graphics g)
+   {
+      //Recalculate finish spots based on updated starts
+      xFinish = xStart + 100;
+      yFinish = yStart + 95;
+      
+      //draw the first arc
+      g.drawArc(xStart - 105, yStart - 25, 100, 150, 40, -80);
+      //draw second arc
+      g.drawArc(xStart - 100, yStart, 200, 150, 100, -80);
+      //draw third arc
+      g.drawArc(xStart - 100, yStart - 50, 200, 150, -100, 80);
+      
+      xInputWireSlot = xStart;
+      yInputWireSlot = yStart + 47;
+      xOutputWireSlot = xInputWireSlot + 100;
+      yOutputWireSlot = yInputWireSlot;
+   }
 }

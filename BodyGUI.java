@@ -10,6 +10,8 @@ import java.nio.*;
 public class BodyGUI extends JPanel
 {
    private Circuit ourCircuit;
+   private boolean openning;
+   private int draggedIndex;
    
    //Singleton for the circuit
    public Circuit getCircuit()
@@ -23,6 +25,11 @@ public class BodyGUI extends JPanel
       {
          return ourCircuit;
       }
+   }
+   
+   public void setDraggedIndex(int i)
+   {
+      draggedIndex = i;
    }
    
    public BodyGUI()
@@ -52,6 +59,7 @@ public class BodyGUI extends JPanel
          //Open the file and assign a scanner to it
          File infile = new File("ExampleASCII.txt");
          Scanner readfile = new Scanner(infile);
+         openning = true;
          
          //Create a circuit object to put our gates in
          ourCircuit = new Circuit();
@@ -144,7 +152,7 @@ public class BodyGUI extends JPanel
          ourCircuit.calculateRows(); 
                   
          //Now call method to calculate outputs
-         allCircuitOutputs(ourCircuit);   
+         allCircuitOutputs(ourCircuit); 
       }
       catch(IOException io)
       {
@@ -159,6 +167,7 @@ public class BodyGUI extends JPanel
       {
          //Create a circuit object to put our gates in
          ourCircuit = new Circuit();
+         openning = true;
          
          System.out.println("------FILE------");
          
@@ -316,35 +325,49 @@ public class BodyGUI extends JPanel
    public void paintComponent(Graphics g)
    {
       super.paintComponent(g);
-      System.out.println("\n\n-----------DRAWING---------- Circuit of size "+ourCircuit.size());
-      int row = 0;
-      int column = 0;
-      int maxColumn = ourCircuit.getColumns();
-      int maxRow = ourCircuit.getRows();
-      int gatesDrawn = 0;
-      
-      System.out.println("columns: " + maxColumn + " rows: " + maxRow);
       
       //must create a list of the gates drawn so far in order to check drawing wires against gate boundaries as drawing progresses
       ArrayList<Gate> drawnGates = new ArrayList<Gate>();
       
-      //draws the gates in order
-      for(int i = 1; i <= maxColumn; i++)
+      //This is what gets painted when opening for the first time or optimizing
+      if(openning)
       {
-         column = i;
-         row = 0;
-         for(int j = 1; j < ourCircuit.size() + 1; j++)
+         openning = false;
+         System.out.println("\n\n-----------DRAWING---------- Circuit of size "+ourCircuit.size());
+         int row = 0;
+         int column = 0;
+         int maxColumn = ourCircuit.getColumns();
+         int maxRow = ourCircuit.getRows();
+         int gatesDrawn = 0;
+         
+         System.out.println("columns: " + maxColumn + " rows: " + maxRow);
+         
+         //draws the gates in order
+         for(int i = 1; i <= maxColumn; i++)
          {
-            if(ourCircuit.get(j).getDepth() == i)
+            column = i;
+            row = 0;
+            for(int j = 1; j < ourCircuit.size() + 1; j++)
             {
-               //draws the gates and places drawn gates in another arraylist
-               ourCircuit.get(j).draw(g, row, column, maxColumn, maxRow);
-               drawnGates.add(ourCircuit.get(j));
-               gatesDrawn++;
-               row++;
+               if(ourCircuit.get(j).getDepth() == i)
+               {
+                  //draws the gates and places drawn gates in another arraylist
+                  ourCircuit.get(j).draw(g, row, column, maxColumn, maxRow);
+                  drawnGates.add(ourCircuit.get(j));
+                  gatesDrawn++;
+                  row++;
+               }
             }
+         } 
+      }
+      else //This is what gets painted when just editing
+      {
+         for(int i = 0; i < ourCircuit.size(); i++)
+         {
+            ourCircuit.getAtIndex(i).redraw(g);
+            drawnGates.add(ourCircuit.getAtIndex(i));
          }
-      } 
+      }
       
       //draws the wires to the gates
       for(int i = 0; i < drawnGates.size(); i++)
