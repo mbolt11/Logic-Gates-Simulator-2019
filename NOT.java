@@ -64,13 +64,21 @@ public class NOT extends Gate
    public void redrawGate(Graphics g)
    {
       g.setColor(Color.RED);
-      g.drawPolygon(xPoints,yPoints,3);
       
       //Update variables according to where x and y starts have moved
       xBaseCoord = (double)xStart;
       yBaseCoord = (double)yStart;
       xFinish = (int) (xBaseCoord + ((95*Math.sqrt(3))/2));
       yFinish = (int) (yBaseCoord + 95);
+      
+      //Draw triangle
+      xPoints[0] = (int)xBaseCoord;
+      xPoints[1] = (int)(xBaseCoord + ((95*Math.sqrt(3))/2));
+      xPoints[2] = (int)xBaseCoord;
+      yPoints[0] = (int)yBaseCoord;
+      yPoints[1] = (int)(yBaseCoord + (0.5*95));
+      yPoints[2] = (int)(yBaseCoord + 95);
+      g.drawPolygon(xPoints,yPoints,3);
       
       //draw little ball at end of triangle
       g.drawOval((int) (xBaseCoord + ((95*Math.sqrt(3))/2)), (int) ((yBaseCoord + (0.5*95)-5)), 10, 10);

@@ -36,6 +36,7 @@ public class LGS_JFrame extends JFrame
       //Add mouse adapter to body panel
       MouseEventTracking met = new MouseEventTracking();
       bodypanel.addMouseListener(met);
+      bodypanel.addMouseMotionListener(met);
       
       //Set the size, visibility and layout
       setLayout(fl);
@@ -67,20 +68,29 @@ public class LGS_JFrame extends JFrame
                return;
             }
          }
+         
+         //If they clicked on the screen, save dx and dy for dragging the screen
          gateClickedIndex = -1;
          System.out.println("Clicked on screen");
+         dx = e.getX();
+         dy = e.getY();
       }
       
       public void mouseDragged(MouseEvent e)
       {
          //If the gate clicked index is -1, scroll the screen
+         /*if(gateClickedIndex == -1)
+         {
+            //Move origin point as mouse is dragging
+            g.translate((e.getX()-dx),(e.getY()-dy));
+         }*/
          
          //If the gate clicked index is not -1, move the gate
          if(gateClickedIndex != -1)
-         {
+         {  
             //Change the xStart and yStart positions of the gate according to the mouse drag
-            theCircuit.getAtIndex(gateClickedIndex).setxStart(e.getX() - dx);
-            theCircuit.getAtIndex(gateClickedIndex).setyStart(e.getY() - dy);
+            theCircuit.getAtIndex(gateClickedIndex).setxStart(e.getX()-dx);
+            theCircuit.getAtIndex(gateClickedIndex).setyStart(e.getY()-dy);
             repaint();
          }
       }        
