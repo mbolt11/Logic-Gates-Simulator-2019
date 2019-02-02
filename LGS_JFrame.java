@@ -51,7 +51,8 @@ public class LGS_JFrame extends JFrame
       private int gateClickedIndex = -1;
       
       //Offset of where the mouse clicked to where the x & y starts are
-      private int dx, dy;
+      private int gateDX, gateDY;
+      private int originDX, originDY;
       
       public void mousePressed(MouseEvent e)
       {
@@ -63,8 +64,8 @@ public class LGS_JFrame extends JFrame
             {
                gateClickedIndex = i;
                System.out.println("Clicked on a gate");
-               dx = e.getX() - theCircuit.getAtIndex(i).getxStart();
-               dy = e.getY() - theCircuit.getAtIndex(i).getyStart();
+               gateDX = e.getX() - theCircuit.getAtIndex(i).getxStart();
+               gateDY = e.getY() - theCircuit.getAtIndex(i).getyStart();
                return;
             }
          }
@@ -72,25 +73,26 @@ public class LGS_JFrame extends JFrame
          //If they clicked on the screen, save dx and dy for dragging the screen
          gateClickedIndex = -1;
          System.out.println("Clicked on screen");
-         dx = e.getX();
-         dy = e.getY();
+         originDX = e.getX();
+         originDY = e.getY();
       }
       
       public void mouseDragged(MouseEvent e)
       {
          //If the gate clicked index is -1, scroll the screen
-         /*if(gateClickedIndex == -1)
+         if(gateClickedIndex == -1)
          {
-            //Move origin point as mouse is dragging
-            g.translate((e.getX()-dx),(e.getY()-dy));
-         }*/
+            //Change the origin offsets as mouse is dragging
+            bodypanel.setOriginOffsets((e.getX()-originDX),(e.getY()-originDY));
+            repaint();
+         }
          
          //If the gate clicked index is not -1, move the gate
          if(gateClickedIndex != -1)
          {  
             //Change the xStart and yStart positions of the gate according to the mouse drag
-            theCircuit.getAtIndex(gateClickedIndex).setxStart(e.getX()-dx);
-            theCircuit.getAtIndex(gateClickedIndex).setyStart(e.getY()-dy);
+            theCircuit.getAtIndex(gateClickedIndex).setxStart(e.getX()-gateDX);
+            theCircuit.getAtIndex(gateClickedIndex).setyStart(e.getY()-gateDY);
             repaint();
          }
       }        

@@ -10,8 +10,12 @@ import java.nio.*;
 public class BodyGUI extends JPanel
 {
    private Circuit ourCircuit;
-   private boolean openning;
-   private int draggedIndex;
+   
+   //This tells paint component whether we are opening/optimizing or not
+   private boolean openning; 
+   
+   //This tells paint component where to translate origin for scrolling
+   private int originoffsetX, originoffsetY; 
    
    //Singleton for the circuit
    public Circuit getCircuit()
@@ -27,9 +31,11 @@ public class BodyGUI extends JPanel
       }
    }
    
-   public void setDraggedIndex(int i)
+   //Setter for origin offsets
+   public void setOriginOffsets(int xchange, int ychange)
    {
-      draggedIndex = i;
+      originoffsetX = xchange;
+      originoffsetY = ychange;
    }
    
    public BodyGUI()
@@ -326,6 +332,9 @@ public class BodyGUI extends JPanel
    {
       super.paintComponent(g);
       
+      //Reset the graphics origin point according to offsets
+      g.translate(originoffsetX,originoffsetY);
+      
       //must create a list of the gates drawn so far in order to check drawing wires against gate boundaries as drawing progresses
       ArrayList<Gate> drawnGates = new ArrayList<Gate>();
       
@@ -375,6 +384,6 @@ public class BodyGUI extends JPanel
          drawnGates.get(i).drawWires(g, drawnGates);
       }
       
-      System.out.println("made it");
+      //System.out.println("made it");
    }
 }

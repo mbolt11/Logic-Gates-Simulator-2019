@@ -290,7 +290,7 @@ public abstract class Gate
          {
             if(drawnGates.get(i).inPath(xStart_in, yStart_in, xStart_in, yFinishTemp) && !startChanged)
             {
-               System.out.println("collision in the y detected");
+               //System.out.println("collision in the y detected");
                startChanged = true;
                //draw vertical to stop near the gate it may intersect with if higher than gate
                if(yStart_in < drawnGates.get(i).getyStart())
@@ -317,10 +317,10 @@ public abstract class Gate
             //adjust vertically to pass around the gate 
             if(drawnGates.get(i).inPath(xStart_in, yStart_in, xFinish_in, yStart_in) && !startChanged)
             {
-               System.out.println("From: " + xStart_in + "," + yStart_in +" To: " + xFinish_in + "," + yStart_in);
-               System.out.println("Interferes with "+ drawnGates.get(i).getStringType() +" Top: "+drawnGates.get(i).getxStart()+","+drawnGates.get(i).getyStart()+" Bottom: "+drawnGates.get(i).getxFinish()+","+drawnGates.get(i).getyFinish());
+               //System.out.println("From: " + xStart_in + "," + yStart_in +" To: " + xFinish_in + "," + yStart_in);
+               //System.out.println("Interferes with "+ drawnGates.get(i).getStringType() +" Top: "+drawnGates.get(i).getxStart()+","+drawnGates.get(i).getyStart()+" Bottom: "+drawnGates.get(i).getxFinish()+","+drawnGates.get(i).getyFinish());
                startChanged = true;
-               System.out.println("collision in the x detected");
+               //System.out.println("collision in the x detected");
                //draw horizontal to stop near the gate it may intersect with if higher than gate
                //always draws from input to output gate so ALWAYS right direction past the obstacle gate
                g.drawLine(xStart_in, yStart_in, drawnGates.get(i).getxStart() - 10, yStart_in);
@@ -345,7 +345,7 @@ public abstract class Gate
             }
          }
          
-         System.out.println("Loop at i = "+ i);
+         //System.out.println("Loop at i = "+ i);
       }
       
       //finish to the destination gate && work on this more!!!!!!!!!!!!!!!!!!!
