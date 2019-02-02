@@ -27,4 +27,18 @@ public class HeaderGUI extends JPanel
       setPreferredSize(new Dimension(1000,50));
       setBackground(Color.BLUE);
    }
+   
+   //Accessors for buttons
+   public JButton getOpen()
+   {
+      return open;
+   }
+   public JButton getSave()
+   {
+      return save;
+   }
+   public JButton getING()
+   {
+      return newgate;
+   }
 }

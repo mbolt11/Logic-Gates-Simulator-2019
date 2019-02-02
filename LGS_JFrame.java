@@ -9,10 +9,15 @@ public class LGS_JFrame extends JFrame
 {   
    //This variable is true if in editmode, false if in play mode
    private boolean editmode;
-      
+   
+   //Access to our two panels   
    private BodyGUI bodypanel;
+   private HeaderGUI headerpanel;
+   
+   //Access to the currently displaying circuit
    private Circuit theCircuit;
    
+   //JFrame Constructor
    public LGS_JFrame()
    {
       //Container for the GUI elements
@@ -23,7 +28,7 @@ public class LGS_JFrame extends JFrame
       fl.setVgap(0);
       
       //Add header JPanel
-      HeaderGUI headerpanel = new HeaderGUI();
+      headerpanel = new HeaderGUI();
       contents.add(headerpanel);
       
       //Add body JPanel
@@ -96,5 +101,46 @@ public class LGS_JFrame extends JFrame
             repaint();
          }
       }        
+   }
+   
+   //Button listener class
+   private class ButtonListener implements ActionListener
+   {
+      public void actionPerformed(ActionEvent ae) 
+      {
+         if (ae.getSource() == headerpanel.getOpen()) 
+         {
+            //Create a JPanel with custom options and a text field
+            Object[] options = {"Open as ASCII File","Open as Binary File", "Cancel"};
+            JPanel openpanel = new JPanel();
+            openpanel.add(new JLabel("Name of file:"));
+            JTextField textField = new JTextField(10);
+            openpanel.add(textField);
+            
+            //Put the JPanel into a JOptionPane
+            int result = JOptionPane.showOptionDialog(null, openpanel, "Open a File",
+               JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+            
+            //Get the result
+            if (result == JOptionPane.YES_OPTION)
+            {
+               System.out.println(textField.getText() + " will open as ACII");
+            }
+            else if (result == JOptionPane.NO_OPTION)
+            {
+               System.out.println(textField.getText() + " will open as Binary");
+            }
+            else if (result == JOptionPane.CANCEL_OPTION)
+            {
+               System.out.println("Open will cancel");
+            }
+         } 
+         else if (ae.getSource() == headerpanel.getSave()) 
+         {
+         }
+         else if (ae.getSource() == headerpanel.getING()) 
+         {
+         }
+      }
    }
 }
