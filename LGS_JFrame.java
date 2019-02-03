@@ -43,6 +43,12 @@ public class LGS_JFrame extends JFrame
       bodypanel.addMouseListener(met);
       bodypanel.addMouseMotionListener(met);
       
+      //Add button listener to each button in the header panel
+      ButtonListener bl = new ButtonListener();
+      headerpanel.getOpen().addActionListener(bl);
+      headerpanel.getSave().addActionListener(bl);
+      headerpanel.getING().addActionListener(bl);
+      
       //Set the size, visibility and layout
       setLayout(fl);
       setSize(1000,950);
@@ -51,7 +57,7 @@ public class LGS_JFrame extends JFrame
    
    //Mouse Adapter class
    private class MouseEventTracking extends MouseAdapter 
-   {
+   {  
       //-1 indicates no gate has been clicked
       private int gateClickedIndex = -1;
       
@@ -61,6 +67,9 @@ public class LGS_JFrame extends JFrame
       
       public void mousePressed(MouseEvent e)
       {
+         //Make sure we have the right circuit
+         theCircuit = bodypanel.getCircuit();
+         
          //Search through all the gates to see if the mouse clicked on it
          for(int i = 0; i < theCircuit.size(); i++)
          {
@@ -114,32 +123,52 @@ public class LGS_JFrame extends JFrame
             Object[] options = {"Open as ASCII File","Open as Binary File", "Cancel"};
             JPanel openpanel = new JPanel();
             openpanel.add(new JLabel("Name of file:"));
-            JTextField textField = new JTextField(10);
+            JTextField textField = new JTextField(20);
             openpanel.add(textField);
             
             //Put the JPanel into a JOptionPane
-            int result = JOptionPane.showOptionDialog(null, openpanel, "Open a File",
+            int result = JOptionPane.showOptionDialog(null, openpanel, "Open Circuit",
                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
             
-            //Get the result
+            //Get the result and call read ascii or read binary function
             if (result == JOptionPane.YES_OPTION)
             {
-               System.out.println(textField.getText() + " will open as ACII");
+               bodypanel.ReadASCII(textField.getText());
             }
             else if (result == JOptionPane.NO_OPTION)
             {
-               System.out.println(textField.getText() + " will open as Binary");
-            }
-            else if (result == JOptionPane.CANCEL_OPTION)
-            {
-               System.out.println("Open will cancel");
+               bodypanel.ReadBinary(textField.getText());
             }
          } 
          else if (ae.getSource() == headerpanel.getSave()) 
          {
+            //Make sure we have the right circuit
+            theCircuit = bodypanel.getCircuit();
+            
+            //Create a JPanel with custom options and a text field
+            Object[] options = {"Save as an ASCII File","Save as a Binary File", "Cancel"};
+            JPanel openpanel = new JPanel();
+            openpanel.add(new JLabel("Name of file:"));
+            JTextField textField = new JTextField(20);
+            openpanel.add(textField);
+            
+            //Put the JPanel into a JOptionPane
+            int result = JOptionPane.showOptionDialog(null, openpanel, "Save Circuit",
+               JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+            
+            //Get the result and call read ascii or read binary function
+            if (result == JOptionPane.YES_OPTION)
+            {
+               theCircuit.saveToASCII(textField.getText());
+            }
+            else if (result == JOptionPane.NO_OPTION)
+            {
+               theCircuit.saveToBinary(textField.getText());
+            }
          }
          else if (ae.getSource() == headerpanel.getING()) 
          {
+            //Code to add new gate
          }
       }
    }

@@ -129,13 +129,14 @@ public class Circuit
    }
    
    //Method to save circuit to ascii file
-   public void saveToASCII()
+   public void saveToASCII(String filename)
    {
       try
       {
-         //Open the file writer and create buffered writer
-         FileWriter save = new FileWriter("SaveASCII.txt");
-         BufferedWriter writer = new BufferedWriter(save);
+         //Create a file with the given name and assign it to a buffered writer
+         File outfile = new File(filename);
+         FileWriter fw = new FileWriter(outfile);
+         BufferedWriter writer = new BufferedWriter(fw);
          
          for(int i=0; i<allGates.size(); i++)
          {
@@ -163,11 +164,15 @@ public class Circuit
    }
    
    //Method to save circuit to binary file
-   public void saveToBinary()
+   public void saveToBinary(String filename)
    {
       try
       {
-         FileOutputStream fostream = new FileOutputStream("SaveBinary.cir");
+         //Create a file with the given name and assign it to an output stream
+         //File outfile = new File(filename);
+         //outfile.createNewFile();
+         FileOutputStream fostream = new FileOutputStream(filename);
+         System.out.println(allGates.size());
                   
          for(int i=0; i<allGates.size(); i++)
          {

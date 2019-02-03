@@ -12,7 +12,7 @@ public class BodyGUI extends JPanel
    private Circuit ourCircuit;
    
    //This tells paint component whether we are opening/optimizing or not
-   private boolean openning; 
+   private boolean openning;
    
    //This tells paint component where to translate origin for scrolling
    private int originoffsetX, originoffsetY; 
@@ -38,32 +38,22 @@ public class BodyGUI extends JPanel
       originoffsetY = ychange;
    }
    
+   //Constructor
    public BodyGUI()
    {
       super();
-      
-      //ASCII read/save tests
-      ReadASCII();
-      //ourCircuit.saveToASCII();
-      
-      //Binary read/save tests
-      //ourCircuit.saveToBinary();
-      //ReadBinary();
-      
-      //do not think we need any layout because will just be drawing
-      //setLayout(new FlowLayout());
       
       setPreferredSize(new Dimension(1000,950));   
       setBackground(Color.WHITE);
    }
    
    //Method to read a circuit in from an ascii file
-   public void ReadASCII()
+   public void ReadASCII(String filename)
    {
       try
       {
          //Open the file and assign a scanner to it
-         File infile = new File("ExampleASCII.txt");
+         File infile = new File(filename);
          Scanner readfile = new Scanner(infile);
          openning = true;
          
@@ -159,6 +149,9 @@ public class BodyGUI extends JPanel
                   
          //Now call method to calculate outputs
          allCircuitOutputs(ourCircuit); 
+         
+         //Now draw the circuit
+         repaint();
       }
       catch(IOException io)
       {
@@ -167,7 +160,7 @@ public class BodyGUI extends JPanel
    }
    
    //Method to read a circuit in from a binary file
-   public void ReadBinary()
+   public void ReadBinary(String filename)
    {
       try
       {
@@ -178,7 +171,7 @@ public class BodyGUI extends JPanel
          System.out.println("------FILE------");
          
          //Open a new inputstream for the file
-         FileInputStream istream = new FileInputStream("SaveBinary.cir");
+         FileInputStream istream = new FileInputStream(filename);
          
          while(istream.available() > 0)
          {
@@ -282,6 +275,9 @@ public class BodyGUI extends JPanel
                   
          //Now call method to calculate outputs
          allCircuitOutputs(ourCircuit);
+         
+         //Now draw the circuit
+         repaint();
       }
       catch(IOException io)
       {
