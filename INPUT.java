@@ -21,7 +21,6 @@ public class INPUT extends Gate
    
    public void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
-      g.setColor(Color.RED);
       //input gates must be all the way to the left
       column = 1;
       xStart = ((int) (((double)column/maxColumn) * 1000)) - 150;

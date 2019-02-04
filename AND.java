@@ -50,7 +50,7 @@ public class AND extends Gate
       //System.out.println("AND drawn");
       size = 60;
       
-      xStart = ((int) (((double)column/maxColumn) * 1000)) - 150;
+      xStart = ((int) (((double)column/maxColumn) * 1000)) - 150 + (row*rowShift);
       yStart = ((int) (((double)row/maxRow) * 950)) + 65 + (column*columnShift);
       xFinish = xStart + size + (size/2) + 10;
       yFinish = yStart + 95;

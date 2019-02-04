@@ -31,11 +31,10 @@ public class NOT extends Gate
    
    public void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
-      g.setColor(Color.RED);
       
       //generally placing in the correct row and column area, gate should be 10% of the total dimension in either direction
       //drawing polygon to make a triangle shape
-      xBaseCoord = (((double)column/maxColumn) * 1000) - 150;
+      xBaseCoord = (((double)column/maxColumn) * 1000) - 150 + (row*rowShift);
       yBaseCoord = (((double)row/maxRow) * 950) + 65 + (column*columnShift);
       xPoints[0] = (int)xBaseCoord;
       xPoints[1] = (int)(xBaseCoord + ((95*Math.sqrt(3))/2));

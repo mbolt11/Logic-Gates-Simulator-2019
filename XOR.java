@@ -31,7 +31,7 @@ public class XOR extends Gate
    public void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
       //System.out.println("XOR drawn");
-      xStart = ((int) (((double)column/maxColumn) * 1000)) - 150;
+      xStart = ((int) (((double)column/maxColumn) * 1000)) - 150 + (row*rowShift);
       yStart = ((int) (((double)row/maxRow) * 950)) + 65 + (column*columnShift);
       //The finish points are estimates for now
       xFinish = xStart + 100;
@@ -47,8 +47,8 @@ public class XOR extends Gate
       
       xInputWireSlot = xStart;
       yInputWireSlot = yStart + 47;
-      xOutputWireSlot = xInputWireSlot + 100;
-      yOutputWireSlot = yInputWireSlot;
+      xOutputWireSlot = xInputWireSlot + 95;
+      yOutputWireSlot = yInputWireSlot + 3;
       
       System.out.println("XOR drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
    }

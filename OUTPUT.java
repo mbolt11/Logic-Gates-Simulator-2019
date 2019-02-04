@@ -21,7 +21,6 @@ public class OUTPUT extends Gate
    
    public void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
-      g.setColor(Color.RED);
       //output gates must be all the way to the right
       column = maxColumn;
       xStart = (int) ((((double)column/maxColumn) * 1000) - 150);

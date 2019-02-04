@@ -374,12 +374,14 @@ public class BodyGUI extends JPanel
          }
       }
       
+      if(drawnGates.size() > 0)
+      {
       //draws the wires to the gates
-      for(int i = 0; i < drawnGates.size(); i++)
+      for(int i = 0; i < 9/*drawnGates.size()*/; i++)
       {
          drawnGates.get(i).drawWires(g, drawnGates);
       }
-      
+      }
       //System.out.println("made it");
    }
 }

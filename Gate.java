@@ -12,7 +12,7 @@ public abstract class Gate
    //Class member variables
    private int gatenum;
    private static int colorCount = 0;
-   private static int trunkLength = 15;
+   private static int trunkLength = 5;
    private ArrayList<Color> colors;
    private int depth = 0;
    private gatetype type;
@@ -24,6 +24,7 @@ public abstract class Gate
    protected int xInputWireSlot, yInputWireSlot, xOutputWireSlot, yOutputWireSlot;
    protected int xStart, yStart, xFinish, yFinish;
    protected int columnShift = 20;
+   protected int rowShift = 20; //dont know if this is the best way to solve issue
    protected Rectangle area;
    
    //Constructor
@@ -32,7 +33,6 @@ public abstract class Gate
       colors = new ArrayList<Color>();
       colors.add(Color.MAGENTA);
       colors.add(Color.BLUE);
-      colors.add(Color.RED);
       colors.add(Color.YELLOW);
       colors.add(Color.PINK);
       colors.add(Color.GREEN);
@@ -188,11 +188,11 @@ public abstract class Gate
    
    public boolean inPath(int xStart_in, int yStart_in, int xFinish_in, int yFinish_in)
    {
-      //gate boundaries
-       int top = yStart;
-       int bottom = yFinish;
-       int left = xStart;
-       int right = xFinish;
+      //gate boundaries -- should be the gate now comparing to
+       int top = yStart - 5;
+       int bottom = yFinish + 5;
+       int left = xStart - 20;
+       int right = xFinish + 5;
        
      //line boundaries
        int otop = yStart_in;
@@ -211,6 +211,14 @@ public abstract class Gate
    {
        //first draw the gate
        drawGate(g, row, column, maxColumn, maxRow);
+       
+       //draw the boundaries for checking PLEASE DONT REMOVE
+       /*g.setColor(Color.RED);
+       g.drawLine(xStart - 20, yStart - 5, xFinish + 5, yStart - 5);
+       g.drawLine(xStart - 20, yStart - 5, xStart - 20, yFinish + 5);
+       g.drawLine(xStart - 20, yFinish + 5, xFinish + 5, yFinish + 5);
+       g.drawLine(xFinish + 5, yStart - 5, xFinish + 5, yFinish + 5);
+       */
        
        //draw the output in the gate
        g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
@@ -237,6 +245,8 @@ public abstract class Gate
       xWireFinish = xInputWireSlot;
       yWireFinish = yInputWireSlot;
       
+      int origgateNum = -1;
+      
       int totalInputs = inputs.size();
       double interval = 85.0/totalInputs;
       
@@ -249,7 +259,7 @@ public abstract class Gate
       {
          xWireStart = inputs.get(i).getxOutputSlot();
          yWireStart = inputs.get(i).getyOutputSlot();
-      
+         origgateNum = inputs.get(i).getGateNum();
   
          
          //draw trunk line outwards by 15 units on each input
@@ -259,12 +269,12 @@ public abstract class Gate
          xWireStart += trunkLength;            
          
          //draws the connecting line
-         drawNonDiagLine(g, xWireStart, yWireStart, xWireFinish, yWireFinish, drawnGates);
+         drawNonDiagLine(g, xWireStart, yWireStart, xWireFinish, yWireFinish, drawnGates, gatenum, origgateNum);
          
          //adjust trunk length
          trunkLength += 4;
          if(trunkLength > 30)
-            trunkLength = 15;
+            trunkLength = 5;
             
          //sets up the correct finish coordinate for the next input
          if(i%2 == 0)
@@ -274,85 +284,115 @@ public abstract class Gate
       }  
    }
    
-   public void drawNonDiagLine(Graphics g, int xStart_in, int yStart_in, int xFinish_in, int yFinish_in, ArrayList<Gate> drawnGates)
+   public void drawNonDiagLine(Graphics g, int xStart_in, int yStart_in, int xFinish_in, int yFinish_in, ArrayList<Gate> drawnGates, int destgateNum, int origgateNum)
    {
-      int xFinishTemp = xFinish_in;
-      int yFinishTemp = yFinish_in;
       boolean startChanged = false;
+      int gateNum = -1;
       
-      //check if it will intersect with a boundary-->need to keep list of either drawn gates or their boundaries
-      for(int i = 0; i < drawnGates.size(); i++)
+      System.out.println("Dest: " + destgateNum + " Origin: " + origgateNum);
+      
+      //draw in the horizontal direction until reach x destination
+      while(xStart_in != (xFinish_in-20))
       {
-         startChanged = false;
-         //if the line path will intersect with a gate on vertical
-         //adjust horizontally to pass around the gate 
-         if(drawnGates.get(i) != this)
+         for(int i = 0; i < drawnGates.size(); i++)
          {
-            if(drawnGates.get(i).inPath(xStart_in, yStart_in, xStart_in, yFinishTemp) && !startChanged)
+            if((destgateNum != drawnGates.get(i).getGateNum()) && (origgateNum != drawnGates.get(i).getGateNum()) && drawnGates.get(i).inPath(xStart_in, yStart_in, xFinish_in - 5, yStart_in))
             {
-               //System.out.println("collision in the y detected");
-               startChanged = true;
-               //draw vertical to stop near the gate it may intersect with if higher than gate
-               if(yStart_in < drawnGates.get(i).getyStart())
-               {
-                  g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyStart() - 7);
-                  yStart_in = drawnGates.get(i).getyStart() - 7;
-               }
-               //draw vertical to stop near the gate it may intersect with if lower than gate
-               else
-               {
-                  g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyFinish() + 7);
-                  yStart_in = drawnGates.get(i).getyFinish() + 7;
-               }
-                  
-               //need to adjust the line around the gate by adjusting horizontally
-               //always draws from input to output gate so ALWAYS right direction past the obstacle gate
-               g.drawLine(xStart_in, yStart_in, drawnGates.get(i).getxFinish() + 7, yStart_in);
-               xStart_in = drawnGates.get(i).getyFinish() + 7;
-               
-               //reset i so that all gates can be checked again...not sure if this is the best way to do this??
-               i = 1;
-            }
-            //if the line path will intersect with a gate on horizontal
-            //adjust vertically to pass around the gate 
-            if(drawnGates.get(i).inPath(xStart_in, yStart_in, xFinish_in, yStart_in) && !startChanged)
-            {
-               //System.out.println("From: " + xStart_in + "," + yStart_in +" To: " + xFinish_in + "," + yStart_in);
-               //System.out.println("Interferes with "+ drawnGates.get(i).getStringType() +" Top: "+drawnGates.get(i).getxStart()+","+drawnGates.get(i).getyStart()+" Bottom: "+drawnGates.get(i).getxFinish()+","+drawnGates.get(i).getyFinish());
-               startChanged = true;
-               //System.out.println("collision in the x detected");
-               //draw horizontal to stop near the gate it may intersect with if higher than gate
-               //always draws from input to output gate so ALWAYS right direction past the obstacle gate
-               g.drawLine(xStart_in, yStart_in, drawnGates.get(i).getxStart() - 10, yStart_in);
-               xStart_in = drawnGates.get(i).getxStart() - 10;
-               
-               //need to adjust the line around the gate by adjusting vertically
-               //if closer to top of gate then go over top
-               if(yStart_in < (drawnGates.get(i).getyStart() + 42))
-               {
-                  g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyStart() - 10);
-                  yStart_in = drawnGates.get(i).getyStart() - 10;
-               }
-               //if closer to the bottom then go under the gate
-               else
-               {
-                  g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyFinish() + 10);
-                  yStart_in = drawnGates.get(i).getyFinish() + 10;
-               }
-   
-               //reset i so that all gates can be checked again...not sure if this is the best way to do this??
-               i = 1;
+               System.out.println("issue found");
+               gateNum = i;
+               break;
             }
          }
          
-         //System.out.println("Loop at i = "+ i);
+         //draw horizontally past that gate, after moving correct y above/below the obstacle gate
+         if(gateNum >= 0)
+         {
+            //g.setColor(Color.BLUE);
+            //draw vertically up around the gate
+            if(yFinish_in < yStart_in)
+            {
+               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyStart() - 7);
+               yStart_in = drawnGates.get(gateNum).getyStart() - 7;
+            }
+            //draw vertically below the gate
+            else
+            {
+               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyFinish() + 7);
+               yStart_in = drawnGates.get(gateNum).getyFinish() + 7;
+            }
+            
+            //g.setColor(Color.GREEN);
+            //now draw horizontally past the gate
+            if((xFinish_in - 5) > drawnGates.get(gateNum).getxFinish() + 5)
+            {
+               g.drawLine(xStart_in, yStart_in, drawnGates.get(gateNum).getxFinish() + 5, yStart_in);
+               xStart_in = drawnGates.get(gateNum).getxFinish() + 5;
+            }
+            else
+            {
+               g.drawLine(xStart_in, yStart_in, xFinish_in - 20, yStart_in);
+               xStart_in = xFinish_in - 20;
+            }
+         }
+         //no gate intersected with in X direction
+         else
+         {
+            g.drawLine(xStart_in, yStart_in, xFinish_in - 20, yStart_in);
+            xStart_in = xFinish_in - 20;
+         }
+         
+         //after making an adjustment reset gateNum
+         gateNum = -1;
       }
       
-      //finish to the destination gate && work on this more!!!!!!!!!!!!!!!!!!!
-      //draw horizontal line
-      g.drawLine(xStart_in, yFinish_in, xFinish_in, yFinish_in);
-      //draw vertical line
-      g.drawLine(xStart_in, yStart_in, xStart_in, yFinish_in);
+      while(yStart_in != yFinish_in)
+      {
+         for(int i = 0; i < drawnGates.size(); i++)
+         {
+            if((destgateNum != drawnGates.get(i).getGateNum()) && (origgateNum != drawnGates.get(i).getGateNum()) && drawnGates.get(i).inPath(xStart_in, yStart_in, xStart_in, yFinish_in))
+            {
+               gateNum = i;
+               break;
+            }
+         }
+         
+         //draw verticall past the gate, after moving correct x right of the gate
+         if(gateNum >= 0)
+         {
+            int tempX = xStart_in;
+            //move correct x right/past the gate
+            g.drawLine(xStart_in, yStart_in, drawnGates.get(gateNum).getxFinish() + 7, yStart_in);
+            xStart_in = drawnGates.get(gateNum).getxFinish() + 7;
+            
+            //move vertically past the gate
+            if(yFinish_in < yStart_in)
+            {   
+               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyStart() - 5);
+               yStart_in = drawnGates.get(gateNum).getyStart() - 5;
+            }
+            else
+            {
+               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyFinish() + 5);
+               yStart_in = drawnGates.get(gateNum).getyFinish() + 5;
+            }
+            
+            //move xStart back to correct place
+            g.drawLine(xStart_in, yStart_in, tempX, yStart_in);
+            xStart_in = tempX;
+         }
+         //no gate blocking vertical line
+         else
+         {
+            g.drawLine(xStart_in, yStart_in, xStart_in, yFinish_in);
+            yStart_in = yFinish_in;
+         }
+         
+         //reset gateNum
+         gateNum = -1;
+      }
+      
+      //line should now be right in front of destination gate
+      g.drawLine(xStart_in, yStart_in, xStart_in + 20, yStart_in);     
    }
    
    public abstract void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow);
