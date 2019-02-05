@@ -367,10 +367,16 @@ public class BodyGUI extends JPanel
       }
       else //This is what gets painted when just editing
       {
+         //This draws active gates
          for(int i = 0; i < ourCircuit.size(); i++)
          {
             ourCircuit.getAtIndex(i).redraw(g);
             drawnGates.add(ourCircuit.getAtIndex(i));
+         }
+         //This draws new/inactive gates
+         for(int i = 0; i < ourCircuit.Nsize(); i++)
+         {
+            ourCircuit.getNGate(i).redraw(g);
          }
       }
       

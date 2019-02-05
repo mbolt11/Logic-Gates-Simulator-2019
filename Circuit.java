@@ -7,35 +7,49 @@ import java.nio.ByteBuffer;
 public class Circuit
 {
    //Member variables
-   private ArrayList<Gate> allGates; 
+   private ArrayList<Gate> activeGates;
+   private ArrayList<Gate> inactiveGates; 
    private int columns = 0;
    private int rows = 0;
    
    //Constructor
    public Circuit()
    {
-      allGates = new ArrayList<Gate>();
+      activeGates = new ArrayList<Gate>();
+      inactiveGates = new ArrayList<Gate>();
+   }
+   
+   //Methods to add/remove to/from inactive gates
+   public void addBebe(Gate gate_in)
+   {
+      inactiveGates.add(gate_in);
+   }
+   
+   public void removeBebe(int gatenum)
+   {
+      int index = gatenum-activeGates.size()-1;
+      inactiveGates.remove(index);
    }
    
    //Add and remove gates
    public void addGate(Gate gate_in)
    {
-      allGates.add(gate_in);
+      activeGates.add(gate_in);
    }
    
-   public void removeGate(Gate gate_in)
+   public void removeGate(int gatenum)
    {
-      allGates.remove(gate_in);  
+      activeGates.remove(gatenum-1);  
    }
    
    //Accessor for specific gates according to their gate number
    public Gate get(int gatenum)
    {
-      for(int i=0; i < allGates.size(); i++)
+      for(int i=0; i < activeGates.size(); i++)
       {
-         if(allGates.get(i).getGateNum() == gatenum)
+         if(activeGates.get(i).getGateNum() == gatenum)
          {
-            return allGates.get(i);
+            return activeGates.get(i);
          }
       }
       System.out.println("Gate number was not found.");
@@ -45,12 +59,24 @@ public class Circuit
    //Accessor for gates according to their index in the arraylist
    public Gate getAtIndex(int index)
    {
-      return allGates.get(index);
+      return activeGates.get(index);
    }
    
+   //Accessor for inactive gates
+   public Gate getNGate(int index)
+   {
+      return inactiveGates.get(index);
+   }
+   
+   //Size functions for 2 arraylists
    public int size()
    {
-      return allGates.size();
+      return activeGates.size();
+   }
+   
+   public int Nsize()
+   {
+      return inactiveGates.size();
    }
    
    //Method to sort the gates into number order
@@ -58,29 +84,29 @@ public class Circuit
    {
       ArrayList<Gate> temp = new ArrayList<Gate>();
       int counter = 1;
-      while(allGates.size() > 0)
+      while(activeGates.size() > 0)
       {
-         for(int i = 0; i < allGates.size(); i++)
+         for(int i = 0; i < activeGates.size(); i++)
          {
-            if(allGates.get(i).getGateNum() == counter)
+            if(activeGates.get(i).getGateNum() == counter)
             {
-               temp.add(allGates.get(i));
-               allGates.remove(i);
+               temp.add(activeGates.get(i));
+               activeGates.remove(i);
                break;
             }
          }
          counter++;
       }
-      allGates = temp;
+      activeGates = temp;
    }
    
    //Method to calculate the depth for all the gates in the circuit
    public void calculateAllDepths()
    {
       System.out.println("&&&&&&&&&&&&&&&&&_Starting calculate depth");
-      for(int i = 0; i < allGates.size(); i++)
+      for(int i = 0; i < activeGates.size(); i++)
       {
-         allGates.get(i).calculateDepth();
+         activeGates.get(i).calculateDepth();
       }
    }
    
@@ -88,11 +114,11 @@ public class Circuit
    public void calculateColumns()
    {
       int maxdepth = 0;
-      for(int i=0; i<allGates.size(); i++)
+      for(int i=0; i<activeGates.size(); i++)
       {
-         if(allGates.get(i).getDepth() > maxdepth)
+         if(activeGates.get(i).getDepth() > maxdepth)
          {
-            maxdepth = allGates.get(i).getDepth();
+            maxdepth = activeGates.get(i).getDepth();
          }
       }
       columns = maxdepth + 1;
@@ -109,9 +135,9 @@ public class Circuit
       int maxRows = 0;
       int [] columnsArr = new int[columns];
       
-      for(int i=0; i<allGates.size(); i++)
+      for(int i=0; i<activeGates.size(); i++)
       {
-         columnsArr[allGates.get(i).getDepth()] += 1;
+         columnsArr[activeGates.get(i).getDepth()] += 1;
       }
       
       for(int i=0; i<columnsArr.length; i++)
@@ -138,12 +164,12 @@ public class Circuit
          FileWriter fw = new FileWriter(outfile);
          BufferedWriter writer = new BufferedWriter(fw);
          
-         for(int i=0; i<allGates.size(); i++)
+         for(int i=0; i<activeGates.size(); i++)
          {
             //Get the info from this gate to write
-            int gatenum = allGates.get(i).getGateNum();
-            String gatetype = allGates.get(i).getStringType().toLowerCase();
-            ArrayList<Integer> inputs = allGates.get(i).getInputInts();
+            int gatenum = activeGates.get(i).getGateNum();
+            String gatetype = activeGates.get(i).getStringType().toLowerCase();
+            ArrayList<Integer> inputs = activeGates.get(i).getInputInts();
             
             //Write the info in the correct format
             writer.write(gatenum + " " + gatetype);
@@ -172,26 +198,26 @@ public class Circuit
          //File outfile = new File(filename);
          //outfile.createNewFile();
          FileOutputStream fostream = new FileOutputStream(filename);
-         System.out.println(allGates.size());
+         System.out.println(activeGates.size());
                   
-         for(int i=0; i<allGates.size(); i++)
+         for(int i=0; i<activeGates.size(); i++)
          {
             //Get the gate number of this gate and convert into 2 bytes to write
-            int gatenum = allGates.get(i).getGateNum();
+            int gatenum = activeGates.get(i).getGateNum();
             byte[] array1 = new byte[2];
             array1[0] = (byte) (gatenum & 0xFF);
             array1[1] = (byte) ((gatenum >> 8) & 0xFF);
             fostream.write(array1);
             
             //Get the gate type, convert to numerical value to be stored in 2 bytes
-            int gatetype = allGates.get(i).getType().ordinal();
+            int gatetype = activeGates.get(i).getType().ordinal();
             byte[] array2 = new byte[2];
             array2[0] = (byte) (gatetype & 0xFF);
             array2[1] = (byte) ((gatetype >> 8) & 0xFF);
             fostream.write(array2);
             
             //Get the arraylist of inputs and write them
-            ArrayList<Integer> inputs = allGates.get(i).getInputInts();
+            ArrayList<Integer> inputs = activeGates.get(i).getInputInts();
             for(int j=0; j < inputs.size(); j++)
             {
                int inputline = inputs.get(j);

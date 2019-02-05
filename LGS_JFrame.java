@@ -60,6 +60,7 @@ public class LGS_JFrame extends JFrame
    {  
       //-1 indicates no gate has been clicked
       private int gateClickedIndex = -1;
+      private int nGateClicked = -1;
       
       //Offset of where the mouse clicked to where the x & y starts are
       private int gateDX, gateDY;
@@ -77,15 +78,31 @@ public class LGS_JFrame extends JFrame
             if(theCircuit.getAtIndex(i).getAreaRect().contains(e.getPoint()))
             {
                gateClickedIndex = i;
+               nGateClicked = -1;
                System.out.println("Clicked on a gate");
                gateDX = e.getX() - theCircuit.getAtIndex(i).getxStart();
                gateDY = e.getY() - theCircuit.getAtIndex(i).getyStart();
                return;
             }
+            
+            //This checks the gates in inactiveGates
+            if(i < theCircuit.Nsize())
+            {
+               if(theCircuit.getNGate(i).getAreaRect().contains(e.getPoint()))
+               {
+                  nGateClicked = i;
+                  gateClickedIndex = -1;
+                  System.out.println("Clicked on a gate");
+                  gateDX = e.getX() - theCircuit.getNGate(i).getxStart();
+                  gateDY = e.getY() - theCircuit.getNGate(i).getyStart();
+                  return;
+               }
+            }
          }
          
          //If they clicked on the screen, save dx and dy for dragging the screen
-         gateClickedIndex = -1;
+         gateClickedIndex = -2;
+         nGateClicked = -2;
          System.out.println("Clicked on screen");
          originDX = e.getX();
          originDY = e.getY();
@@ -94,7 +111,7 @@ public class LGS_JFrame extends JFrame
       public void mouseDragged(MouseEvent e)
       {
          //If the gate clicked index is -1, scroll the screen
-         if(gateClickedIndex == -1)
+         if(gateClickedIndex < -1)
          {
             //Change the origin offsets as mouse is dragging
             bodypanel.setOriginOffsets((e.getX()-originDX),(e.getY()-originDY));
@@ -102,13 +119,21 @@ public class LGS_JFrame extends JFrame
          }
          
          //If the gate clicked index is not -1, move the gate
-         if(gateClickedIndex != -1)
+         if(gateClickedIndex > -1)
          {  
             //Change the xStart and yStart positions of the gate according to the mouse drag
             theCircuit.getAtIndex(gateClickedIndex).setxStart(e.getX()-gateDX);
             theCircuit.getAtIndex(gateClickedIndex).setyStart(e.getY()-gateDY);
             repaint();
          }
+         
+         if(nGateClicked > -1)
+         {
+            //Change the xStart and yStart positions of the gate according to the mouse drag
+            theCircuit.getNGate(nGateClicked).setxStart(e.getX()-gateDX);
+            theCircuit.getNGate(nGateClicked).setyStart(e.getY()-gateDY);
+            repaint();
+         }  
       }        
    }
    
@@ -168,7 +193,63 @@ public class LGS_JFrame extends JFrame
          }
          else if (ae.getSource() == headerpanel.getING()) 
          {
-            //Code to add new gate
+            //JOptionPane to get the type of gate
+            String[] choices = { "Input", "Output", "And", "Nand", "Or", "Nor","Not","XOr"};
+            String input = (String) JOptionPane.showInputDialog(null, "Choose Type",
+            "Insert New Gate", JOptionPane.QUESTION_MESSAGE, null, choices,
+            choices[0]);
+            
+            //Calculate gate num and create the correct type of gate
+            Gate thegate;
+            int gatenum = theCircuit.size()+1;
+            gatenum += theCircuit.Nsize();
+            switch(input)
+            {
+               case "Input":
+               {
+                  thegate = new INPUT(gatenum);
+                  break;
+               }
+               case "Output":
+               {
+                  thegate = new OUTPUT(gatenum);
+                  break;
+               }
+               case "And":
+               {
+                  thegate = new AND(gatenum,false);
+                  break;
+               }
+               case "Nand":
+               {
+                  thegate = new AND(gatenum,true);
+                  break;
+               }
+               case "Or":
+               {
+                  thegate = new OR(gatenum,false);
+                  break;
+               }
+               case "Nor":
+               {
+                  thegate = new OR(gatenum,true);
+                  break;
+               }
+               case "Not":
+               {
+                  thegate = new NOT(gatenum);
+                  break;
+               }
+               default: //case: "XOr"
+               {
+                  thegate = new XOR(gatenum);
+                  break;
+               }
+            }
+            
+            //Now add gate to inactive gates list
+            theCircuit.addBebe(thegate);
+            repaint();
          }
       }
    }

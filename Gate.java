@@ -46,10 +46,15 @@ public abstract class Gate
       inputints = new ArrayList<Integer>();
       inputs = new ArrayList<Gate>();
       
+      //Initial values for wire slots
       xInputWireSlot = 0;
       yInputWireSlot = 0;
       xOutputWireSlot = 0;
       yOutputWireSlot = 0;
+      
+      //Initial x and y start
+      xStart = 400;
+      yStart = 410;
       
       //Instantiate the area rectangle
       area = new Rectangle();
