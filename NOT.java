@@ -24,7 +24,7 @@ public class NOT extends Gate
       if(inputs.size() > 0)
          setOutput(!inputs.get(0).calculateOutput());
          
-      System.out.println("NOT is:"+output);
+      //System.out.println("NOT is:"+output);
          
       return output;
    }
@@ -57,7 +57,7 @@ public class NOT extends Gate
       xOutputWireSlot = (int)(xBaseCoord + ((95*Math.sqrt(3))/2) + 10);
       yOutputWireSlot = yInputWireSlot;
       
-      System.out.println("NOT drawn at row,column: "+ row + "," +column + " at coord: "+ (int)xBaseCoord + "," + (int)yBaseCoord);
+      //System.out.println("NOT drawn at row,column: "+ row + "," +column + " at coord: "+ (int)xBaseCoord + "," + (int)yBaseCoord);
    }
    
    public void redrawGate(Graphics g)

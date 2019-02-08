@@ -31,13 +31,6 @@ public class BodyGUI extends JPanel
       }
    }
    
-   //Setter for origin offsets
-   public void setOriginOffsets(int xchange, int ychange)
-   {
-      originoffsetX = xchange;
-      originoffsetY = ychange;
-   }
-   
    //Constructor
    public BodyGUI()
    {
@@ -45,6 +38,23 @@ public class BodyGUI extends JPanel
       
       setPreferredSize(new Dimension(1000,950));   
       setBackground(Color.WHITE);
+   }
+   
+   //Accessor for origin offsets
+   /*public int getOX()
+   {
+      return originoffsetX;
+   }
+   public int getOY()
+   {
+      return originoffsetY;
+   }*/
+   
+   //Setter for origin offsets
+   public void setOriginOffsets(int xchange, int ychange)
+   {
+      originoffsetX = xchange;
+      originoffsetY = ychange;
    }
    
    //Method to read a circuit in from an ascii file
@@ -60,7 +70,7 @@ public class BodyGUI extends JPanel
          //Create a circuit object to put our gates in
          ourCircuit = new Circuit();
          
-         System.out.println("------FILE------");
+         //System.out.println("------FILE------");
          
          while(readfile.hasNextLine())
          {
@@ -71,7 +81,7 @@ public class BodyGUI extends JPanel
             //Read the info from this line
             int gatenum = readline.nextInt();
             String type = readline.next();
-            System.out.println("Gatenum:"+gatenum+" type:"+type);
+            //System.out.println("Gatenum:"+gatenum+" type:"+type);
             if (type.equals("true") || type.equals("false"))
             {
                //Not sure what this is supposed to be...
@@ -155,7 +165,7 @@ public class BodyGUI extends JPanel
       }
       catch(IOException io)
       {
-         System.out.println("File could not be opened.");
+         //System.out.println("File could not be opened.");
       }
    }
    
@@ -168,7 +178,7 @@ public class BodyGUI extends JPanel
          ourCircuit = new Circuit();
          openning = true;
          
-         System.out.println("------FILE------");
+         //System.out.println("------FILE------");
          
          //Open a new inputstream for the file
          FileInputStream istream = new FileInputStream(filename);
@@ -186,7 +196,7 @@ public class BodyGUI extends JPanel
             int typeInt = (gatetype[1] << 8) | gatetype[0];
             
             //Test statement
-            System.out.println("Gatenum:"+numInt+" type:"+typeInt);
+            //System.out.println("Gatenum:"+numInt+" type:"+typeInt);
             
             //Instantiate the appropriate type of gate according to the type number
             if(typeInt >= 0 && typeInt <= 8)
@@ -258,7 +268,7 @@ public class BodyGUI extends JPanel
             }
             else
             {
-               System.out.println("Invalid gate type number");
+               //System.out.println("Invalid gate type number");
             }
          }
          
@@ -283,7 +293,7 @@ public class BodyGUI extends JPanel
       {
          if(io instanceof FileNotFoundException)
          {
-            System.out.println("File could not be opened.");
+            //System.out.println("File could not be opened.");
          }
          else
          {
@@ -310,15 +320,15 @@ public class BodyGUI extends JPanel
    //Method to calculate outputs of our circuit
    public void allCircuitOutputs(Circuit circuit_in)
    {
-     System.out.println("------------CalculateOutput-----------------");
+     //System.out.println("------------CalculateOutput-----------------");
       //call functions for calculate output throughout the circuit
       for(int i = 1; i < circuit_in.size()+1; i++)
       {
-         //System.out.println(ourCircuit.get(i).getStringType());
+         ////System.out.println(ourCircuit.get(i).getStringType());
          if(circuit_in.get(i).getStringType() == "OUTPUT")
          {
             circuit_in.get(i).calculateOutput();
-            System.out.println("--Result:"+circuit_in.get(i).getOutput());
+            //System.out.println("--Result:"+circuit_in.get(i).getOutput());
          }
       }
    }
@@ -327,6 +337,16 @@ public class BodyGUI extends JPanel
    public void paintComponent(Graphics g)
    {
       super.paintComponent(g);
+      
+      //Draw the arrow button
+      g.drawRect(880,20,100,55);
+      g.drawLine(890,30,890,65);
+      g.drawLine(890,30,950,30);
+      g.drawLine(890,65,950,65);
+      g.drawLine(950,30,950,25);
+      g.drawLine(950,65,950,70);
+      g.drawLine(950,25,970,47);
+      g.drawLine(950,70,970,47);
       
       //Reset the graphics origin point according to offsets
       g.translate(originoffsetX,originoffsetY);
@@ -338,14 +358,14 @@ public class BodyGUI extends JPanel
       if(openning)
       {
          openning = false;
-         System.out.println("\n\n-----------DRAWING---------- Circuit of size "+ourCircuit.size());
+         //System.out.println("\n\n-----------DRAWING---------- Circuit of size "+ourCircuit.size());
          int row = 0;
          int column = 0;
          int maxColumn = ourCircuit.getColumns();
          int maxRow = ourCircuit.getRows();
          int gatesDrawn = 0;
          
-         System.out.println("columns: " + maxColumn + " rows: " + maxRow);
+         //System.out.println("columns: " + maxColumn + " rows: " + maxRow);
          
          //draws the gates in order
          for(int i = 1; i <= maxColumn; i++)
@@ -370,12 +390,26 @@ public class BodyGUI extends JPanel
          //This draws active gates
          for(int i = 0; i < ourCircuit.size(); i++)
          {
+            //Acount for screen scrolling
+            /*int currXStart = ourCircuit.getAtIndex(i).getxStart();
+            int currYStart = ourCircuit.getAtIndex(i).getyStart();
+            ourCircuit.getAtIndex(i).setxStart(currXStart + originoffsetX);
+            ourCircuit.getAtIndex(i).setxStart(currYStart + originoffsetY);*/
+            
             ourCircuit.getAtIndex(i).redraw(g);
             drawnGates.add(ourCircuit.getAtIndex(i));
          }
          //This draws new/inactive gates
          for(int i = 0; i < ourCircuit.Nsize(); i++)
          {
+            //Acount for screen scrolling
+            /*int currXStart = ourCircuit.getAtIndex(i).getxStart();
+            int currYStart = ourCircuit.getAtIndex(i).getyStart();
+            ourCircuit.getAtIndex(i).setxStart(currXStart + originoffsetX);
+            ourCircuit.getAtIndex(i).setxStart(currYStart + originoffsetY);
+            originoffsetX = 0;
+            originoffsetY = 0;*/
+            
             ourCircuit.getNGate(i).redraw(g);
          }
       }
@@ -388,6 +422,6 @@ public class BodyGUI extends JPanel
          drawnGates.get(i).drawWires(g, drawnGates);
       }
       }
-      //System.out.println("made it");
+      ////System.out.println("made it");
    }
 }

@@ -41,13 +41,13 @@ public class OR extends Gate
       
       //Set the output variable according to result
       setOutput(result);
-      System.out.println("OR is:"+output);
+      //System.out.println("OR is:"+output);
       return output;
    }
    
    public void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
-      //System.out.println("OR drawn");
+      ////System.out.println("OR drawn");
       xStart = ((int) (((double)column/maxColumn) * 1000)) - 150 + (row*rowShift);
       yStart = ((int) (((double)row/maxRow) * 950)) + 65 + (column*columnShift);
       //The finish points are estimates for now
@@ -65,7 +65,7 @@ public class OR extends Gate
       xOutputWireSlot = xInputWireSlot + 95;
       yOutputWireSlot = yInputWireSlot + 3;
       
-      System.out.println("OR drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
+      //System.out.println("OR drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
    }
    
    public void redrawGate(Graphics g)

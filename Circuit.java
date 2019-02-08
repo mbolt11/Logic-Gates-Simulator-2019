@@ -52,7 +52,7 @@ public class Circuit
             return activeGates.get(i);
          }
       }
-      System.out.println("Gate number was not found.");
+      //System.out.println("Gate number was not found.");
       return null;
    }
    
@@ -103,7 +103,7 @@ public class Circuit
    //Method to calculate the depth for all the gates in the circuit
    public void calculateAllDepths()
    {
-      System.out.println("&&&&&&&&&&&&&&&&&_Starting calculate depth");
+      //System.out.println("&&&&&&&&&&&&&&&&&_Starting calculate depth");
       for(int i = 0; i < activeGates.size(); i++)
       {
          activeGates.get(i).calculateDepth();
@@ -184,7 +184,7 @@ public class Circuit
       }
       catch(IOException io)
       {
-         System.out.println("File could not be opened.");
+         //System.out.println("File could not be opened.");
       }
       
    }
@@ -198,7 +198,7 @@ public class Circuit
          //File outfile = new File(filename);
          //outfile.createNewFile();
          FileOutputStream fostream = new FileOutputStream(filename);
-         System.out.println(activeGates.size());
+         //System.out.println(activeGates.size());
                   
          for(int i=0; i<activeGates.size(); i++)
          {
@@ -240,7 +240,7 @@ public class Circuit
       }
       catch(IOException io)
       {
-         System.out.println("File could not be opened.");
+         //System.out.println("File could not be opened.");
       }
       
    }

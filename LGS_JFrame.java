@@ -71,6 +71,9 @@ public class LGS_JFrame extends JFrame
          //Make sure we have the right circuit
          theCircuit = bodypanel.getCircuit();
          
+         //Save the point
+         System.out.println("Mouse: "+e.getX()+", "+e.getY());
+         
          //Search through all the gates to see if the mouse clicked on it
          for(int i = 0; i < theCircuit.size(); i++)
          {
@@ -79,7 +82,7 @@ public class LGS_JFrame extends JFrame
             {
                gateClickedIndex = i;
                nGateClicked = -1;
-               System.out.println("Clicked on a gate");
+               //System.out.println("Clicked on a gate");
                gateDX = e.getX() - theCircuit.getAtIndex(i).getxStart();
                gateDY = e.getY() - theCircuit.getAtIndex(i).getyStart();
                return;
@@ -92,7 +95,7 @@ public class LGS_JFrame extends JFrame
                {
                   nGateClicked = i;
                   gateClickedIndex = -1;
-                  System.out.println("Clicked on a gate");
+                  //System.out.println("Clicked on a gate");
                   gateDX = e.getX() - theCircuit.getNGate(i).getxStart();
                   gateDY = e.getY() - theCircuit.getNGate(i).getyStart();
                   return;
@@ -103,7 +106,7 @@ public class LGS_JFrame extends JFrame
          //If they clicked on the screen, save dx and dy for dragging the screen
          gateClickedIndex = -2;
          nGateClicked = -2;
-         System.out.println("Clicked on screen");
+         //System.out.println("Clicked on screen");
          originDX = e.getX();
          originDY = e.getY();
       }
@@ -193,6 +196,9 @@ public class LGS_JFrame extends JFrame
          }
          else if (ae.getSource() == headerpanel.getING()) 
          {
+            //Make sure we have the right circuit
+            theCircuit = bodypanel.getCircuit();
+            
             //JOptionPane to get the type of gate
             String[] choices = { "Input", "Output", "And", "Nand", "Or", "Nor","Not","XOr"};
             String input = (String) JOptionPane.showInputDialog(null, "Choose Type",

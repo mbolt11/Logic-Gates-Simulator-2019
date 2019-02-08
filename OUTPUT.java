@@ -34,7 +34,7 @@ public class OUTPUT extends Gate
       xInputWireSlot = xStart;
       yInputWireSlot = yStart + 47;
       
-      System.out.println("OUTPUT drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
+      //System.out.println("OUTPUT drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
    }
    
    public void redrawGate(Graphics g)

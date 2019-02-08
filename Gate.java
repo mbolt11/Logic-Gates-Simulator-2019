@@ -133,6 +133,8 @@ public abstract class Gate
       int height = yFinish-yStart;
       area.setBounds(xStart,yStart,width,height);
       
+      System.out.println("Rectangle top corner: "+xStart+", "+yStart);
+      
       //Return the rectangle
       return area;
    }
@@ -154,7 +156,7 @@ public abstract class Gate
    public void addInput(Gate inGate)
    {
       inputs.add(inGate);
-      System.out.println("Gate " + gatenum + " input: " + inGate.getGateNum());
+      //System.out.println("Gate " + gatenum + " input: " + inGate.getGateNum());
    }
    
    public void removeInput(Gate inGate)
@@ -188,7 +190,7 @@ public abstract class Gate
          }
       }
       depth = temp;
-      //System.out.println(getStringType()+" depth: "+getDepth());
+      ////System.out.println(getStringType()+" depth: "+getDepth());
    }
    
    public boolean inPath(int xStart_in, int yStart_in, int xFinish_in, int yFinish_in)
@@ -217,13 +219,19 @@ public abstract class Gate
        //first draw the gate
        drawGate(g, row, column, maxColumn, maxRow);
        
-       //draw the boundaries for checking PLEASE DONT REMOVE
-       /*g.setColor(Color.RED);
+       /*//draw the boundaries for checking PLEASE DONT REMOVE
+       g.setColor(Color.RED);
        g.drawLine(xStart - 20, yStart - 5, xFinish + 5, yStart - 5);
        g.drawLine(xStart - 20, yStart - 5, xStart - 20, yFinish + 5);
        g.drawLine(xStart - 20, yFinish + 5, xFinish + 5, yFinish + 5);
-       g.drawLine(xFinish + 5, yStart - 5, xFinish + 5, yFinish + 5);
-       */
+       g.drawLine(xFinish + 5, yStart - 5, xFinish + 5, yFinish + 5);*/
+       
+       g.setColor(Color.RED);
+       g.drawLine(xStart, yStart, xFinish, yStart);
+       g.drawLine(xStart, yStart, xStart, yFinish);
+       g.drawLine(xStart, yFinish, xFinish, yFinish);
+       g.drawLine(xFinish, yStart, xFinish, yFinish);
+       
        
        //draw the output in the gate
        g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
@@ -235,6 +243,14 @@ public abstract class Gate
    public void redraw(Graphics g)
    {
       redrawGate(g);
+      
+      //Testing area rectangle
+      g.setColor(Color.RED);
+       g.drawLine(xStart, yStart, xFinish, yStart);
+       g.drawLine(xStart, yStart, xStart, yFinish);
+       g.drawLine(xStart, yFinish, xFinish, yFinish);
+       g.drawLine(xFinish, yStart, xFinish, yFinish);
+
       
       //draw the output in the gate
       g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
@@ -294,7 +310,7 @@ public abstract class Gate
       boolean startChanged = false;
       int gateNum = -1;
       
-      System.out.println("Dest: " + destgateNum + " Origin: " + origgateNum);
+      //System.out.println("Dest: " + destgateNum + " Origin: " + origgateNum);
       
       //draw in the horizontal direction until reach x destination
       while(xStart_in != (xFinish_in-20))
@@ -303,7 +319,7 @@ public abstract class Gate
          {
             if((destgateNum != drawnGates.get(i).getGateNum()) && (origgateNum != drawnGates.get(i).getGateNum()) && drawnGates.get(i).inPath(xStart_in, yStart_in, xFinish_in - 5, yStart_in))
             {
-               System.out.println("issue found");
+               //System.out.println("issue found");
                gateNum = i;
                break;
             }

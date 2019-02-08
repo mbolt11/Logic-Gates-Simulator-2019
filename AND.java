@@ -40,14 +40,16 @@ public class AND extends Gate
       
       //Set the output variable according to result
       setOutput(result);
-      System.out.println("AND or NAND is:"+output);
+      //System.out.println("AND or NAND is:"+output);
       
       return output;
    }
    
    public void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
-      //System.out.println("AND drawn");
+      System.out.println("Coord: "+xStart+", "+yStart);
+      
+      ////System.out.println("AND drawn");
       size = 60;
       
       xStart = ((int) (((double)column/maxColumn) * 1000)) - 150 + (row*rowShift);
@@ -66,7 +68,7 @@ public class AND extends Gate
       yOutputWireSlot = yInputWireSlot;
       
       if(!negate)
-         System.out.println("AND drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
+         //System.out.println("AND drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
       
       if(negate)
       {
@@ -75,12 +77,14 @@ public class AND extends Gate
          g.drawOval(circleXStart, circleYStart, 10, 10);
          xOutputWireSlot += 10;
          
-         System.out.println("NAND drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
+         //System.out.println("NAND drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
       }   
    }
    
    public void redrawGate(Graphics g)
    {
+      System.out.println("Coord: "+xStart+", "+yStart);
+      
       //Recalculate finish spots based on updated starts
       xFinish = xStart + size + (size/2) + 10;
       yFinish = yStart + 95;
