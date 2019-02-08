@@ -8,7 +8,7 @@ import java.util.*;
 public class LGS_JFrame extends JFrame
 {   
    //This variable is true if in editmode, false if in play mode
-   private boolean editmode;
+   private boolean editmode = true;
    
    //Access to our two panels   
    private BodyGUI bodypanel;
@@ -16,6 +16,9 @@ public class LGS_JFrame extends JFrame
    
    //Access to the currently displaying circuit
    private Circuit theCircuit;
+   
+   //Rectangle representation of the arrow button
+   private Rectangle arrowbutton = new Rectangle(880,20,100,55);
    
    //JFrame Constructor
    public LGS_JFrame()
@@ -66,43 +69,51 @@ public class LGS_JFrame extends JFrame
       private int gateDX, gateDY;
       private int originDX, originDY;
       
-      //Point to hold where the mouse is clicking on translated screen
-      Point p = new Point(0,0);
+      public void mouseClicked(MouseEvent e)
+      {
+         //If they click the arrow button
+         if(arrowbutton.contains(e.getPoint()))
+         {
+            //Switch between edit and play mode
+            System.out.println("Clicked on arrow");
+            editmode = !editmode;
+            bodypanel.switchMode();
+            repaint();
+         }
+         
+         //If they click on an input while in play mode
+         
+      }
       
       public void mousePressed(MouseEvent e)
       {
          //Make sure we have the right circuit
          theCircuit = bodypanel.getCircuit();
          
-         //Save the point
-         p = e.getPoint();
-         p.translate(-bodypanel.getOX(),-bodypanel.getOY());
-         System.out.println("Mouse: "+p.getX()+", "+p.getY());
-         
          //Search through all the gates to see if the mouse clicked on it
          for(int i = 0; i < theCircuit.size(); i++)
          {
             //If the mouse click was within the area of the gate, save the index
-            if(theCircuit.getAtIndex(i).getAreaRect().contains(p))
+            if(theCircuit.getAtIndex(i).getAreaRect().contains(e.getPoint()))
             {
                gateClickedIndex = i;
                nGateClicked = -1;
                //System.out.println("Clicked on a gate");
-               gateDX = (int)p.getX() - theCircuit.getAtIndex(i).getxStart();
-               gateDY = (int)p.getY() - theCircuit.getAtIndex(i).getyStart();
+               gateDX = e.getX() - theCircuit.getAtIndex(i).getxStart();
+               gateDY = e.getY() - theCircuit.getAtIndex(i).getyStart();
                return;
             }
             
             //This checks the gates in inactiveGates
             if(i < theCircuit.Nsize())
             {
-               if(theCircuit.getNGate(i).getAreaRect().contains(p))
+               if(theCircuit.getNGate(i).getAreaRect().contains(e.getPoint()))
                {
                   nGateClicked = i;
                   gateClickedIndex = -1;
                   //System.out.println("Clicked on a gate");
-                  gateDX = (int)p.getX() - theCircuit.getNGate(i).getxStart();
-                  gateDY = (int)p.getY() - theCircuit.getNGate(i).getyStart();
+                  gateDX = e.getX() - theCircuit.getNGate(i).getxStart();
+                  gateDY = e.getY() - theCircuit.getNGate(i).getyStart();
                   return;
                }
             }
@@ -112,38 +123,45 @@ public class LGS_JFrame extends JFrame
          gateClickedIndex = -2;
          nGateClicked = -2;
          //System.out.println("Clicked on screen");
-         originDX = (int)p.getX();
-         originDY = (int)p.getY();
+         originDX = e.getX();
+         originDY = e.getY();
       }
       
       public void mouseDragged(MouseEvent e)
       {
-         //Update the point
-         p = e.getPoint();
-         p.translate(-bodypanel.getOX(),-bodypanel.getOY());
-         
          //If the gate clicked index is -1, scroll the screen
          if(gateClickedIndex < -1)
          {
-            //Change the origin offsets as mouse is dragging
-            bodypanel.setOriginOffsets(((int)p.getX()-originDX),((int)p.getY()-originDY));
+            //Change the offsets of all the gate start positions
+            for(int i = 0; i < theCircuit.size(); i++)
+            {
+               theCircuit.getAtIndex(i).translate((e.getX()-originDX),(e.getY()-originDY));
+               
+               //This changes the offset of gates in inactiveGates
+               if(i < theCircuit.Nsize())
+               {
+                  theCircuit.getNGate(i).translate((e.getX()-originDX),(e.getY()-originDY));
+               }
+            }
+            originDX = e.getX();
+            originDY = e.getY();
             repaint();
          }
          
          //If the gate clicked index is not -1, move the gate
-         if(gateClickedIndex > -1)
+         if(gateClickedIndex > -1 && editmode)
          {  
             //Change the xStart and yStart positions of the gate according to the mouse drag
-            theCircuit.getAtIndex(gateClickedIndex).setxStart((int)p.getX()-gateDX);
-            theCircuit.getAtIndex(gateClickedIndex).setyStart((int)p.getY()-gateDY);
+            theCircuit.getAtIndex(gateClickedIndex).setxStart(e.getX()-gateDX);
+            theCircuit.getAtIndex(gateClickedIndex).setyStart(e.getY()-gateDY);
             repaint();
          }
          
-         if(nGateClicked > -1)
+         if(nGateClicked > -1 && editmode)
          {
             //Change the xStart and yStart positions of the gate according to the mouse drag
-            theCircuit.getNGate(nGateClicked).setxStart((int)p.getX()-gateDX);
-            theCircuit.getNGate(nGateClicked).setyStart((int)p.getY()-gateDY);
+            theCircuit.getNGate(nGateClicked).setxStart(e.getX()-gateDX);
+            theCircuit.getNGate(nGateClicked).setyStart(e.getY()-gateDY);
             repaint();
          }  
       }        
@@ -203,7 +221,7 @@ public class LGS_JFrame extends JFrame
                theCircuit.saveToBinary(textField.getText());
             }
          }
-         else if (ae.getSource() == headerpanel.getING()) 
+         else if (ae.getSource() == headerpanel.getING() && editmode) 
          {
             //Make sure we have the right circuit
             theCircuit = bodypanel.getCircuit();

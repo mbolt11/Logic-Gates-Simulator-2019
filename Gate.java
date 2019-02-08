@@ -126,14 +126,19 @@ public abstract class Gate
    public int getyOutputSlot()
    { return yOutputWireSlot; }
    
+   //Method to translate the gate start coordinate for scrolling screen
+   public void translate(int dx, int dy)
+   {
+      xStart+=dx;
+      yStart+=dy;
+   }
+   
    public Rectangle getAreaRect()
    {
       //Re-draw the rectangle according to the x and y start positions
       int width = xFinish-xStart;
       int height = yFinish-yStart;
       area.setBounds(xStart,yStart,width,height);
-      
-      //System.out.println("Rectangle top corner: "+xStart+", "+yStart);
       
       //Return the rectangle
       return area;

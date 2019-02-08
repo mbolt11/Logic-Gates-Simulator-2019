@@ -10,12 +10,8 @@ import java.nio.*;
 public class BodyGUI extends JPanel
 {
    private Circuit ourCircuit;
-   
-   //This tells paint component whether we are opening/optimizing or not
-   private boolean openning;
-   
-   //This tells paint component where to translate origin for scrolling
-   private int originoffsetX, originoffsetY; 
+   private boolean editmode;//Whether we are in editmode or not
+   private boolean openning;//Whether we are opening/optimizing or not
    
    //Singleton for the circuit
    public Circuit getCircuit()
@@ -36,25 +32,16 @@ public class BodyGUI extends JPanel
    {
       super();
       
+      editmode = true;
+      
       setPreferredSize(new Dimension(1000,950));   
       setBackground(Color.WHITE);
    }
    
-   //Accessor for origin offsets
-   public int getOX()
+   //Method to switch in and out of editmode
+   public void switchMode()
    {
-      return originoffsetX;
-   }
-   public int getOY()
-   {
-      return originoffsetY;
-   }
-   
-   //Setter for origin offsets
-   public void setOriginOffsets(int xchange, int ychange)
-   {
-      originoffsetX = xchange;
-      originoffsetY = ychange;
+      editmode = !editmode;
    }
    
    //Method to read a circuit in from an ascii file
@@ -337,19 +324,28 @@ public class BodyGUI extends JPanel
    public void paintComponent(Graphics g)
    {
       super.paintComponent(g);
+      Graphics2D g2 = (Graphics2D) g;
+      g2.setStroke(new BasicStroke(3));
       
       //Draw the arrow button
       g.drawRect(880,20,100,55);
+      if(editmode)
+      {
+         g.setColor(Color.CYAN);
+         g.fillRect(880,20,100,55);
+         g.setColor(Color.BLACK);
+      }
+      else
+      {
+         g.clearRect(880,20,100,55);
+      }
       g.drawLine(890,30,890,65);
       g.drawLine(890,30,950,30);
       g.drawLine(890,65,950,65);
       g.drawLine(950,30,950,25);
       g.drawLine(950,65,950,70);
       g.drawLine(950,25,970,47);
-      g.drawLine(950,70,970,47);
-      
-      //Reset the graphics origin point according to offsets
-      g.translate(originoffsetX,originoffsetY);
+      g2.drawLine(950,70,970,47);
       
       //must create a list of the gates drawn so far in order to check drawing wires against gate boundaries as drawing progresses
       ArrayList<Gate> drawnGates = new ArrayList<Gate>();
@@ -390,26 +386,12 @@ public class BodyGUI extends JPanel
          //This draws active gates
          for(int i = 0; i < ourCircuit.size(); i++)
          {
-            //Acount for screen scrolling
-            /*int currXStart = ourCircuit.getAtIndex(i).getxStart();
-            int currYStart = ourCircuit.getAtIndex(i).getyStart();
-            ourCircuit.getAtIndex(i).setxStart(currXStart + originoffsetX);
-            ourCircuit.getAtIndex(i).setxStart(currYStart + originoffsetY);*/
-            
             ourCircuit.getAtIndex(i).redraw(g);
             drawnGates.add(ourCircuit.getAtIndex(i));
          }
          //This draws new/inactive gates
          for(int i = 0; i < ourCircuit.Nsize(); i++)
          {
-            //Acount for screen scrolling
-            /*int currXStart = ourCircuit.getAtIndex(i).getxStart();
-            int currYStart = ourCircuit.getAtIndex(i).getyStart();
-            ourCircuit.getAtIndex(i).setxStart(currXStart + originoffsetX);
-            ourCircuit.getAtIndex(i).setxStart(currYStart + originoffsetY);
-            originoffsetX = 0;
-            originoffsetY = 0;*/
-            
             ourCircuit.getNGate(i).redraw(g);
          }
       }
@@ -422,6 +404,6 @@ public class BodyGUI extends JPanel
          drawnGates.get(i).drawWires(g, drawnGates);
       }
       }
-      ////System.out.println("made it");
+      //System.out.println("made it");
    }
 }
