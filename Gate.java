@@ -133,7 +133,7 @@ public abstract class Gate
       int height = yFinish-yStart;
       area.setBounds(xStart,yStart,width,height);
       
-      System.out.println("Rectangle top corner: "+xStart+", "+yStart);
+      //System.out.println("Rectangle top corner: "+xStart+", "+yStart);
       
       //Return the rectangle
       return area;

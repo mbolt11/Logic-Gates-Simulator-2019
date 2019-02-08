@@ -47,7 +47,7 @@ public class AND extends Gate
    
    public void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
-      System.out.println("Coord: "+xStart+", "+yStart);
+      //System.out.println("Coord: "+xStart+", "+yStart);
       
       ////System.out.println("AND drawn");
       size = 60;
@@ -83,7 +83,7 @@ public class AND extends Gate
    
    public void redrawGate(Graphics g)
    {
-      System.out.println("Coord: "+xStart+", "+yStart);
+      //System.out.println("Coord: "+xStart+", "+yStart);
       
       //Recalculate finish spots based on updated starts
       xFinish = xStart + size + (size/2) + 10;

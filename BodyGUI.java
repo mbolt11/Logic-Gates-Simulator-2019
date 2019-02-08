@@ -41,14 +41,14 @@ public class BodyGUI extends JPanel
    }
    
    //Accessor for origin offsets
-   /*public int getOX()
+   public int getOX()
    {
       return originoffsetX;
    }
    public int getOY()
    {
       return originoffsetY;
-   }*/
+   }
    
    //Setter for origin offsets
    public void setOriginOffsets(int xchange, int ychange)

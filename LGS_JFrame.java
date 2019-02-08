@@ -66,38 +66,43 @@ public class LGS_JFrame extends JFrame
       private int gateDX, gateDY;
       private int originDX, originDY;
       
+      //Point to hold where the mouse is clicking on translated screen
+      Point p = new Point(0,0);
+      
       public void mousePressed(MouseEvent e)
       {
          //Make sure we have the right circuit
          theCircuit = bodypanel.getCircuit();
          
          //Save the point
-         System.out.println("Mouse: "+e.getX()+", "+e.getY());
+         p = e.getPoint();
+         p.translate(-bodypanel.getOX(),-bodypanel.getOY());
+         System.out.println("Mouse: "+p.getX()+", "+p.getY());
          
          //Search through all the gates to see if the mouse clicked on it
          for(int i = 0; i < theCircuit.size(); i++)
          {
             //If the mouse click was within the area of the gate, save the index
-            if(theCircuit.getAtIndex(i).getAreaRect().contains(e.getPoint()))
+            if(theCircuit.getAtIndex(i).getAreaRect().contains(p))
             {
                gateClickedIndex = i;
                nGateClicked = -1;
                //System.out.println("Clicked on a gate");
-               gateDX = e.getX() - theCircuit.getAtIndex(i).getxStart();
-               gateDY = e.getY() - theCircuit.getAtIndex(i).getyStart();
+               gateDX = (int)p.getX() - theCircuit.getAtIndex(i).getxStart();
+               gateDY = (int)p.getY() - theCircuit.getAtIndex(i).getyStart();
                return;
             }
             
             //This checks the gates in inactiveGates
             if(i < theCircuit.Nsize())
             {
-               if(theCircuit.getNGate(i).getAreaRect().contains(e.getPoint()))
+               if(theCircuit.getNGate(i).getAreaRect().contains(p))
                {
                   nGateClicked = i;
                   gateClickedIndex = -1;
                   //System.out.println("Clicked on a gate");
-                  gateDX = e.getX() - theCircuit.getNGate(i).getxStart();
-                  gateDY = e.getY() - theCircuit.getNGate(i).getyStart();
+                  gateDX = (int)p.getX() - theCircuit.getNGate(i).getxStart();
+                  gateDY = (int)p.getY() - theCircuit.getNGate(i).getyStart();
                   return;
                }
             }
@@ -107,17 +112,21 @@ public class LGS_JFrame extends JFrame
          gateClickedIndex = -2;
          nGateClicked = -2;
          //System.out.println("Clicked on screen");
-         originDX = e.getX();
-         originDY = e.getY();
+         originDX = (int)p.getX();
+         originDY = (int)p.getY();
       }
       
       public void mouseDragged(MouseEvent e)
       {
+         //Update the point
+         p = e.getPoint();
+         p.translate(-bodypanel.getOX(),-bodypanel.getOY());
+         
          //If the gate clicked index is -1, scroll the screen
          if(gateClickedIndex < -1)
          {
             //Change the origin offsets as mouse is dragging
-            bodypanel.setOriginOffsets((e.getX()-originDX),(e.getY()-originDY));
+            bodypanel.setOriginOffsets(((int)p.getX()-originDX),((int)p.getY()-originDY));
             repaint();
          }
          
@@ -125,16 +134,16 @@ public class LGS_JFrame extends JFrame
          if(gateClickedIndex > -1)
          {  
             //Change the xStart and yStart positions of the gate according to the mouse drag
-            theCircuit.getAtIndex(gateClickedIndex).setxStart(e.getX()-gateDX);
-            theCircuit.getAtIndex(gateClickedIndex).setyStart(e.getY()-gateDY);
+            theCircuit.getAtIndex(gateClickedIndex).setxStart((int)p.getX()-gateDX);
+            theCircuit.getAtIndex(gateClickedIndex).setyStart((int)p.getY()-gateDY);
             repaint();
          }
          
          if(nGateClicked > -1)
          {
             //Change the xStart and yStart positions of the gate according to the mouse drag
-            theCircuit.getNGate(nGateClicked).setxStart(e.getX()-gateDX);
-            theCircuit.getNGate(nGateClicked).setyStart(e.getY()-gateDY);
+            theCircuit.getNGate(nGateClicked).setxStart((int)p.getX()-gateDX);
+            theCircuit.getNGate(nGateClicked).setyStart((int)p.getY()-gateDY);
             repaint();
          }  
       }        
