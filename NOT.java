@@ -61,9 +61,7 @@ public class NOT extends Gate
    }
    
    public void redrawGate(Graphics g)
-   {
-      g.setColor(Color.RED);
-      
+   {  
       //Update variables according to where x and y starts have moved
       xBaseCoord = (double)xStart;
       yBaseCoord = (double)yStart;

@@ -19,13 +19,18 @@ public abstract class Gate
    private ArrayList<Integer> inputints;
    protected ArrayList<Gate> inputs;
    protected boolean output;
+   private boolean isInCircuit;
    
    //gate GUI measurements
    protected int xInputWireSlot, yInputWireSlot, xOutputWireSlot, yOutputWireSlot;
    protected int xStart, yStart, xFinish, yFinish;
    protected int columnShift = 20;
    protected int rowShift = 20; //dont know if this is the best way to solve issue
-   protected Rectangle area;
+   
+   //Rectangle representations of the input, output area, and whole area
+   protected Rectangle inArea;
+   protected Rectangle outArea;
+   protected Rectangle wholeArea;
    
    //Constructor
    public Gate(int num_in, gatetype type_in)
@@ -38,9 +43,11 @@ public abstract class Gate
       colors.add(Color.GREEN);
       colors.add(Color.ORANGE);
       
-      //Assign num and type
+      //Assign num and type 
       gatenum = num_in;
       type = type_in;
+      
+      isInCircuit = false;
             
       //Instantiate both the input ArrayLists (ints and Gates)
       inputints = new ArrayList<Integer>();
@@ -56,8 +63,10 @@ public abstract class Gate
       xStart = 400;
       yStart = 410;
       
-      //Instantiate the area rectangle
-      area = new Rectangle();
+      //Instantiate the area rectangles
+      wholeArea = new Rectangle();
+      inArea = new Rectangle();
+      outArea = new Rectangle();
    }
    
    //Accessors for member variables
@@ -102,6 +111,11 @@ public abstract class Gate
       return value;
    }
    
+   public boolean isInCircuit()
+   {
+      return isInCircuit;
+   }
+   
    public int getxStart()
    { return xStart; }
    
@@ -138,10 +152,32 @@ public abstract class Gate
       //Re-draw the rectangle according to the x and y start positions
       int width = xFinish-xStart;
       int height = yFinish-yStart;
-      area.setBounds(xStart,yStart,width,height);
+      wholeArea.setBounds(xStart,yStart,width,height);
       
       //Return the rectangle
-      return area;
+      return wholeArea;
+   }
+   
+   public Rectangle getInputAreaRect()
+   {
+      //Re-draw the rectangle according to the x and y start positions
+      int halfwidth = (xFinish-xStart)/2;
+      int height = yFinish-yStart;
+      inArea.setBounds(xStart,yStart,halfwidth,height);
+      
+      //Return the rectangle
+      return inArea;
+   }
+   
+   public Rectangle getOutputAreaRect()
+   {
+      //Re-draw the rectangle according to the x and y start positions
+      int halfwidth = (xFinish-xStart)/2;
+      int height = yFinish-yStart;
+      outArea.setBounds((xStart+halfwidth),yStart,halfwidth,height);
+      
+      //Return the rectangle
+      return outArea;
    }
    
    //Setter method for output- this is calculated in child class
@@ -154,6 +190,12 @@ public abstract class Gate
    public void changeType(gatetype gt)
    {
       type = gt;
+   }
+   
+   //Method to call when the gate is officially added to the circuit
+   public void setIsInCircuit(boolean in)
+   {
+      isInCircuit = in;
    }
    
    //Adding and removing an input Gate (the actual Gate object)

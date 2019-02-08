@@ -233,8 +233,9 @@ public class BodyGUI extends JPanel
                   }
                }
 
-               //Add this gate to the circuit
+               //Add this gate to the circuit and mark that it is offically added
                ourCircuit.addGate(theGate);
+               theGate.setIsInCircuit(true);
                
                //Read the rest of the bytes as inputs 2 at a time until you read -1
                //Fill in arraylist of input integers with the values
@@ -393,16 +394,17 @@ public class BodyGUI extends JPanel
          for(int i = 0; i < ourCircuit.Nsize(); i++)
          {
             ourCircuit.getNGate(i).redraw(g);
+            drawnGates.add(ourCircuit.getNGate(i));
          }
       }
       
       if(drawnGates.size() > 0)
       {
-      //draws the wires to the gates
-      for(int i = 0; i < 9/*drawnGates.size()*/; i++)
-      {
-         drawnGates.get(i).drawWires(g, drawnGates);
-      }
+         //draws the wires to the gates
+         for(int i = 0; i < drawnGates.size(); i++)
+         {
+            drawnGates.get(i).drawWires(g, drawnGates);
+         }
       }
       //System.out.println("made it");
    }

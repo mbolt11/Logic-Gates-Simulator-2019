@@ -20,6 +20,10 @@ public class LGS_JFrame extends JFrame
    //Rectangle representation of the arrow button
    private Rectangle arrowbutton = new Rectangle(880,20,100,55);
    
+   //Variable for the gates where a new wire is drawn too/from
+   private Gate inGate;
+   private Gate outGate;
+   
    //JFrame Constructor
    public LGS_JFrame()
    {
@@ -79,10 +83,89 @@ public class LGS_JFrame extends JFrame
             editmode = !editmode;
             bodypanel.switchMode();
             repaint();
+            return;
          }
          
-         //If they click on an input while in play mode
+         //Search through all the gates in circuit to see if the mouse clicked on it
+         for(int i = 0; i < theCircuit.size(); i++)
+         {
+            //If the mouse click was within the area of the gate, save the index
+            if(theCircuit.getAtIndex(i).getInputAreaRect().contains(e.getPoint()))
+            {
+               //This is the gate that we will add an input too
+               inGate = theCircuit.getAtIndex(i);
+               System.out.println("Found in gate");
+            }
+            else if(theCircuit.getAtIndex(i).getOutputAreaRect().contains(e.getPoint()))
+            {
+               //This is the gate where the new output will come from
+               outGate = theCircuit.getAtIndex(i);
+               System.out.println("Found out gate");
+            }
+         }
          
+         //Search through new gates not in circuit
+         for(int i = 0; i < theCircuit.Nsize(); i++)
+         {
+            //If the mouse click was within the area of the gate, save the index
+            if(theCircuit.getNGate(i).getInputAreaRect().contains(e.getPoint()))
+            {
+               //This is the gate that we will add an input too
+               inGate = theCircuit.getNGate(i);
+               System.out.println("Found in gate");
+            }
+            else if(theCircuit.getNGate(i).getOutputAreaRect().contains(e.getPoint()))
+            {
+               //This is the gate where the new output will come from
+               outGate = theCircuit.getNGate(i);
+               System.out.println("Found out gate");
+            }
+         }
+         
+         //Draw a new wire if they clicked on both a start and an end
+         if(editmode && inGate != null && outGate != null)
+         {
+            System.out.println("Adding a wire");
+            inGate.addInput(outGate);
+            
+            //If it is a new gate now connected to the circuit, make adjustments
+            if(inGate.isInCircuit() || !outGate.isInCircuit())
+            {
+               theCircuit.addGate(outGate);
+               theCircuit.removeBebe(outGate.getGateNum());
+               outGate.setIsInCircuit(true);
+            }
+            else if(outGate.isInCircuit() || !inGate.isInCircuit())
+            {
+               theCircuit.addGate(inGate);
+               theCircuit.removeBebe(inGate.getGateNum());
+               inGate.setIsInCircuit(true);
+            }
+            
+            inGate = null;
+            outGate = null;
+            repaint();
+            return;
+         }
+         
+         //Switch the input T/F if in play mode
+         if(!editmode)
+         {
+            if((inGate != null) && (inGate.getStringType().equals("INPUT")))
+            {
+               inGate.setOutput(!inGate.getOutput());
+               bodypanel.allCircuitOutputs(theCircuit);
+            }
+            else if((outGate != null) && (outGate.getStringType().equals("INPUT")))
+            {
+               outGate.setOutput(!outGate.getOutput());
+               bodypanel.allCircuitOutputs(theCircuit);
+            }
+            inGate = null;
+            outGate = null;
+            repaint();
+            return;
+         } 
       }
       
       public void mousePressed(MouseEvent e)
@@ -90,7 +173,7 @@ public class LGS_JFrame extends JFrame
          //Make sure we have the right circuit
          theCircuit = bodypanel.getCircuit();
          
-         //Search through all the gates to see if the mouse clicked on it
+         //Search through all the gates in circuit to see if the mouse clicked on it
          for(int i = 0; i < theCircuit.size(); i++)
          {
             //If the mouse click was within the area of the gate, save the index
@@ -103,19 +186,19 @@ public class LGS_JFrame extends JFrame
                gateDY = e.getY() - theCircuit.getAtIndex(i).getyStart();
                return;
             }
-            
-            //This checks the gates in inactiveGates
-            if(i < theCircuit.Nsize())
+         }
+         
+         //Search through new gates not in circuit
+         for(int i = 0; i < theCircuit.Nsize(); i++)
+         {
+            if(theCircuit.getNGate(i).getAreaRect().contains(e.getPoint()))
             {
-               if(theCircuit.getNGate(i).getAreaRect().contains(e.getPoint()))
-               {
-                  nGateClicked = i;
-                  gateClickedIndex = -1;
-                  //System.out.println("Clicked on a gate");
-                  gateDX = e.getX() - theCircuit.getNGate(i).getxStart();
-                  gateDY = e.getY() - theCircuit.getNGate(i).getyStart();
-                  return;
-               }
+               nGateClicked = i;
+               gateClickedIndex = -1;
+               //System.out.println("Clicked on a gate");
+               gateDX = e.getX() - theCircuit.getNGate(i).getxStart();
+               gateDY = e.getY() - theCircuit.getNGate(i).getyStart();
+               return;
             }
          }
          
@@ -172,7 +255,7 @@ public class LGS_JFrame extends JFrame
    {
       public void actionPerformed(ActionEvent ae) 
       {
-         if (ae.getSource() == headerpanel.getOpen()) 
+         if (ae.getSource() == headerpanel.getOpen() && editmode) 
          {
             //Create a JPanel with custom options and a text field
             Object[] options = {"Open as ASCII File","Open as Binary File", "Cancel"};
@@ -195,7 +278,7 @@ public class LGS_JFrame extends JFrame
                bodypanel.ReadBinary(textField.getText());
             }
          } 
-         else if (ae.getSource() == headerpanel.getSave()) 
+         else if (ae.getSource() == headerpanel.getSave() && editmode) 
          {
             //Make sure we have the right circuit
             theCircuit = bodypanel.getCircuit();
@@ -236,53 +319,55 @@ public class LGS_JFrame extends JFrame
             Gate thegate;
             int gatenum = theCircuit.size()+1;
             gatenum += theCircuit.Nsize();
-            switch(input)
+            if(input != null)
             {
-               case "Input":
+               switch(input)
                {
-                  thegate = new INPUT(gatenum);
-                  break;
+                  case "Input":
+                  {
+                     thegate = new INPUT(gatenum);
+                     break;
+                  }
+                  case "Output":
+                  {
+                     thegate = new OUTPUT(gatenum);
+                     break;
+                  }
+                  case "And":
+                  {
+                     thegate = new AND(gatenum,false);
+                     break;
+                  }
+                  case "Nand":
+                  {
+                     thegate = new AND(gatenum,true);
+                     break;
+                  }
+                  case "Or":
+                  {
+                     thegate = new OR(gatenum,false);
+                     break;
+                  }
+                  case "Nor":
+                  {
+                     thegate = new OR(gatenum,true);
+                     break;
+                  }
+                  case "Not":
+                  {
+                     thegate = new NOT(gatenum);
+                     break;
+                  }
+                  default: //case: "XOr"
+                  {
+                     thegate = new XOR(gatenum);
+                     break;
+                  }
                }
-               case "Output":
-               {
-                  thegate = new OUTPUT(gatenum);
-                  break;
-               }
-               case "And":
-               {
-                  thegate = new AND(gatenum,false);
-                  break;
-               }
-               case "Nand":
-               {
-                  thegate = new AND(gatenum,true);
-                  break;
-               }
-               case "Or":
-               {
-                  thegate = new OR(gatenum,false);
-                  break;
-               }
-               case "Nor":
-               {
-                  thegate = new OR(gatenum,true);
-                  break;
-               }
-               case "Not":
-               {
-                  thegate = new NOT(gatenum);
-                  break;
-               }
-               default: //case: "XOr"
-               {
-                  thegate = new XOR(gatenum);
-                  break;
-               }
+               //Now add gate to inactive gates list
+               theCircuit.addBebe(thegate);
+               repaint();
             }
-            
-            //Now add gate to inactive gates list
-            theCircuit.addBebe(thegate);
-            repaint();
          }
       }
    }

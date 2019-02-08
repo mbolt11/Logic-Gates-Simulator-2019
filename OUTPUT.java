@@ -21,6 +21,8 @@ public class OUTPUT extends Gate
    
    public void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
+      g.setColor(Color.BLACK);
+      
       //output gates must be all the way to the right
       column = maxColumn;
       xStart = (int) ((((double)column/maxColumn) * 1000) - 150);
@@ -38,8 +40,8 @@ public class OUTPUT extends Gate
    }
    
    public void redrawGate(Graphics g)
-   {
-      g.setColor(Color.RED);
+   {  
+      g.setColor(Color.BLACK);
       
       //Recalculate finish spots based on updated starts
       xFinish = xStart + 100;

@@ -8,6 +8,7 @@ public class INPUT extends Gate
    public INPUT(int num_in)
    {
       super(num_in,gatetype.INPUT);
+      setOutput(false); //default to start
    }
    
    //Calculates result of gate... 
@@ -15,7 +16,6 @@ public class INPUT extends Gate
    public boolean calculateOutput()
    {
       //This changes according to user click
-      setOutput(false); //default to start
       return output;
    }
    
@@ -38,9 +38,7 @@ public class INPUT extends Gate
    }
    
    public void redrawGate(Graphics g)
-   {
-      g.setColor(Color.RED);
-      
+   {  
       //Recalculate finish spots based on updated starts
       xFinish = xStart + 100;
       yFinish = yStart + 95;
