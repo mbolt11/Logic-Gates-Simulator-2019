@@ -17,6 +17,7 @@ public class AND extends Gate
       }
       
       negate = negate_in;
+      size = 60;
    }
    
    //Calculates result of gate... 
@@ -50,7 +51,6 @@ public class AND extends Gate
       //System.out.println("Coord: "+xStart+", "+yStart);
       
       ////System.out.println("AND drawn");
-      size = 60;
       
       xStart = ((int) (((double)column/maxColumn) * 1000)) - 150 + (row*rowShift);
       yStart = ((int) (((double)row/maxRow) * 950)) + 65 + (column*columnShift);

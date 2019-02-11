@@ -25,10 +25,19 @@ public class Circuit
       inactiveGates.add(gate_in);
    }
    
+   //check for all instances that call this!!!!!!!!!!!!!
    public void removeBebe(int gatenum)
-   {
-      int index = gatenum-activeGates.size()-1;
-      inactiveGates.remove(index);
+   { 
+      //find the index more efficiently
+      for(int i = 0; i < inactiveGates.size(); i++)
+      {
+         if(inactiveGates.get(i).getGateNum() == gatenum)
+         {
+           //System.out.println("Gatenum: "+gatenum+", index: "+i);
+           inactiveGates.remove(i);
+           break; 
+         }
+      }
    }
    
    //Add and remove gates
@@ -77,6 +86,41 @@ public class Circuit
    public int Nsize()
    {
       return inactiveGates.size();
+   }
+   
+   public boolean isAttatched2Input(Gate nGate_in)
+   {
+      boolean result = false;
+      for(int i = 0; i < nGate_in.getInputs().size(); i++)
+      {
+         result = isAttatched2Input(nGate_in.getInputs().get(i));
+         if(result == true)
+            return result;
+      }
+      if(nGate_in.getStringType().equals("INPUT") && nGate_in.isInCircuit()) //Input must also be an active gate
+         result = true;
+      return result;
+   }
+   
+   public boolean isAttatched2Input_BeforeCircuit(Gate nGate_in)
+   {
+      boolean result = false;
+      for(int i = 0; i < nGate_in.getInputs().size(); i++)
+      {
+         result = isAttatched2Input_BeforeCircuit(nGate_in.getInputs().get(i));
+      }
+      if(nGate_in.getStringType().equals("INPUT")) //Add input to circuit
+      {
+         result = true;
+         
+         if(!nGate_in.isInCircuit())
+         {
+            addGate(nGate_in);
+            removeBebe(nGate_in.getGateNum());
+            nGate_in.setIsInCircuit(true);
+         }
+      }
+      return result;
    }
    
    //Method to sort the gates into number order

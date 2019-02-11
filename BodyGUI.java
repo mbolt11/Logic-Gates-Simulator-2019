@@ -54,7 +54,7 @@ public class BodyGUI extends JPanel
          Scanner readfile = new Scanner(infile);
          openning = true;
          
-         //Create a circuit object to put our gates in
+         //Create a new circuit object to put our gates in
          ourCircuit = new Circuit();
          
          //System.out.println("------FILE------");
@@ -121,8 +121,9 @@ public class BodyGUI extends JPanel
                   }
                }
 
-               //Add this gate to the circuit
+               //Add this gate to the circuit and mark that it is offically added
                ourCircuit.addGate(theGate);
+               theGate.setIsInCircuit(true);
                
                //If this gate has any inputs from previous gates, record them (just the numbers)
                while(readline.hasNextInt())

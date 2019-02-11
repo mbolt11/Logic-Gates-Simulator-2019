@@ -76,12 +76,85 @@ public class LGS_JFrame extends JFrame
       public void mouseClicked(MouseEvent e)
       {
          //If they click the arrow button
+         //May need to check circuit if they are making from scratch
+         //check if an inactive gate is connected to an input and an output --> add to circuit and sort circuit
          if(arrowbutton.contains(e.getPoint()))
          {
             //Switch between edit and play mode
             System.out.println("Clicked on arrow");
             editmode = !editmode;
             bodypanel.switchMode();
+            
+            //if the circuit object is empty, look in inactive gates for gates "attatched" to an input
+            //then look for if the same gates are "attatched" to an output
+            //does the circuit need to be sorted after adding a gate to it? --> if not optomizing I dont think so
+            if(theCircuit.size() == 0 /*&& !editmode*/)
+            {
+               System.out.println("Circuit is empty. Searching for valid ouputs and inputs");
+               //must search for all outputs connected to inputs first            
+               for(int i = 0; i < theCircuit.Nsize(); i++)
+               {
+                  //check if this output is connected to an input
+                  if(theCircuit.getNGate(i).getStringType().equals("OUTPUT"))
+                  {
+                     System.out.println("Found OUTPUT of gatenum:"+theCircuit.getNGate(i).getGateNum());
+                     Gate temp = theCircuit.getNGate((i));
+                     if(theCircuit.isAttatched2Input_BeforeCircuit(temp)) //input added in this function if needed; Also recursive boolean function  
+                     {
+                        System.out.println("Added OUTPUT of gatenum:"+temp.getGateNum());
+                        //input already added, now add the output
+                        theCircuit.removeBebe(temp.getGateNum());
+                        theCircuit.addGate(temp);
+                        temp.setIsInCircuit(true);
+                     }
+                  }
+               }
+               
+               if(theCircuit.size() > 0)
+               {
+                  System.out.println("Circuit has size "+theCircuit.size()+". Searching for other valid gates.");
+                  //search for possible active gates between an output and an input
+                  int [] possGateIndx = new int[theCircuit.Nsize()];
+                  int indxCount = 0;
+                  System.out.println("passGateIndx length is "+ possGateIndx.length);
+                  for(int i = 0; i < theCircuit.Nsize(); i++)
+                  {
+                     if(theCircuit.isAttatched2Input(theCircuit.getNGate(i))) //recursive boolean function
+                     {
+                        possGateIndx[indxCount] = i;
+                        indxCount++;
+                        System.out.println(theCircuit.getNGate(i).getStringType()+" possible");
+                     }
+                  }
+                  //search for possible active gates part 2
+                  for(int i = 0; i < theCircuit.size(); i++)
+                  {
+                     //check if any of the poss active gates are attatched to it
+                     if(theCircuit.getAtIndex(i).getStringType().equals("OUTPUT"))
+                     {
+                        for(int j = 0; j < indxCount; j++)
+                        {
+                           System.out.println("testing on output at index "+i);
+                           Gate temp = theCircuit.getNGate(possGateIndx[j]);
+                           if(theCircuit.getAtIndex(i).isAttatched2Gate(temp)) //recursive boolean function
+                           { 
+                              System.out.println(temp.getStringType()+" added");
+                              theCircuit.removeBebe(temp.getGateNum());
+                              theCircuit.addGate(temp);
+                              temp.setIsInCircuit(true);
+                              
+                              //now all indexes after the one just checked in possGateIndx must be reduced by 1
+                              for(int k = j; k < indxCount; k++)
+                              {
+                                 possGateIndx[k]--; 
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+            
             repaint();
             return;
          }
@@ -123,23 +196,127 @@ public class LGS_JFrame extends JFrame
          }
          
          //Draw a new wire if they clicked on both a start and an end
-         if(editmode && inGate != null && outGate != null)
+         //Prevent direct circular wiring
+         if(editmode && inGate != null && outGate != null && inGate != outGate)
          {
-            System.out.println("Adding a wire");
+            System.out.println("Adding a wire and adding to inputs arraylist");
             inGate.addInput(outGate);
             
+            System.out.println("InGate: "+inGate.isInCircuit()+" OutGate:"+outGate.isInCircuit());
+            
             //If it is a new gate now connected to the circuit, make adjustments
-            if(inGate.isInCircuit() || !outGate.isInCircuit())
+            if(inGate.isInCircuit() && !outGate.isInCircuit())
             {
+               System.out.println("Checking all connections for outGate");
                theCircuit.addGate(outGate);
                theCircuit.removeBebe(outGate.getGateNum());
                outGate.setIsInCircuit(true);
+               
+               //check for if the outGate is connected to any other gates that are inactive and make them active
+               //add all its inputs first
+               outGate.activateInputs(theCircuit); //recursive
+               //add all its outputs next && all the output's inputs if they exist --> takes care of its own inputs too
+               outGate.activateOutputs(theCircuit); //uses above recursive method
             }
-            else if(outGate.isInCircuit() || !inGate.isInCircuit())
+            else if(outGate.isInCircuit() && !inGate.isInCircuit())
             {
+               System.out.println("Checking all connections for inGate");
                theCircuit.addGate(inGate);
                theCircuit.removeBebe(inGate.getGateNum());
                inGate.setIsInCircuit(true);
+               
+               //check for if the inGate is connected to any other gates that are inactive and make them active
+               //add all its inputs first
+               inGate.activateInputs(theCircuit); //recursive
+               //add all its outputs next && all the output's inputs if they exist --> takes care of its own inputs too
+               inGate.activateOutputs(theCircuit); //uses above recursive method
+            }
+            //If both gates are not in the circuit then need to check if they an inactive input and inactive output have been connected
+            //check for another mini circuit that is created needs to be added to theCircuit object
+            else
+            {
+               System.out.println("Checking for new mini circuit");
+               //must search for all outputs connected to inputs first            
+               for(int i = 0; i < theCircuit.Nsize(); i++)
+               {
+                  //check if this output is connected to an input
+                  if(theCircuit.getNGate(i).getStringType().equals("OUTPUT"))
+                  {
+                     //System.out.println("Found OUTPUT of gatenum:"+theCircuit.getNGate(i).getGateNum());
+                     Gate temp = theCircuit.getNGate((i));
+                     if(theCircuit.isAttatched2Input_BeforeCircuit(temp)) //input added in this function if needed; Also recursive boolean function  
+                     {
+                        //System.out.println("Added OUTPUT of gatenum:"+temp.getGateNum());
+                        //input already added, now add the output
+                        theCircuit.removeBebe(temp.getGateNum());
+                        theCircuit.addGate(temp);
+                        temp.setIsInCircuit(true);
+                     }
+                  }
+               }
+               
+               //check for inactive gates between the new 
+               //System.out.println("Circuit has size "+theCircuit.size()+". Searching for other valid gates.");
+                  //search for possible active gates between an output and an input
+                  int [] possGateIndx = new int[theCircuit.Nsize()];
+                  int indxCount = 0;
+                  System.out.println("possGateIndx length is "+ possGateIndx.length);
+                  for(int i = 0; i < theCircuit.Nsize(); i++)
+                  {
+                     if(theCircuit.isAttatched2Input(theCircuit.getNGate(i))) //recursive boolean function
+                     {
+                        possGateIndx[indxCount] = i;
+                        indxCount++;
+                        System.out.println(theCircuit.getNGate(i).getStringType()+" possible");
+                     }
+                  }
+                  //search for possible active gates part 2
+                  for(int i = 0; i < theCircuit.size(); i++)
+                  {
+                     //check if any of the poss active gates are attatched to it
+                     if(theCircuit.getAtIndex(i).getStringType().equals("OUTPUT"))
+                     {
+                        for(int j = 0; j < indxCount; j++)
+                        {
+                           //System.out.println("testing on output at index "+i);
+                           Gate temp = theCircuit.getNGate(possGateIndx[j]);
+                           if(theCircuit.getAtIndex(i).isAttatched2Gate(temp)) //recursive boolean function
+                           { 
+                              System.out.println(temp.getStringType()+" added");
+                              theCircuit.removeBebe(temp.getGateNum());
+                              theCircuit.addGate(temp);
+                              temp.setIsInCircuit(true);
+                              
+                              //now all indexes after the one just checked in possGateIndx must be reduced by 1
+                              for(int k = j; k < indxCount; k++)
+                              {
+                                 possGateIndx[k]--; 
+                              }
+                           }
+                        }
+                     }
+                  } 
+                  //searching for possible active gates part 3
+                  ArrayList<Integer> ApossGateIndx = new ArrayList<Integer>();
+                  for(int i = 0; i < theCircuit.Nsize(); i++)
+                  {
+                     Gate temp = theCircuit.getNGate(i);
+                     //if NGate directly touching active gate then activate itself and all its inputs and outputs
+                     if(temp.isTouchingActiveGate(theCircuit))
+                     {
+                        //add the current gate
+                        theCircuit.addGate(temp);
+                        theCircuit.removeBebe(temp.getGateNum());
+                        temp.setIsInCircuit(true);
+                        
+                        //check for if the inGate is connected to any other gates that are inactive and make them active
+                        //add all its inputs first
+                        temp.activateInputs(theCircuit); //recursive
+                        //add all its outputs next && all the output's inputs if they exist --> takes care of its own inputs too
+                        temp.activateOutputs(theCircuit);
+                        i = 0;
+                     }
+                  }
             }
             
             inGate = null;
@@ -151,6 +328,7 @@ public class LGS_JFrame extends JFrame
          //Switch the input T/F if in play mode
          if(!editmode)
          {
+            //recalculates the outputs if they switch an input gate value
             if((inGate != null) && (inGate.getStringType().equals("INPUT")))
             {
                inGate.setOutput(!inGate.getOutput());
@@ -212,7 +390,7 @@ public class LGS_JFrame extends JFrame
       
       public void mouseDragged(MouseEvent e)
       {
-         //If the gate clicked index is -1, scroll the screen
+         //If the gate clicked index is less than -1, scroll the screen
          if(gateClickedIndex < -1)
          {
             //Change the offsets of all the gate start positions
@@ -319,6 +497,8 @@ public class LGS_JFrame extends JFrame
             Gate thegate;
             int gatenum = theCircuit.size()+1;
             gatenum += theCircuit.Nsize();
+            System.out.println("Active Size:"+theCircuit.size()+" Inactive Size:"+theCircuit.Nsize());
+            System.out.println("Gatenum: "+gatenum);
             if(input != null)
             {
                switch(input)

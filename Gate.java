@@ -116,6 +116,25 @@ public abstract class Gate
       return isInCircuit;
    }
    
+   public boolean isAttatched2Gate(Gate gate)
+   {
+      boolean result = false;
+      
+      for(int i = 0; i < inputs.size(); i++)
+      {
+         if(result == true)
+            break;
+         if(inputs.get(i).getGateNum() == gate.getGateNum())
+            return true;
+         else
+         {
+            result = inputs.get(i).isAttatched2Gate(gate);
+         }
+      }
+      
+      return result;
+   }
+   
    public int getxStart()
    { return xStart; }
    
@@ -198,6 +217,75 @@ public abstract class Gate
       isInCircuit = in;
    }
    
+   public boolean isTouchingActiveGate(Circuit circuit_in)
+   {
+      //check only its immediate inputs
+      for(int i = 0; i < inputs.size(); i++)
+      {
+         if(inputs.get(i).isInCircuit())
+         {
+            System.out.println("is an output to an active gate");
+            return true;
+         }
+      }
+      
+      //check if any active gates are attatched to it immediately
+      for(int i = 0; i < circuit_in.size(); i++)
+      {
+         //System.out.println("Gate "+ circuit_in.get(i).getStringType());
+         //System.out.println("Inputs: "+ circuit_in.get(i).getInputs());
+         //System.out.println("Inputs num: "+ circuit_in.get(i).getInputs().size());
+         for(int j = 0; j < circuit_in.getAtIndex(i).getInputs().size(); j++)
+         {
+            if(circuit_in.getAtIndex(i).getInputs().get(j) == this)
+            {
+               System.out.println("is an input to an active gate");
+               return true;
+            }
+         }
+      }
+      
+      return false;
+   }
+   
+   public void activateInputs(Circuit currentCircuit)
+   {
+      for(int i = 0; i < inputs.size(); i++)
+      {
+         if(!inputs.get(i).isInCircuit())
+         {
+            Gate temp = inputs.get(i);
+            currentCircuit.removeBebe(temp.getGateNum());
+            currentCircuit.addGate(temp);
+            temp.setIsInCircuit(true);
+         }
+         
+         inputs.get(i).activateInputs(currentCircuit);   
+      }
+   }
+   
+   public void activateOutputs(Circuit currentCircuit)
+   {
+      for(int i = 0; i < currentCircuit.Nsize(); i++)
+      {  
+         if(!currentCircuit.getNGate(i).isInCircuit())
+         {
+            if(currentCircuit.getNGate(i).isAttatched2Gate(this))
+            {
+               //activate this gate's inputs
+               currentCircuit.getNGate(i).activateInputs(currentCircuit);
+               
+               //activate this gate
+               Gate temp = currentCircuit.getNGate(i);
+               currentCircuit.removeBebe(temp.getGateNum());
+               currentCircuit.addGate(temp);
+               temp.setIsInCircuit(true);
+               i--;
+            }
+         }
+      }
+   }  
+   
    //Adding and removing an input Gate (the actual Gate object)
    //Must remember to call calculateDepth after every time you call one of these methods
    public void addInput(Gate inGate)
@@ -264,6 +352,8 @@ public abstract class Gate
    public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
        //first draw the gate
+       if(!isInCircuit())
+         g.setColor(Color.RED);
        drawGate(g, row, column, maxColumn, maxRow);
        
        /*//draw the boundaries for checking PLEASE DONT REMOVE
@@ -273,11 +363,13 @@ public abstract class Gate
        g.drawLine(xStart - 20, yFinish + 5, xFinish + 5, yFinish + 5);
        g.drawLine(xFinish + 5, yStart - 5, xFinish + 5, yFinish + 5);*/
        
+       /*
        g.setColor(Color.RED);
        g.drawLine(xStart, yStart, xFinish, yStart);
        g.drawLine(xStart, yStart, xStart, yFinish);
        g.drawLine(xStart, yFinish, xFinish, yFinish);
        g.drawLine(xFinish, yStart, xFinish, yFinish);
+       */
        
        
        //draw the output in the gate
@@ -289,14 +381,18 @@ public abstract class Gate
    //This is used for repainting when editing
    public void redraw(Graphics g)
    {
+      if(!isInCircuit())
+         g.setColor(Color.RED);
       redrawGate(g);
       
       //Testing area rectangle
+      /*
       g.setColor(Color.RED);
        g.drawLine(xStart, yStart, xFinish, yStart);
        g.drawLine(xStart, yStart, xStart, yFinish);
        g.drawLine(xStart, yFinish, xFinish, yFinish);
        g.drawLine(xFinish, yStart, xFinish, yFinish);
+       */
 
       
       //draw the output in the gate

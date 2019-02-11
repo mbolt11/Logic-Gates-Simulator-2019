@@ -70,7 +70,7 @@ public class XOR extends Gate
       
       xInputWireSlot = xStart;
       yInputWireSlot = yStart + 47;
-      xOutputWireSlot = xInputWireSlot + 100;
-      yOutputWireSlot = yInputWireSlot;
+      xOutputWireSlot = xInputWireSlot + 95;
+      yOutputWireSlot = yInputWireSlot + 3;
    }
 }

@@ -65,6 +65,14 @@ public class OR extends Gate
       xOutputWireSlot = xInputWireSlot + 95;
       yOutputWireSlot = yInputWireSlot + 3;
       
+      if(negate)
+      {
+         int circleXStart = xOutputWireSlot;
+         int circleYStart = yStart + 45;
+         g.drawOval(circleXStart, circleYStart, 10, 10);
+         xOutputWireSlot += 10;
+      }
+      
       //System.out.println("OR drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
    }
    
@@ -83,7 +91,15 @@ public class OR extends Gate
       
       xInputWireSlot = xStart;
       yInputWireSlot = yStart + 47;
-      xOutputWireSlot = xInputWireSlot + 100;
-      yOutputWireSlot = yInputWireSlot;
+      xOutputWireSlot = xInputWireSlot + 95;
+      yOutputWireSlot = yInputWireSlot + 3;
+      
+      if(negate)
+      {
+         int circleXStart = xOutputWireSlot;
+         int circleYStart = yStart + 45;
+         g.drawOval(circleXStart, circleYStart, 10, 10);
+         xOutputWireSlot += 10;
+      }
    }
 }
