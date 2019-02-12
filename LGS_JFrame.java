@@ -194,6 +194,7 @@ public class LGS_JFrame extends JFrame
             {
                System.out.println("Adding a wire and adding to inputs arraylist");
                inGate.addInput(outGate);
+               inGate.addInputInt(outGate.getGateNum());
                
                System.out.println("InGate: "+inGate.isInCircuit()+" OutGate:"+outGate.isInCircuit());
                

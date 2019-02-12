@@ -253,6 +253,7 @@ public class BodyGUI extends JPanel
                   byte[] input = new byte[2];
                   istream.read(input);
                   inputInt = (input[1] << 8) | input[0];
+                  System.out.println("Gate "+numInt+" input: "+inputInt);
                   
                   //If the value is -1, we have reached the "end of the line"
                   if(inputInt != -1)

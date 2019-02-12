@@ -262,8 +262,6 @@ public class Circuit
       try
       {
          //Create a file with the given name and assign it to an output stream
-         //File outfile = new File(filename);
-         //outfile.createNewFile();
          FileOutputStream fostream = new FileOutputStream(filename);
          //System.out.println(activeGates.size());
                   

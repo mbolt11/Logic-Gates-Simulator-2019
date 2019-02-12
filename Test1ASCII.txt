@@ -1,0 +1,6 @@
+1 input
+2 output
+3 and
+6 input
+5 output
+4 or
