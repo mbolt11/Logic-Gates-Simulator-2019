@@ -434,13 +434,13 @@ public class LGS_JFrame extends JFrame
             for(int i = 0; i < theCircuit.size(); i++)
             {
                theCircuit.getAtIndex(i).translate((e.getX()-originDX),(e.getY()-originDY));
-               
-               //This changes the offset of gates in inactiveGates
-               if(i < theCircuit.Nsize())
-               {
-                  theCircuit.getNGate(i).translate((e.getX()-originDX),(e.getY()-originDY));
-               }
             }
+            //This changes the offset of gates in inactiveGates
+            for(int i = 0; i < theCircuit.Nsize(); i++)
+            {
+               theCircuit.getNGate(i).translate((e.getX()-originDX),(e.getY()-originDY));
+            }
+               
             originDX = e.getX();
             originDY = e.getY();
             repaint();

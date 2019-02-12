@@ -9,6 +9,7 @@ import java.nio.*;
 
 public class BodyGUI extends JPanel
 {
+   public static BodyGUI panel;
    private Circuit ourCircuit;
    private boolean editmode;//Whether we are in editmode or not
    private boolean openning;//Whether we are opening/optimizing or not
@@ -33,15 +34,20 @@ public class BodyGUI extends JPanel
       super();
       
       editmode = true;
+      panel = this;
       
       setPreferredSize(new Dimension(1000,950));   
       setBackground(Color.WHITE);
    }
    
-   //Method to switch in and out of editmode
+   //Method to switch in and out of editmode and access
    public void switchMode()
    {
       editmode = !editmode;
+   }
+   public boolean isInEdit()
+   {
+      return editmode;
    }
    
    //Method to read a circuit in from an ascii file

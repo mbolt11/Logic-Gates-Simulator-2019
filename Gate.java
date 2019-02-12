@@ -371,11 +371,13 @@ public abstract class Gate
        g.drawLine(xFinish, yStart, xFinish, yFinish);
        */
        
-       
-       //draw the output in the gate
-       g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
-       g.setColor(Color.BLACK);
-       g.drawString(Integer.toString(getOutputInt()),(xStart + ((xFinish-xStart)/2) - 10), (yStart + ((yFinish-yStart)/2) + 10));
+       if(!BodyGUI.panel.isInEdit())
+       {
+          //draw the output in the gate
+          g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+          g.setColor(Color.BLACK);
+          g.drawString(Integer.toString(getOutputInt()),(xStart + ((xFinish-xStart)/2) - 10), (yStart + ((yFinish-yStart)/2) + 10));
+       }
    }
    
    //This is used for repainting when editing
@@ -394,11 +396,13 @@ public abstract class Gate
        g.drawLine(xFinish, yStart, xFinish, yFinish);
        */
 
-      
-      //draw the output in the gate
-      g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
-      g.setColor(Color.BLACK);
-      g.drawString(Integer.toString(getOutputInt()),(xStart + ((xFinish-xStart)/2) - 10), (yStart + ((yFinish-yStart)/2) + 10));
+      if(!BodyGUI.panel.isInEdit())
+      {
+         //draw the output in the gate
+         g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+         g.setColor(Color.BLACK);
+         g.drawString(Integer.toString(getOutputInt()),(xStart + ((xFinish-xStart)/2) - 10), (yStart + ((yFinish-yStart)/2) + 10));
+      }
    }
    
    //draws wires from each input gate to the current gate
