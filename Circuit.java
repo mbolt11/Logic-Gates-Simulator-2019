@@ -88,6 +88,7 @@ public class Circuit
       return inactiveGates.size();
    }
    
+   
    public boolean isAttatched2Input(Gate nGate_in)
    {
       boolean result = false;
@@ -121,6 +122,28 @@ public class Circuit
          }
       }
       return result;
+   }
+   
+   public void AddConnectedInactiveGates()
+   {
+      //search through each gate in Ngates, and if one of its inputs is active then make active
+      //then research from beginning
+      for(int i = 0; i < inactiveGates.size(); i++)
+      {
+         for(int j = 0; j < inactiveGates.get(i).getInputs().size(); j++)
+         {
+            if(inactiveGates.get(i).getInputs().get(j).isInCircuit())
+            {
+               //add the Ngate to the circuit and reset i = 0
+               Gate temp = inactiveGates.get(i);
+               addGate(temp);
+               removeBebe(temp.getGateNum());
+               temp.setIsInCircuit(true);
+               i = 0;
+               break;
+            }
+         }
+      }
    }
    
    //Method to sort the gates into number order
