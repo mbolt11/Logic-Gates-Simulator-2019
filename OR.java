@@ -18,20 +18,27 @@ public class OR extends Gate
       negate = negate_in;
    }
    
-   //Calculates result of gate // ERROR!!!!!!!!!!!!!!!!!!!!!!
-   //I haven't figured out where to call this from yet
    public boolean calculateOutput()
    {
-      boolean result = false;
-      //Calculate result of OR for all input lines
-      if(inputs.size() >= 2)
-      {boolean wire1 = inputs.get(0).calculateOutput();
-      boolean wire2 = inputs.get(1).calculateOutput();
-      result = wire1 || wire2;
-      for(int i=2; i<inputs.size(); i++)
+      boolean result;
+      if(inputs.size() == 0)
       {
-         result = result || inputs.get(i).calculateOutput();
-      }}
+         result = false;
+      }
+      else if(inputs.size() == 1)
+      {
+         result = inputs.get(0).calculateOutput();
+      }
+      else
+      {
+         boolean wire1 = inputs.get(0).calculateOutput();
+         boolean wire2 = inputs.get(1).calculateOutput();
+         result = wire1 || wire2;
+         for(int i=2; i<inputs.size(); i++)
+         {
+            result = result || inputs.get(i).calculateOutput();
+         }
+      }
       
       //Negate if it is a NOR
       if(negate)

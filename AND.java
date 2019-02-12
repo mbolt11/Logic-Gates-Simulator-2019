@@ -24,13 +24,25 @@ public class AND extends Gate
    //I haven't figured out where to call this from yet
    public boolean calculateOutput()
    {
-      //Calculate result of AND for all input lines
-      boolean wire1 = inputs.get(0).calculateOutput();
-      boolean wire2 = inputs.get(1).calculateOutput();
-      boolean result = wire1 && wire2;
-      for(int i=2; i<inputs.size(); i++)
+      boolean result;
+      if(inputs.size() == 0)
       {
-         result = result && inputs.get(i).calculateOutput();
+         result = false;
+      }
+      else if(inputs.size() == 1)
+      {
+         result = inputs.get(0).calculateOutput();
+      }
+      else
+      {
+         //Calculate result of AND for all input lines
+         boolean wire1 = inputs.get(0).calculateOutput();
+         boolean wire2 = inputs.get(1).calculateOutput();
+         result = wire1 && wire2;
+         for(int i=2; i<inputs.size(); i++)
+         {
+            result = result && inputs.get(i).calculateOutput();
+         }
       }
       
       //Negate if it is a NAND

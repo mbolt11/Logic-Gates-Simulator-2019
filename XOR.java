@@ -15,12 +15,17 @@ public class XOR extends Gate
    public boolean calculateOutput()
    {
       boolean result = false;
-      //Calculate result of XOR for all input lines
+      
+      if(inputs.size() < 2)
+      {
+         result = false;
+      }
       if(inputs.size() >= 2)
-      {boolean wire1 = inputs.get(0).calculateOutput();
-      boolean wire2 = inputs.get(1).calculateOutput();
-      result = ((wire1 && !wire2) || (!wire1 && wire2));}
-      //Can't do more than 2 input lines for an XOR, right??
+      {
+         boolean wire1 = inputs.get(0).calculateOutput();
+         boolean wire2 = inputs.get(1).calculateOutput();
+         result = ((wire1 && !wire2) || (!wire1 && wire2));
+      }
       
       //Set the output variable according to result
       setOutput(result);

@@ -15,7 +15,8 @@ public class OUTPUT extends Gate
    public boolean calculateOutput()
    {
       //This is the same as its input line
-      setOutput(inputs.get(0).calculateOutput());
+      if(inputs.size() > 0)
+         setOutput(inputs.get(0).calculateOutput());
       return output;
    }
    
