@@ -67,9 +67,9 @@ public class OR extends Gate
       //draw third arc
       g.drawArc(xStart - 100, yStart - 50, 200, 150, -100, 80);
       
-      xInputWireSlot = xStart;
+      xInputWireSlot = xStart - 10;
       yInputWireSlot = yStart + 47;
-      xOutputWireSlot = xInputWireSlot + 95;
+      xOutputWireSlot = xInputWireSlot + 105;
       yOutputWireSlot = yInputWireSlot + 3;
       
       if(negate)
@@ -96,9 +96,9 @@ public class OR extends Gate
       //draw third arc
       g.drawArc(xStart - 100, yStart - 50, 200, 150, -100, 80);
       
-      xInputWireSlot = xStart;
+      xInputWireSlot = xStart - 10;
       yInputWireSlot = yStart + 47;
-      xOutputWireSlot = xInputWireSlot + 95;
+      xOutputWireSlot = xInputWireSlot + 105;
       yOutputWireSlot = yInputWireSlot + 3;
       
       if(negate)

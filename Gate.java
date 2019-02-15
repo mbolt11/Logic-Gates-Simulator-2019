@@ -38,7 +38,7 @@ public abstract class Gate
       colors = new ArrayList<Color>();
       colors.add(Color.MAGENTA);
       colors.add(Color.BLUE);
-      colors.add(Color.YELLOW);
+      colors.add(Color.RED);
       colors.add(Color.PINK);
       colors.add(Color.GREEN);
       colors.add(Color.ORANGE);
@@ -109,6 +109,11 @@ public abstract class Gate
          value = 1;
       
       return value;
+   }
+   
+   public void resetColorCount()
+   {
+      colorCount = 0;
    }
    
    public boolean isInCircuit()
@@ -418,13 +423,15 @@ public abstract class Gate
       int totalInputs = inputs.size();
       double interval = 85.0/totalInputs;
       
-      g.setColor(colors.get(colorCount));
-      colorCount++;
-      if(colorCount>=colors.size())
-         colorCount = 0;
+      
       //connect to its inputs
       for(int i = 0; i < inputs.size(); i++)
       {
+         g.setColor(colors.get(colorCount));
+         colorCount++;
+         if(colorCount>=colors.size())
+            colorCount = 0;
+           
          xWireStart = inputs.get(i).getxOutputSlot();
          yWireStart = inputs.get(i).getyOutputSlot();
          origgateNum = inputs.get(i).getGateNum();

@@ -50,9 +50,9 @@ public class XOR extends Gate
       //draw third arc
       g.drawArc(xStart - 100, yStart - 50, 200, 150, -100, 80);
       
-      xInputWireSlot = xStart;
+      xInputWireSlot = xStart - 20;
       yInputWireSlot = yStart + 47;
-      xOutputWireSlot = xInputWireSlot + 95;
+      xOutputWireSlot = xInputWireSlot + 115;
       yOutputWireSlot = yInputWireSlot + 3;
       
       //System.out.println("XOR drawn at row,column: "+ row + "," +column + " at coord: "+ xStart + "," + yStart);
@@ -73,9 +73,9 @@ public class XOR extends Gate
       //draw third arc
       g.drawArc(xStart - 100, yStart - 50, 200, 150, -100, 80);
       
-      xInputWireSlot = xStart;
+      xInputWireSlot = xStart - 20;
       yInputWireSlot = yStart + 47;
-      xOutputWireSlot = xInputWireSlot + 95;
+      xOutputWireSlot = xInputWireSlot + 115;
       yOutputWireSlot = yInputWireSlot + 3;
    }
 }

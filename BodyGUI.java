@@ -268,6 +268,13 @@ public class BodyGUI extends JPanel
             }
          }
          
+         //Print what is in the circuit for debugging
+         /*for(int i=1; i<ourCircuit.size()+1; i++)
+         {
+            System.out.println(ourCircuit.get(i).getStringType()+":");
+            System.out.println("Gate Num:"+ourCircuit.get(i).getGateNum());
+         }*/
+         
          //Now that all gates have been made we can fill the ArrayList of input Gates for each one
          populateInputGates(ourCircuit);
          
@@ -304,6 +311,9 @@ public class BodyGUI extends JPanel
       //For every gate in the circuit
       for(int i=1; i < circuit_in.size()+1; i++)
       {
+         System.out.println("Gate: "+circuit_in.get(i));
+         System.out.println("Gate input zero:"+circuit_in.get(i).getInputInts());
+         
          //For every input line of that gate
          for(int j=0; j < circuit_in.get(i).getInputInts().size(); j++)
          {
@@ -411,6 +421,9 @@ public class BodyGUI extends JPanel
          //draws the wires to the gates
          for(int i = 0; i < drawnGates.size(); i++)
          {
+            if(i == 0)
+               drawnGates.get(i).resetColorCount();
+               
             drawnGates.get(i).drawWires(g, drawnGates);
          }
       }
