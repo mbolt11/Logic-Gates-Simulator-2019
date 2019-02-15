@@ -6,7 +6,7 @@
 6 input
 7 input
 8 input
-9 false
+9 true
 10 xor 1 5
 11 xor 10 9
 12 and 10 9

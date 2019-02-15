@@ -153,22 +153,21 @@ public class Circuit
    //Method to sort the gates into number order
    public void sortCircuit()
    {
-      ArrayList<Gate> temp = new ArrayList<Gate>();
-      int counter = 1;
-      while(activeGates.size() > 0)
-      {
-         for(int i = 0; i < activeGates.size(); i++)
-         {
-            if(activeGates.get(i).getGateNum() == counter)
-            {
-               temp.add(activeGates.get(i));
-               activeGates.remove(i);
-               break;
-            }
-         }
-         counter++;
+      //Insertion sort
+      int i, j, num; 
+      Gate temp;
+      for (i = 1; i < activeGates.size(); i++) 
+      { 
+         temp = activeGates.get(i);
+         num = temp.getGateNum(); 
+         j = i-1; 
+         while (j >= 0 && activeGates.get(j).getGateNum() > num) 
+         { 
+             activeGates.set(j+1,activeGates.get(j)); 
+             j = j-1; 
+         } 
+         activeGates.set(j+1,temp); 
       }
-      activeGates = temp;
    }
    
    //Method to calculate the depth for all the gates in the circuit

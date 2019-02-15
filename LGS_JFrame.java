@@ -84,6 +84,10 @@ public class LGS_JFrame extends JFrame
             System.out.println("Clicked on arrow");
             editmode = !editmode;
             bodypanel.switchMode();
+            if(editmode)
+               headerpanel.setMessage("Edit Mode");
+            else
+               headerpanel.setMessage("Play Mode");
             
             //if the circuit object is empty, look in inactive gates for gates "attatched" to an input
             //then look for if the same gates are "attatched" to an output
@@ -123,12 +127,16 @@ public class LGS_JFrame extends JFrame
             {
                //This is the gate that we will add an input too
                inGate = theCircuit.getAtIndex(i);
+               if(editmode)
+                  headerpanel.setMessage("Adding input to Gate "+String.valueOf(inGate.getGateNum()));
                //System.out.println("Found in gate");
             }
             else if(theCircuit.getAtIndex(i).getOutputAreaRect().contains(e.getPoint()))
             {
                //This is the gate where the new output will come from
                outGate = theCircuit.getAtIndex(i);
+               if(editmode)
+                  headerpanel.setMessage("Adding output from Gate "+String.valueOf(outGate.getGateNum()));
                //System.out.println("Found out gate");
             }
          }
@@ -141,12 +149,16 @@ public class LGS_JFrame extends JFrame
             {
                //This is the gate that we will add an input too
                inGate = theCircuit.getNGate(i);
+               if(editmode)
+                  headerpanel.setMessage("Adding input to Gate "+String.valueOf(inGate.getGateNum()));
                //System.out.println("Found in gate");
             }
             else if(theCircuit.getNGate(i).getOutputAreaRect().contains(e.getPoint()))
             {
                //This is the gate where the new output will come from
                outGate = theCircuit.getNGate(i);
+               if(editmode)
+                  headerpanel.setMessage("Adding output from Gate "+String.valueOf(outGate.getGateNum()));
                //System.out.println("Found out gate");
             }
          }
@@ -158,11 +170,13 @@ public class LGS_JFrame extends JFrame
             //Series of checks to make sure this new wire is valid
             boolean draw = true;
             String ingatetype = inGate.getStringType();
-            if(ingatetype.equals("INPUT"))
+            if(ingatetype.equals("INPUT") || ingatetype.equals("TRUE") || ingatetype.equals("FALSE"))
             {
-               JOptionPane.showMessageDialog(null,"Cannot add an input wire to an input gate.",
+               JOptionPane.showMessageDialog(null,"Cannot add an input wire to this gate.",
                   "Error",JOptionPane.ERROR_MESSAGE);
                draw = false;
+               headerpanel.setMessage("Edit Mode");
+               inGate = null;
             }
             if(ingatetype.equals("OUTPUT") || ingatetype.equals("NOT"))
             {
@@ -171,6 +185,8 @@ public class LGS_JFrame extends JFrame
                   JOptionPane.showMessageDialog(null,"Cannot add another input wire to this gate.",
                      "Error",JOptionPane.ERROR_MESSAGE);
                   draw = false;
+                  headerpanel.setMessage("Edit Mode");
+                  inGate = null;
                }
             }
             if(ingatetype.equals("XOR"))
@@ -180,6 +196,8 @@ public class LGS_JFrame extends JFrame
                   JOptionPane.showMessageDialog(null,"Cannot add more than 2 input wires to an XOR gate.",
                      "Error",JOptionPane.ERROR_MESSAGE);
                   draw = false;
+                  headerpanel.setMessage("Edit Mode");
+                  inGate = null;
                }
             }
             if(outGate.getStringType().equals("OUTPUT"))
@@ -187,6 +205,8 @@ public class LGS_JFrame extends JFrame
                JOptionPane.showMessageDialog(null,"Output gate cannot have an output wire.",
                      "Error",JOptionPane.ERROR_MESSAGE);
                draw = false;  
+               headerpanel.setMessage("Edit Mode");
+               outGate = null;
             }
             
             //If the new wire passed all the validity tests above, draw it
@@ -195,6 +215,7 @@ public class LGS_JFrame extends JFrame
                System.out.println("Adding a wire and adding to inputs arraylist");
                inGate.addInput(outGate);
                inGate.addInputInt(outGate.getGateNum());
+               headerpanel.setMessage("Drew wire");
                
                //System.out.println("InGate: "+inGate.isInCircuit()+" OutGate:"+outGate.isInCircuit());
                
@@ -362,130 +383,153 @@ public class LGS_JFrame extends JFrame
    {
       public void actionPerformed(ActionEvent ae) 
       {
-         if (ae.getSource() == headerpanel.getOpen() && editmode) 
+         if (ae.getSource() == headerpanel.getOpen()) 
          {
-            //Create a JPanel with custom options and a text field
-            Object[] options = {"Open as ASCII File","Open as Binary File", "Cancel"};
-            JPanel openpanel = new JPanel();
-            openpanel.add(new JLabel("Name of file:"));
-            JTextField textField = new JTextField(20);
-            openpanel.add(textField);
-            
-            //Put the JPanel into a JOptionPane
-            int result = JOptionPane.showOptionDialog(null, openpanel, "Open Circuit",
-               JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-            
-            //Get the result and call read ascii or read binary function
-            if (result == JOptionPane.YES_OPTION)
+            if(editmode)
             {
-               bodypanel.ReadASCII(textField.getText());
+               //Create a JPanel with custom options and a text field
+               Object[] options = {"Open as ASCII File","Open as Binary File", "Cancel"};
+               JPanel openpanel = new JPanel();
+               openpanel.add(new JLabel("Name of file:"));
+               JTextField textField = new JTextField(20);
+               openpanel.add(textField);
+               
+               //Put the JPanel into a JOptionPane
+               int result = JOptionPane.showOptionDialog(null, openpanel, "Open Circuit",
+                  JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+               
+               //Get the result and call read ascii or read binary function
+               if (result == JOptionPane.YES_OPTION)
+               {
+                  headerpanel.setMessage("Loading file...");
+                  bodypanel.ReadASCII(textField.getText());
+               }
+               else if (result == JOptionPane.NO_OPTION)
+               {
+                  headerpanel.setMessage("Loading file...");
+                  bodypanel.ReadBinary(textField.getText());
+               }
             }
-            else if (result == JOptionPane.NO_OPTION)
+            else
             {
-               bodypanel.ReadBinary(textField.getText());
+               headerpanel.setMessage("Cannot open files in play mode");
             }
          } 
-         else if (ae.getSource() == headerpanel.getSave() && editmode) 
+         else if (ae.getSource() == headerpanel.getSave()) 
          {
-            //Make sure we have the right circuit
-            theCircuit = bodypanel.getCircuit();
-            
-            //Create a JPanel with custom options and a text field
-            Object[] options = {"Save as an ASCII File","Save as a Binary File", "Cancel"};
-            JPanel openpanel = new JPanel();
-            openpanel.add(new JLabel("Name of file:"));
-            JTextField textField = new JTextField(20);
-            openpanel.add(textField);
-            
-            //Put the JPanel into a JOptionPane
-            int result = JOptionPane.showOptionDialog(null, openpanel, "Save Circuit",
-               JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-            
-            //Get the result and call read ascii or read binary function
-            if (result == JOptionPane.YES_OPTION)
+            if(editmode)
             {
-               theCircuit.saveToASCII(textField.getText());
+               //Make sure we have the right circuit
+               theCircuit = bodypanel.getCircuit();
+               
+               //Create a JPanel with custom options and a text field
+               Object[] options = {"Save as an ASCII File","Save as a Binary File", "Cancel"};
+               JPanel openpanel = new JPanel();
+               openpanel.add(new JLabel("Name of file:"));
+               JTextField textField = new JTextField(20);
+               openpanel.add(textField);
+               
+               //Put the JPanel into a JOptionPane
+               int result = JOptionPane.showOptionDialog(null, openpanel, "Save Circuit",
+                  JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+               
+               //Get the result and call read ascii or read binary function
+               if (result == JOptionPane.YES_OPTION)
+               {
+                  theCircuit.saveToASCII(textField.getText());
+               }
+               else if (result == JOptionPane.NO_OPTION)
+               {
+                  theCircuit.saveToBinary(textField.getText());
+               }
             }
-            else if (result == JOptionPane.NO_OPTION)
+            else
             {
-               theCircuit.saveToBinary(textField.getText());
+               headerpanel.setMessage("Cannot save circuit in play mode");
             }
          }
-         else if (ae.getSource() == headerpanel.getING() && editmode) 
+         else if (ae.getSource() == headerpanel.getING()) 
          {
-            //Make sure we have the right circuit
-            theCircuit = bodypanel.getCircuit();
-            
-            //JOptionPane to get the type of gate
-            String[] choices = { "Input", "Output", "And", "Nand", "Or", "Nor","Not","XOr","True","False"};
-            String input = (String) JOptionPane.showInputDialog(null, "Choose Type",
-            "Insert New Gate", JOptionPane.QUESTION_MESSAGE, null, choices,
-            choices[0]);
-            
-            //Calculate gate num and create the correct type of gate
-            Gate thegate;
-            int gatenum = theCircuit.size()+1;
-            gatenum += theCircuit.Nsize();
-            //System.out.println("Active Size:"+theCircuit.size()+" Inactive Size:"+theCircuit.Nsize());
-            //System.out.println("Gatenum: "+gatenum);
-            if(input != null)
+            if(editmode)
             {
-               switch(input)
+               //Make sure we have the right circuit
+               theCircuit = bodypanel.getCircuit();
+               
+               //JOptionPane to get the type of gate
+               String[] choices = { "Input", "Output", "And", "Nand", "Or", "Nor","Not","XOr","True","False"};
+               String input = (String) JOptionPane.showInputDialog(null, "Choose Type",
+               "Insert New Gate", JOptionPane.QUESTION_MESSAGE, null, choices,
+               choices[0]);
+               
+               //Calculate gate num and create the correct type of gate
+               Gate thegate;
+               int gatenum = theCircuit.size()+1;
+               gatenum += theCircuit.Nsize();
+               //System.out.println("Active Size:"+theCircuit.size()+" Inactive Size:"+theCircuit.Nsize());
+               //System.out.println("Gatenum: "+gatenum);
+               if(input != null)
                {
-                  case "Input":
+                  switch(input)
                   {
-                     thegate = new INPUT(gatenum);
-                     break;
+                     case "Input":
+                     {
+                        thegate = new INPUT(gatenum);
+                        break;
+                     }
+                     case "Output":
+                     {
+                        thegate = new OUTPUT(gatenum);
+                        break;
+                     }
+                     case "And":
+                     {
+                        thegate = new AND(gatenum,false);
+                        break;
+                     }
+                     case "Nand":
+                     {
+                        thegate = new AND(gatenum,true);
+                        break;
+                     }
+                     case "Or":
+                     {
+                        thegate = new OR(gatenum,false);
+                        break;
+                     }
+                     case "Nor":
+                     {
+                        thegate = new OR(gatenum,true);
+                        break;
+                     }
+                     case "Not":
+                     {
+                        thegate = new NOT(gatenum);
+                        break;
+                     }
+                     case "XOr":
+                     {
+                        thegate = new XOR(gatenum);
+                        break;
+                     }
+                     case "True":
+                     {
+                        thegate = new TRUE(gatenum);
+                        break;
+                     }
+                     default: //case "False"
+                     {
+                        thegate = new FALSE(gatenum);
+                        break;
+                     }
                   }
-                  case "Output":
-                  {
-                     thegate = new OUTPUT(gatenum);
-                     break;
-                  }
-                  case "And":
-                  {
-                     thegate = new AND(gatenum,false);
-                     break;
-                  }
-                  case "Nand":
-                  {
-                     thegate = new AND(gatenum,true);
-                     break;
-                  }
-                  case "Or":
-                  {
-                     thegate = new OR(gatenum,false);
-                     break;
-                  }
-                  case "Nor":
-                  {
-                     thegate = new OR(gatenum,true);
-                     break;
-                  }
-                  case "Not":
-                  {
-                     thegate = new NOT(gatenum);
-                     break;
-                  }
-                  case "XOr":
-                  {
-                     thegate = new XOR(gatenum);
-                     break;
-                  }
-                  case "True":
-                  {
-                     thegate = new TRUE(gatenum);
-                     break;
-                  }
-                  default: //case "False"
-                  {
-                     thegate = new FALSE(gatenum);
-                     break;
-                  }
+                  //Now add gate to inactive gates list
+                  theCircuit.addBebe(thegate);
+                  repaint();
                }
-               //Now add gate to inactive gates list
-               theCircuit.addBebe(thegate);
-               repaint();
+            }
+            else
+            {
+               headerpanel.setMessage("Cannot add gates in play mode");
             }
          }
       }

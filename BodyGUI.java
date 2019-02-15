@@ -11,6 +11,7 @@ public class BodyGUI extends JPanel
 {
    public static BodyGUI panel;
    private Circuit ourCircuit;
+   private HeaderGUI headerpanel;
    private boolean editmode;//Whether we are in editmode or not
    private boolean openning;//Whether we are opening/optimizing or not
    
@@ -160,6 +161,8 @@ public class BodyGUI extends JPanel
          
          //Now draw the circuit
          repaint();
+         
+         HeaderGUI.headerpanel.setMessage("Opened "+filename);
       }
       catch(IOException io)
       {
@@ -283,10 +286,10 @@ public class BodyGUI extends JPanel
          }
          
          //Print what is in the circuit for debugging
-         /*for(int i=1; i<ourCircuit.size()+1; i++)
+         /*for(int i=0; i<ourCircuit.size(); i++)
          {
-            System.out.println(ourCircuit.get(i).getStringType()+":");
-            System.out.println("Gate Num:"+ourCircuit.get(i).getGateNum());
+            System.out.println(ourCircuit.getAtIndex(i).getStringType()+":");
+            System.out.println("Gate Num:"+ourCircuit.getAtIndex(i).getGateNum());
          }*/
          
          //Now that all gates have been made we can fill the ArrayList of input Gates for each one
@@ -305,6 +308,8 @@ public class BodyGUI extends JPanel
          
          //Now draw the circuit
          repaint();
+         
+         HeaderGUI.headerpanel.setMessage("Opened "+filename);
       }
       catch(IOException io)
       {
@@ -323,16 +328,13 @@ public class BodyGUI extends JPanel
    public void populateInputGates(Circuit circuit_in)
    {
       //For every gate in the circuit
-      for(int i=1; i < circuit_in.size()+1; i++)
-      {
-         //System.out.println("Gate: "+circuit_in.get(i));
-         //System.out.println("Gate input zero:"+circuit_in.get(i).getInputInts());
-         
+      for(int i=0; i < circuit_in.size(); i++)
+      {         
          //For every input line of that gate
-         for(int j=0; j < circuit_in.get(i).getInputInts().size(); j++)
+         for(int j=0; j < circuit_in.getAtIndex(i).getInputInts().size(); j++)
          {
-            int inGateIndex = circuit_in.get(i).getInputInts().get(j);
-            circuit_in.get(i).addInput(circuit_in.get(inGateIndex));
+            int inGateNum = circuit_in.getAtIndex(i).getInputInts().get(j);
+            circuit_in.getAtIndex(i).addInput(circuit_in.get(inGateNum));
          }
       }
    }
@@ -342,13 +344,12 @@ public class BodyGUI extends JPanel
    {
      //System.out.println("------------CalculateOutput-----------------");
       //call functions for calculate output throughout the circuit
-      for(int i = 1; i < circuit_in.size()+1; i++)
+      for(int i = 0; i < circuit_in.size(); i++)
       {
-         ////System.out.println(ourCircuit.get(i).getStringType());
-         if(circuit_in.get(i).getStringType() == "OUTPUT")
+         if(circuit_in.getAtIndex(i).getStringType() == "OUTPUT")
          {
-            circuit_in.get(i).calculateOutput();
-            //System.out.println("--Result:"+circuit_in.get(i).getOutput());
+            circuit_in.getAtIndex(i).calculateOutput();
+            //System.out.println("--Result:"+circuit_in.getAtIndex(i).getOutput());
          }
       }
    }
@@ -401,13 +402,13 @@ public class BodyGUI extends JPanel
          {
             column = i;
             row = 0;
-            for(int j = 1; j < ourCircuit.size() + 1; j++)
+            for(int j = 0; j < ourCircuit.size(); j++)
             {
-               if(ourCircuit.get(j).getDepth() == i)
+               if(ourCircuit.getAtIndex(j).getDepth() == i)
                {
                   //draws the gates and places drawn gates in another arraylist
-                  ourCircuit.get(j).draw(g, row, column, maxColumn, maxRow);
-                  drawnGates.add(ourCircuit.get(j));
+                  ourCircuit.getAtIndex(j).draw(g, row, column, maxColumn, maxRow);
+                  drawnGates.add(ourCircuit.getAtIndex(j));
                   gatesDrawn++;
                   row++;
                }
