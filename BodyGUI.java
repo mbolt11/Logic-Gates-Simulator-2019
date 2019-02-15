@@ -75,67 +75,71 @@ public class BodyGUI extends JPanel
             int gatenum = readline.nextInt();
             String type = readline.next();
             //System.out.println("Gatenum:"+gatenum+" type:"+type);
-            if (type.equals("true") || type.equals("false"))
+                     
+            //Create the appropriate gate type according to string
+            Gate theGate;
+            switch(type)
             {
-               //Not sure what this is supposed to be...
+               case "true":
+               {
+                  theGate = new TRUE(gatenum);
+                  break;
+               }
+               case "false":
+               {
+                  theGate = new FALSE(gatenum);
+                  break;
+               }   
+               case "input":
+               {
+                  theGate = new INPUT(gatenum);
+                  break;
+               }
+               case "and":
+               {
+                  theGate = new AND(gatenum,false);
+                  break;
+               }
+               case "or":
+               {
+                  theGate = new OR(gatenum,false);
+                  break;
+               }
+               case "xor":
+               {
+                  theGate = new XOR(gatenum);
+                  break;
+               }
+               case "not":
+               {
+                  theGate = new NOT(gatenum);
+                  break;
+               }
+               case "nor":
+               {
+                  theGate = new OR(gatenum,true);
+                  break;
+               }
+               case "nand":
+               {
+                  theGate = new AND(gatenum,true);
+                  break;
+               }
+               default: //case: "output"
+               {
+                  theGate = new OUTPUT(gatenum);
+                  break;
+               }
             }
-            else
-            {               
-               //Create the appropriate gate type according to string
-               Gate theGate;
-               switch(type)
-               {
-                  case "input":
-                  {
-                     theGate = new INPUT(gatenum);
-                     break;
-                  }
-                  case "and":
-                  {
-                     theGate = new AND(gatenum,false);
-                     break;
-                  }
-                  case "or":
-                  {
-                     theGate = new OR(gatenum,false);
-                     break;
-                  }
-                  case "xor":
-                  {
-                     theGate = new XOR(gatenum);
-                     break;
-                  }
-                  case "not":
-                  {
-                     theGate = new NOT(gatenum);
-                     break;
-                  }
-                  case "nor":
-                  {
-                     theGate = new OR(gatenum,true);
-                     break;
-                  }
-                  case "nand":
-                  {
-                     theGate = new AND(gatenum,true);
-                     break;
-                  }
-                  default: //case: "output"
-                  {
-                     theGate = new OUTPUT(gatenum);
-                     break;
-                  }
-               }
 
-               //Add this gate to the circuit and mark that it is offically added
-               ourCircuit.addGate(theGate);
-               theGate.setIsInCircuit(true);
-               
-               //If this gate has any inputs from previous gates, record them (just the numbers)
-               while(readline.hasNextInt())
-               {
-                  theGate.addInputInt(readline.nextInt());
-               }
+            //Add this gate to the circuit and mark that it is offically added
+            ourCircuit.addGate(theGate);
+            theGate.setIsInCircuit(true);
+            
+            //If this gate has any inputs from previous gates, record them (just the numbers)
+            while(readline.hasNextInt())
+            {
+               theGate.addInputInt(readline.nextInt());
             }
          }
          
@@ -193,7 +197,7 @@ public class BodyGUI extends JPanel
             //System.out.println("Gatenum:"+numInt+" type:"+typeInt);
             
             //Instantiate the appropriate type of gate according to the type number
-            if(typeInt >= 0 && typeInt <= 8)
+            if(typeInt >= 0 && typeInt <= 9)
             {               
                Gate theGate;
                switch(typeInt)
@@ -233,9 +237,19 @@ public class BodyGUI extends JPanel
                      theGate = new OR(numInt,true);
                      break;
                   }
-                  default: //case 7 aka NAND
+                  case 7:
                   {
                      theGate = new AND(numInt,true);
+                     break;
+                  }
+                  case 8:
+                  {
+                     theGate = new TRUE(numInt);
+                     break;
+                  }
+                  default: //case 9 aka FALSE
+                  {
+                     theGate = new FALSE(numInt);
                      break;
                   }
                }
@@ -253,7 +267,7 @@ public class BodyGUI extends JPanel
                   byte[] input = new byte[2];
                   istream.read(input);
                   inputInt = (input[1] << 8) | input[0];
-                  System.out.println("Gate "+numInt+" input: "+inputInt);
+                  //System.out.println("Gate "+numInt+" input: "+inputInt);
                   
                   //If the value is -1, we have reached the "end of the line"
                   if(inputInt != -1)
@@ -311,8 +325,8 @@ public class BodyGUI extends JPanel
       //For every gate in the circuit
       for(int i=1; i < circuit_in.size()+1; i++)
       {
-         System.out.println("Gate: "+circuit_in.get(i));
-         System.out.println("Gate input zero:"+circuit_in.get(i).getInputInts());
+         //System.out.println("Gate: "+circuit_in.get(i));
+         //System.out.println("Gate input zero:"+circuit_in.get(i).getInputInts());
          
          //For every input line of that gate
          for(int j=0; j < circuit_in.get(i).getInputInts().size(); j++)

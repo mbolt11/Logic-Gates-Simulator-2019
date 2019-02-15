@@ -98,8 +98,11 @@ public class Circuit
          if(result == true)
             return result;
       }
-      if(nGate_in.getStringType().equals("INPUT") && nGate_in.isInCircuit()) //Input must also be an active gate
-         result = true;
+      if(nGate_in.isInCircuit()) //Input/True/False must be an active gate
+      { 
+         if(nGate_in.getStringType().equals("INPUT") || nGate_in.getStringType().equals("TRUE") || nGate_in.getStringType().equals("FALSE") )
+            result = true;
+      }
       return result;
    }
    
@@ -110,7 +113,8 @@ public class Circuit
       {
          result = isAttatched2Input_BeforeCircuit(nGate_in.getInputs().get(i));
       }
-      if(nGate_in.getStringType().equals("INPUT")) //Add input to circuit
+      //Add input to circuit
+      if(nGate_in.getStringType().equals("INPUT") || nGate_in.getStringType().equals("TRUE") || nGate_in.getStringType().equals("FALSE") )
       {
          result = true;
          

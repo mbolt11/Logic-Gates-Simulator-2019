@@ -7,7 +7,7 @@ import java.awt.*;
 public abstract class Gate
 {
    //Define enum for the gate type
-   public enum gatetype {INPUT, OUTPUT, AND, OR, XOR, NOT, NOR, NAND};
+   public enum gatetype {INPUT, OUTPUT, AND, OR, XOR, NOT, NOR, NAND, TRUE, FALSE};
    
    //Class member variables
    private int gatenum;
@@ -356,33 +356,36 @@ public abstract class Gate
    //This method is used when opening a file or optimizing
    public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
-       //first draw the gate
-       if(!isInCircuit())
-         g.setColor(Color.RED);
-       drawGate(g, row, column, maxColumn, maxRow);
+      //first draw the gate
+      if(!isInCircuit())
+        g.setColor(Color.RED);
+      drawGate(g, row, column, maxColumn, maxRow);
        
-       /*//draw the boundaries for checking PLEASE DONT REMOVE
-       g.setColor(Color.RED);
-       g.drawLine(xStart - 20, yStart - 5, xFinish + 5, yStart - 5);
-       g.drawLine(xStart - 20, yStart - 5, xStart - 20, yFinish + 5);
-       g.drawLine(xStart - 20, yFinish + 5, xFinish + 5, yFinish + 5);
-       g.drawLine(xFinish + 5, yStart - 5, xFinish + 5, yFinish + 5);*/
+      /*//draw the boundaries for checking PLEASE DONT REMOVE
+      g.setColor(Color.RED);
+      g.drawLine(xStart - 20, yStart - 5, xFinish + 5, yStart - 5);
+      g.drawLine(xStart - 20, yStart - 5, xStart - 20, yFinish + 5);
+      g.drawLine(xStart - 20, yFinish + 5, xFinish + 5, yFinish + 5);
+      g.drawLine(xFinish + 5, yStart - 5, xFinish + 5, yFinish + 5);*/
        
-       /*
-       g.setColor(Color.RED);
-       g.drawLine(xStart, yStart, xFinish, yStart);
-       g.drawLine(xStart, yStart, xStart, yFinish);
-       g.drawLine(xStart, yFinish, xFinish, yFinish);
-       g.drawLine(xFinish, yStart, xFinish, yFinish);
-       */
+      /*
+      g.setColor(Color.RED);
+      g.drawLine(xStart, yStart, xFinish, yStart);
+      g.drawLine(xStart, yStart, xStart, yFinish);
+      g.drawLine(xStart, yFinish, xFinish, yFinish);
+      g.drawLine(xFinish, yStart, xFinish, yFinish);
+      */
        
-       if(!BodyGUI.panel.isInEdit())
-       {
-          //draw the output in the gate
-          g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
-          g.setColor(Color.BLACK);
-          g.drawString(Integer.toString(getOutputInt()),(xStart + ((xFinish-xStart)/2) - 10), (yStart + ((yFinish-yStart)/2) + 10));
-       }
+      if(!BodyGUI.panel.isInEdit())
+      {
+         //draw the output in the gate
+         g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+         g.setColor(Color.BLACK);
+         if(type != gatetype.TRUE && type != gatetype.FALSE)
+         {
+            g.drawString(Integer.toString(getOutputInt()),(xStart + ((xFinish-xStart)/2) - 10), (yStart + ((yFinish-yStart)/2) + 10));
+         }
+      }
    }
    
    //This is used for repainting when editing
@@ -406,7 +409,10 @@ public abstract class Gate
          //draw the output in the gate
          g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
          g.setColor(Color.BLACK);
-         g.drawString(Integer.toString(getOutputInt()),(xStart + ((xFinish-xStart)/2) - 10), (yStart + ((yFinish-yStart)/2) + 10));
+         if(type != gatetype.TRUE && type != gatetype.FALSE)
+         {
+            g.drawString(Integer.toString(getOutputInt()),(xStart + ((xFinish-xStart)/2) - 10), (yStart + ((yFinish-yStart)/2) + 10));
+         }
       }
    }
    

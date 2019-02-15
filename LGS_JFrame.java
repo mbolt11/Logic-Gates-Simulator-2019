@@ -97,7 +97,7 @@ public class LGS_JFrame extends JFrame
                   //check if this output is connected to an input
                   if(theCircuit.getNGate(i).getStringType().equals("OUTPUT"))
                   {
-                     System.out.println("Found OUTPUT of gatenum:"+theCircuit.getNGate(i).getGateNum());
+                     //System.out.println("Found OUTPUT of gatenum:"+theCircuit.getNGate(i).getGateNum());
                      Gate temp = theCircuit.getNGate((i));
                      if(theCircuit.isAttatched2Input_BeforeCircuit(temp)) //input added in this function if needed; Also recursive boolean function  
                      {
@@ -123,13 +123,13 @@ public class LGS_JFrame extends JFrame
             {
                //This is the gate that we will add an input too
                inGate = theCircuit.getAtIndex(i);
-               System.out.println("Found in gate");
+               //System.out.println("Found in gate");
             }
             else if(theCircuit.getAtIndex(i).getOutputAreaRect().contains(e.getPoint()))
             {
                //This is the gate where the new output will come from
                outGate = theCircuit.getAtIndex(i);
-               System.out.println("Found out gate");
+               //System.out.println("Found out gate");
             }
          }
          
@@ -141,13 +141,13 @@ public class LGS_JFrame extends JFrame
             {
                //This is the gate that we will add an input too
                inGate = theCircuit.getNGate(i);
-               System.out.println("Found in gate");
+               //System.out.println("Found in gate");
             }
             else if(theCircuit.getNGate(i).getOutputAreaRect().contains(e.getPoint()))
             {
                //This is the gate where the new output will come from
                outGate = theCircuit.getNGate(i);
-               System.out.println("Found out gate");
+               //System.out.println("Found out gate");
             }
          }
          
@@ -196,7 +196,7 @@ public class LGS_JFrame extends JFrame
                inGate.addInput(outGate);
                inGate.addInputInt(outGate.getGateNum());
                
-               System.out.println("InGate: "+inGate.isInCircuit()+" OutGate:"+outGate.isInCircuit());
+               //System.out.println("InGate: "+inGate.isInCircuit()+" OutGate:"+outGate.isInCircuit());
                
                //If it is a new gate now connected to the circuit, make adjustments
                if(inGate.isInCircuit() && !outGate.isInCircuit())
@@ -417,7 +417,7 @@ public class LGS_JFrame extends JFrame
             theCircuit = bodypanel.getCircuit();
             
             //JOptionPane to get the type of gate
-            String[] choices = { "Input", "Output", "And", "Nand", "Or", "Nor","Not","XOr"};
+            String[] choices = { "Input", "Output", "And", "Nand", "Or", "Nor","Not","XOr","True","False"};
             String input = (String) JOptionPane.showInputDialog(null, "Choose Type",
             "Insert New Gate", JOptionPane.QUESTION_MESSAGE, null, choices,
             choices[0]);
@@ -426,8 +426,8 @@ public class LGS_JFrame extends JFrame
             Gate thegate;
             int gatenum = theCircuit.size()+1;
             gatenum += theCircuit.Nsize();
-            System.out.println("Active Size:"+theCircuit.size()+" Inactive Size:"+theCircuit.Nsize());
-            System.out.println("Gatenum: "+gatenum);
+            //System.out.println("Active Size:"+theCircuit.size()+" Inactive Size:"+theCircuit.Nsize());
+            //System.out.println("Gatenum: "+gatenum);
             if(input != null)
             {
                switch(input)
@@ -467,9 +467,19 @@ public class LGS_JFrame extends JFrame
                      thegate = new NOT(gatenum);
                      break;
                   }
-                  default: //case: "XOr"
+                  case "XOr":
                   {
                      thegate = new XOR(gatenum);
+                     break;
+                  }
+                  case "True":
+                  {
+                     thegate = new TRUE(gatenum);
+                     break;
+                  }
+                  default: //case "False"
+                  {
+                     thegate = new FALSE(gatenum);
                      break;
                   }
                }
