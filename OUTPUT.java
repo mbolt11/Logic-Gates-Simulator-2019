@@ -24,8 +24,8 @@ public class OUTPUT extends Gate
    {     
       //output gates must be all the way to the right
       column = maxColumn;
-      xStart = (int) ((((double)column/maxColumn) * 1000) - 150);
-      yStart = (int) ((((double)row/maxRow) * 950) + 65) + ((column-1)*columnShift);
+      xStart = (column * colSeperation) - 150;
+      yStart = (row * rowSeperation) + 65 + ((column-1)*columnShift);
       xFinish = xStart + 100;
       yFinish = yStart + 95;
       

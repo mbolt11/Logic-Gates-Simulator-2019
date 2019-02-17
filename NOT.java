@@ -34,8 +34,8 @@ public class NOT extends Gate
       
       //generally placing in the correct row and column area, gate should be 10% of the total dimension in either direction
       //drawing polygon to make a triangle shape
-      xBaseCoord = (((double)column/maxColumn) * 1000) - 150 + (row*rowShift);
-      yBaseCoord = (((double)row/maxRow) * 950) + 65 + (column*columnShift);
+      xBaseCoord = (double)((column * colSeperation) - 150 + (row*rowShift));
+      yBaseCoord = (double)((row * rowSeperation) + 65 + (column*columnShift));
       xPoints[0] = (int)xBaseCoord;
       xPoints[1] = (int)(xBaseCoord + ((95*Math.sqrt(3))/2));
       xPoints[2] = (int)xBaseCoord;

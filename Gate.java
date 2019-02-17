@@ -25,7 +25,9 @@ public abstract class Gate
    protected int xInputWireSlot, yInputWireSlot, xOutputWireSlot, yOutputWireSlot;
    protected int xStart, yStart, xFinish, yFinish;
    protected int columnShift = 20;
-   protected int rowShift = 20; //dont know if this is the best way to solve issue
+   protected int rowShift = 20; 
+   protected int colSeperation = 250;
+   protected int rowSeperation = 250;
    
    //Rectangle representations of the input, output area, and whole area
    protected Rectangle inArea;

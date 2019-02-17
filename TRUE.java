@@ -23,8 +23,8 @@ public class TRUE extends Gate
    {
       //input gates must be all the way to the left
       column = 1;
-      xStart = ((int) (((double)column/maxColumn) * 1000)) - 150;
-      yStart = ((int) (((double)row/maxRow) * 950)) + 65 + (column*columnShift);
+      xStart = (column * colSeperation) - 150;
+      yStart = (row * rowSeperation) + 65 + (column*columnShift);
       xFinish = xStart + 100;
       yFinish = yStart + 95;
       
