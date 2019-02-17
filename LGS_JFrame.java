@@ -81,7 +81,7 @@ public class LGS_JFrame extends JFrame
          if(arrowbutton.contains(e.getPoint()))
          {
             //Switch between edit and play mode
-            System.out.println("Clicked on arrow");
+            //System.out.println("Clicked on arrow");
             editmode = !editmode;
             bodypanel.switchMode();
             if(editmode)
@@ -94,7 +94,7 @@ public class LGS_JFrame extends JFrame
             //does the circuit need to be sorted after adding a gate to it? --> if not optomizing I dont think so
             if(theCircuit.size() == 0 /*&& !editmode*/)
             {
-               System.out.println("Circuit is empty. Searching for valid ouputs and inputs");
+               //System.out.println("Circuit is empty. Searching for valid ouputs and inputs");
                //must search for all outputs connected to inputs first            
                for(int i = 0; i < theCircuit.Nsize(); i++)
                {
@@ -105,7 +105,7 @@ public class LGS_JFrame extends JFrame
                      Gate temp = theCircuit.getNGate((i));
                      if(theCircuit.isAttatched2Input_BeforeCircuit(temp)) //input added in this function if needed; Also recursive boolean function  
                      {
-                        System.out.println("Added OUTPUT of gatenum:"+temp.getGateNum());
+                        //System.out.println("Added OUTPUT of gatenum:"+temp.getGateNum());
                         //input already added, now add the output
                         theCircuit.removeBebe(temp.getGateNum());
                         theCircuit.addGate(temp);
@@ -212,7 +212,7 @@ public class LGS_JFrame extends JFrame
             //If the new wire passed all the validity tests above, draw it
             if(draw)
             {
-               System.out.println("Adding a wire and adding to inputs arraylist");
+               //System.out.println("Adding a wire and adding to inputs arraylist");
                inGate.addInput(outGate);
                inGate.addInputInt(outGate.getGateNum());
                headerpanel.setMessage("Drew wire");
@@ -222,7 +222,7 @@ public class LGS_JFrame extends JFrame
                //If it is a new gate now connected to the circuit, make adjustments
                if(inGate.isInCircuit() && !outGate.isInCircuit())
                {
-                  System.out.println("Checking all connections for outGate");
+                  //System.out.println("Checking all connections for outGate");
                   theCircuit.addGate(outGate);
                   theCircuit.removeBebe(outGate.getGateNum());
                   outGate.setIsInCircuit(true);
@@ -232,7 +232,7 @@ public class LGS_JFrame extends JFrame
                }
                else if(outGate.isInCircuit() && !inGate.isInCircuit())
                {
-                  System.out.println("Checking all connections for inGate");
+                  //System.out.println("Checking all connections for inGate");
                   theCircuit.addGate(inGate);
                   theCircuit.removeBebe(inGate.getGateNum());
                   inGate.setIsInCircuit(true);
@@ -244,7 +244,7 @@ public class LGS_JFrame extends JFrame
                //check for another mini circuit that is created needs to be added to theCircuit object
                else
                {
-                  System.out.println("Checking for new mini circuit");
+                  //System.out.println("Checking for new mini circuit");
 
                   //must search for all outputs connected to inputs first            
                   for(int i = 0; i < theCircuit.Nsize(); i++)

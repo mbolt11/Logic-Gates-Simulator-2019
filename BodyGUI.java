@@ -433,6 +433,7 @@ public class BodyGUI extends JPanel
       
       if(drawnGates.size() > 0)
       {
+         //System.out.println("STARTING WIRE DRAW");
          //draws the wires to the gates
          for(int i = 0; i < drawnGates.size(); i++)
          {
@@ -441,6 +442,7 @@ public class BodyGUI extends JPanel
                
             drawnGates.get(i).drawWires(g, drawnGates);
          }
+         //System.out.println("FINISH WIRE DRAW\n");
       }
       //System.out.println("made it");
    }
