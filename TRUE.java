@@ -47,7 +47,7 @@ public class TRUE extends Gate
       yFinishB = yFinish + 20;
       
       //color Gate vs Gate Boundary
-if(!validWires)
+      if(!validWires)
       {
          g.setColor(new Color(225,209,223));
          g.fillRect(xStartB, yStartB, xFinishB - xStartB, yFinishB - yStartB);

@@ -1,0 +1,13 @@
+1 input
+2 input
+9 output 3
+3 and 1 2
+4 or 1 2
+5 nand 1 2
+6 nor 1 2
+7 not 1
+8 xor 1 2
+10 output 5
+11 output 4
+12 output 7
+13 output 8

@@ -30,6 +30,7 @@ public abstract class Gate
    protected int rowShift = 20; 
    protected int colSeperation = 250;
    protected int rowSeperation = 250;
+   protected int finalx = 21;
    
    //Rectangle representations of the input, output area, and whole area
    protected Rectangle inArea;
@@ -593,10 +594,10 @@ public abstract class Gate
       trunkLength = 15;
       
       //all input wires to one gate will have the same color
-      g.setColor(colors.get(colorCount));
+      /*g.setColor(colors.get(colorCount));
       colorCount++;
       if(colorCount>=colors.size())
-            colorCount = 0;
+            colorCount = 0;*/
             
       
       //do not draw any of its inputs if the gate is too close to another gate and should not draw its wires
@@ -608,6 +609,20 @@ public abstract class Gate
             //if any of its inputs should not draw wires because of validWires, then dont  
             if(inputs.get(i).getValidWires()) 
             {
+               //change the color
+               g.setColor(colors.get(colorCount));
+               colorCount++;
+               if(colorCount>=colors.size())
+               colorCount = 0;
+               
+               //Adjust the xWireFinish according to how many input wires there are
+               if(i > 0)
+               {
+                  xWireFinish -= 5;
+                  finalx += 5;
+               }
+                  
+               
                xWireStart = inputs.get(i).getxOutputSlot();
                yWireStart = inputs.get(i).getyOutputSlot();
                origgateNum = inputs.get(i).getGateNum();
@@ -905,7 +920,10 @@ public abstract class Gate
       }
       
       //line should now be right in front of destination gate
-      g.drawLine(xStart_in, yStart_in, xStart_in + 21, yStart_in);     
+      g.drawLine(xStart_in, yStart_in, xStart_in + finalx, yStart_in);
+      
+      //Reset finalx to 21
+      finalx = 21;     
    }
    
    public abstract void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow);
