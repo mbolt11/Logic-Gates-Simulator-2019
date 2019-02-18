@@ -288,8 +288,8 @@ public class BodyGUI extends JPanel
          //Print what is in the circuit for debugging
          /*for(int i=0; i<ourCircuit.size(); i++)
          {
-            System.out.println(ourCircuit.getAtIndex(i).getStringType()+":");
-            System.out.println("Gate Num:"+ourCircuit.getAtIndex(i).getGateNum());
+           //System.out.println(ourCircuit.getAtIndex(i).getStringType()+":");
+           //System.out.println("Gate Num:"+ourCircuit.getAtIndex(i).getGateNum());
          }*/
          
          //Now that all gates have been made we can fill the ArrayList of input Gates for each one
@@ -361,26 +361,6 @@ public class BodyGUI extends JPanel
       Graphics2D g2 = (Graphics2D) g;
       g2.setStroke(new BasicStroke(3));
       
-      //Draw the arrow button
-      g.drawRect(880,20,100,55);
-      if(editmode)
-      {
-         g.setColor(Color.CYAN);
-         g.fillRect(880,20,100,55);
-         g.setColor(Color.BLACK);
-      }
-      else
-      {
-         g.clearRect(880,20,100,55);
-      }
-      g.drawLine(890,30,890,65);
-      g.drawLine(890,30,950,30);
-      g.drawLine(890,65,950,65);
-      g.drawLine(950,30,950,25);
-      g.drawLine(950,65,950,70);
-      g.drawLine(950,25,970,47);
-      g2.drawLine(950,70,970,47);
-      
       //must create a list of the gates drawn so far in order to check drawing wires against gate boundaries as drawing progresses
       ArrayList<Gate> drawnGates = new ArrayList<Gate>();
       
@@ -433,7 +413,7 @@ public class BodyGUI extends JPanel
       
       if(drawnGates.size() > 0)
       {
-         //System.out.println("STARTING WIRE DRAW");
+        //System.out.println("STARTING WIRE DRAW");
          //draws the wires to the gates
          for(int i = 0; i < drawnGates.size(); i++)
          {
@@ -442,8 +422,28 @@ public class BodyGUI extends JPanel
                
             drawnGates.get(i).drawWires(g, drawnGates);
          }
-         //System.out.println("FINISH WIRE DRAW\n");
+        //System.out.println("FINISH WIRE DRAW\n");
       }
       //System.out.println("made it");
+      
+      //Draw the arrow button
+      g.drawRect(880,20,100,55);
+      if(editmode)
+      {
+         g.setColor(Color.CYAN);
+         g.fillRect(880,20,100,55);
+         g.setColor(Color.BLACK);
+      }
+      else
+      {
+         g.clearRect(880,20,100,55);
+      }
+      g.drawLine(890,30,890,65);
+      g.drawLine(890,30,950,30);
+      g.drawLine(890,65,950,65);
+      g.drawLine(950,30,950,25);
+      g.drawLine(950,65,950,70);
+      g.drawLine(950,25,970,47);
+      g2.drawLine(950,70,970,47);
    }
 }

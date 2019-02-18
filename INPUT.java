@@ -19,6 +19,18 @@ public class INPUT extends Gate
       return output;
    }
    
+   public void resetxFinish()
+   {
+      xFinish = xStart + 100;
+      xFinishB = xFinish + 20;
+   }
+   
+   public void resetyFinish()
+   {
+      yFinish = yStart + 95;
+      yFinishB = yFinish + 20;
+   }
+   
    public void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
       //input gates must be all the way to the left
@@ -27,6 +39,28 @@ public class INPUT extends Gate
       yStart = (row * rowSeperation) + 65 + (column*columnShift);
       xFinish = xStart + 100;
       yFinish = yStart + 95;
+      
+      //set Gate vs Gate Boundaries
+      xStartB = xStart - 35;
+      yStartB = yStart - 20;
+      xFinishB = xFinish + 20;
+      yFinishB = yFinish + 20;
+      
+      //color Gate vs Gate Boundary
+if(!validWires)
+      {
+         g.setColor(new Color(225,209,223));
+         g.fillRect(xStartB, yStartB, xFinishB - xStartB, yFinishB - yStartB);
+      }
+      
+      //color Gate vs Line Boundary
+      g.setColor(new Color(220,220,220));
+      g.fillRect(xStart - 20, yStart - 5, (xFinish + 5) - (xStart - 20), (yFinish + 5) - (yStart - 5));
+      
+      if(!isInCircuit())
+        g.setColor(Color.RED);
+      else
+         g.setColor(Color.BLACK);
       
       //generally placing in the correct row and column area, gate should be 10% of the total dimension in either direction
       g.drawRect(xStart, yStart, 100, 95);

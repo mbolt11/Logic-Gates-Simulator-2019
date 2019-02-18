@@ -20,10 +20,12 @@ public abstract class Gate
    protected ArrayList<Gate> inputs;
    protected boolean output;
    private boolean isInCircuit;
+   protected boolean validWires;
    
    //gate GUI measurements
    protected int xInputWireSlot, yInputWireSlot, xOutputWireSlot, yOutputWireSlot;
    protected int xStart, yStart, xFinish, yFinish;
+   protected int xStartB, yStartB, xFinishB, yFinishB;
    protected int columnShift = 20;
    protected int rowShift = 20; 
    protected int colSeperation = 250;
@@ -50,6 +52,7 @@ public abstract class Gate
       type = type_in;
       
       isInCircuit = false;
+      validWires = true;
             
       //Instantiate both the input ArrayLists (ints and Gates)
       inputints = new ArrayList<Integer>();
@@ -146,13 +149,21 @@ public abstract class Gate
    { return xStart; }
    
    public void setxStart(int x)
-   { xStart = x; }
+   { 
+      xStart = x; 
+      xStartB = xStart - 35;
+      resetxFinish();
+   }
    
    public int getyStart()
    { return yStart; }
    
    public void setyStart(int y)
-   { yStart = y; }
+   { 
+      yStart = y;
+      yStartB = yStart - 20; 
+      resetyFinish();
+   }
    
    public int getxFinish()
    { return xFinish; }
@@ -204,6 +215,56 @@ public abstract class Gate
       
       //Return the rectangle
       return outArea;
+   }
+   
+   public int getxStartB()
+   {
+      return xStartB;
+   }
+   
+   public int getxFinishB()
+   {
+      return xFinishB;
+   }
+   
+   public int getyStartB()
+   {
+      return yStartB;
+   }
+   
+   public int getyFinishB()
+   {
+      return yFinishB;
+   }
+   
+   public boolean getValidWires()
+   {
+      return validWires;
+   }
+   
+   public void setxStartB(int xStartB_in)
+   {
+      xStartB = xStartB_in;
+   }
+   
+   public void setxFinishB(int xFinishB_in)
+   {
+      xFinishB = xFinishB_in;
+   }
+   
+   public void setyStartB(int yStartB_in)
+   {
+      yStartB = yStartB_in;
+   }
+   
+   public void setyFinishB(int yFinishB_in)
+   {
+      yFinishB = yFinishB_in;
+   }
+   
+   public void setValidWires(boolean valid_in)
+   {
+      validWires = valid_in;
    }
    
    //Setter method for output- this is calculated in child class
@@ -335,6 +396,37 @@ public abstract class Gate
       ////System.out.println(getStringType()+" depth: "+getDepth());
    }
    
+   public boolean gatesCollide(int xStartB_in, int yStartB_in, int xFinishB_in, int yFinishB_in)
+   {
+      //int collScore = -1;
+      
+      //this gate boundaries
+       int top = yStartB;
+       int bottom = yFinishB;
+       int left = xStartB;
+       int right = xFinishB;
+       
+       //other gate boundaries
+       int otop = yStartB_in;
+       int obottom = yFinishB_in;
+       int oleft = xStartB_in;
+       int oright = xFinishB_in;
+       
+       //if all are false then there is a collision
+       return (!((bottom <= otop) || (top >= obottom) || (left >= oright) || (right <= oleft)));
+       //score the collision
+       /*if(bottom <= otop) //
+        collScore = 0;
+       if(top >= obottom)
+        collScore = 1;
+       if(left >= oright)
+        collScore = 2;
+       if(right <= oleft)
+        collScore = 3;
+         
+        return collScore;*/
+   }
+   
    public boolean inPath(int xStart_in, int yStart_in, int xFinish_in, int yFinish_in)
    {
       //gate boundaries -- should be the gate now comparing to
@@ -387,8 +479,9 @@ public abstract class Gate
    //This method is used when opening a file or optimizing
    public void draw(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
-      g.setColor(new Color(220,220,220));
-      g.fillRect(xStart - 20, yStart - 5, (xFinish + 5) - (xStart - 20), (yFinish + 5) - (yStart - 5));
+      //System.out.println("should draw rectangle");
+      //g.setColor(new Color(220,220,220));
+      //g.fillRect(xStart - 20, yStart - 5, (xFinish + 5) - (xStart - 20), (yFinish + 5) - (yStart - 5));
       
       //first draw the gate
       if(!isInCircuit())
@@ -429,6 +522,20 @@ public abstract class Gate
    //This is used for repainting when editing
    public void redraw(Graphics g)
    {
+      //set Gate vs Gate Boundaries
+      xStartB = xStart - 35;
+      yStartB = yStart - 20;
+      xFinishB = xFinish + 20;
+      yFinishB = yFinish + 20;
+      
+      //color Gate vs Gate Boundary
+      if(!validWires)
+      {
+         g.setColor(new Color(225,209,223));
+         g.fillRect(xStartB, yStartB, xFinishB - xStartB, yFinishB - yStartB);
+      }
+      
+      //color Gate vs Line Boundary
       g.setColor(new Color(220,220,220));
       g.fillRect(xStart - 20, yStart - 5, (xFinish + 5) - (xStart - 20), (yFinish + 5) - (yStart - 5));
       
@@ -491,73 +598,102 @@ public abstract class Gate
       if(colorCount>=colors.size())
             colorCount = 0;
             
-      //connect to its inputs
-      for(int i = 0; i < inputs.size(); i++)
-      {           
-         xWireStart = inputs.get(i).getxOutputSlot();
-         yWireStart = inputs.get(i).getyOutputSlot();
-         origgateNum = inputs.get(i).getGateNum();
-  
-         
-         //draw trunk line from 11 to 30 units
-         //the trunk may be drawn multiple times though...might want to fix later
-         g.drawLine(xWireStart, yWireStart, xWireStart + trunkLength, yWireStart); 
-         
-         xWireStart += trunkLength;            
-         
-         //draws the connecting line
-         drawNonDiagLine(g, xWireStart, yWireStart, xWireFinish, yWireFinish, drawnGates, gatenum, origgateNum);
-         
-         //adjust trunk length
-         trunkLength += 4;
-         if(trunkLength > 30)
-            trunkLength = 15;
-            
-         //sets up the correct finish coordinate for the next input
-         if(i%2 == 0)
-          yWireFinish+=(interval*(i+1));
-         else
-          yWireFinish-=(interval*(i+1));
+      
+      //do not draw any of its inputs if the gate is too close to another gate and should not draw its wires
+      if(validWires)      
+      {
+         //connect to its inputs
+         for(int i = 0; i < inputs.size(); i++)
+         {        
+            //if any of its inputs should not draw wires because of validWires, then dont  
+            if(inputs.get(i).getValidWires()) 
+            {
+               xWireStart = inputs.get(i).getxOutputSlot();
+               yWireStart = inputs.get(i).getyOutputSlot();
+               origgateNum = inputs.get(i).getGateNum();
+        
+               
+               if(Math.abs((xWireFinish-21)-(inputs.get(i).getxFinish()+5)) <= trunkLength && ((xWireFinish - 21) >= (inputs.get(i).getxFinish()+5)))
+               {
+                  //if x distance is smaller than current trunk value, then just draw to the xFinish
+                  g.drawLine(xWireStart, yWireStart, xWireFinish-21, yWireStart);
+                  xWireStart = xWireFinish-21;     
+               }
+               else
+               { 
+                 //draw trunk line from 11 to 30 units
+                  //the trunk may be drawn multiple times though...might want to fix later
+                  g.drawLine(xWireStart, yWireStart, xWireStart + trunkLength, yWireStart);
+                  xWireStart += trunkLength; 
+               }       
+               
+               //draws the connecting line
+               drawNonDiagLine(g, xWireStart, yWireStart, xWireFinish, yWireFinish, drawnGates, gatenum, origgateNum);
+               
+               //adjust trunk length
+               trunkLength += 4;
+               if(trunkLength > 30)
+                  trunkLength = 15;
+                  
+               //sets up the correct finish coordinate for the next input
+               if(i%2 == 0)
+                yWireFinish+=(interval*(i+1));
+               else
+                yWireFinish-=(interval*(i+1));
+             }
+             else
+             {
+              //System.out.println("Wire from "+inputs.get(i).getStringType()+" to "+getStringType()+" is not valid");
+             }
+         }
       }  
+      else
+      {
+        //System.out.println(getStringType()+" did not print ANY wires");
+      }
    }
    
    public void drawNonDiagLine(Graphics g, int xStart_in, int yStart_in, int xFinish_in, int yFinish_in, ArrayList<Gate> drawnGates, int destgateNum, int origgateNum)
    {
       boolean startChanged = false;
       int gateNum = -1;
+      int closestDist = 100000;
       
       //System.out.println("Dest: " + destgateNum + " Origin: " + origgateNum);
       
       //draw in the horizontal direction until reach x destination
       while(xStart_in != (xFinish_in-21))
       {
+         //System.out.println("Stuck first loop "+xStart_in+" vs. "+(xFinish_in-21));
+         closestDist = 100000;
          for(int i = 0; i < drawnGates.size(); i++)
          {
          
             //must also avoid passing through the original and destination gate
             //check if start x of a gate is between the origin and finish location of the desired line
+            //also need to check for the closest gate that will cause a problem, not the first one
             if(xStart_in < (xFinish_in - 21))
             {
               //System.out.println("1Checking Horix Coll for "+ drawnGates.get(i).getStringType());
-               if((drawnGates.get(i).getxStart() - 20 > xStart_in && drawnGates.get(i).getxStart() - 20 < (xFinish_in - 21)) && drawnGates.get(i).inPath(xStart_in, yStart_in, drawnGates.get(i).getxStart(), yStart_in))
+               if((drawnGates.get(i).getxStart() - 20 > xStart_in && drawnGates.get(i).getxStart() - 20 < (xFinish_in - 21)) && drawnGates.get(i).inPath(xStart_in, yStart_in, drawnGates.get(i).getxStart(), yStart_in) && (Math.abs(xStart_in - (drawnGates.get(i).getxStart() - 20)) < closestDist))
                {
-                 //System.out.println("issue w/ "+drawnGates.get(i).getStringType()+" num: "+drawnGates.get(i).getGateNum()+" in HORIZ");
+                //System.out.println("issue w/ "+drawnGates.get(i).getStringType()+" num: "+drawnGates.get(i).getGateNum()+" in HORIZ");
                   gateNum = i;
-                  break;
+                  closestDist = Math.abs(xStart_in - (drawnGates.get(i).getxStart() - 20));
                }
             }
             else
             {
               //System.out.println("2Checking Horix Coll for "+ drawnGates.get(i).getStringType());
-               if((drawnGates.get(i).getxFinish() + 5 < xStart_in && drawnGates.get(i).getxFinish() + 5 > (xFinish_in - 21)) && drawnGates.get(i).inPath(xStart_in, yStart_in, drawnGates.get(i).getxStart(), yStart_in))
+               if((drawnGates.get(i).getxFinish() + 5 < xStart_in && drawnGates.get(i).getxFinish() + 5 > (xFinish_in - 21)) && drawnGates.get(i).inPath(xStart_in, yStart_in, drawnGates.get(i).getxStart(), yStart_in) && (Math.abs(xStart_in - (drawnGates.get(i).getxFinish() + 5)) < closestDist))
                {
                  //System.out.println("issue w/ "+drawnGates.get(i).getStringType()+" num: "+drawnGates.get(i).getGateNum()+" in HORIZ");
                   gateNum = i;
-                  break;
+                  closestDist = Math.abs(xStart_in - (drawnGates.get(i).getxFinish() + 5));
                }
             }
             /*if(() && drawnGates.get(i).inPath(xStart_in, yStart_in, xFinish_in - 21, yStart_in))
-            {
+            { 
               //System.out.println("issue w/ "+drawnGates.get(i).getStringType()+" num: "+drawnGates.get(i).getGateNum()+" in HORIZ");
                gateNum = i;
                break;
@@ -568,39 +704,55 @@ public abstract class Gate
          //draw horizontally past that gate, after moving correct y above/below the obstacle gate
          if(gateNum >= 0)
          {
+            //must draw horizontally to just before the gate first to avoid cutting into other gates when correcting
+            //except when avoiding the origin gate
+            if(drawnGates.get(gateNum).getGateNum() != origgateNum)
+            {
+               if(xStart_in < drawnGates.get(gateNum).getxStart() - 21)
+               {
+                  g.drawLine(xStart_in, yStart_in, drawnGates.get(gateNum).getxStart() - 21, yStart_in);
+                  xStart_in = drawnGates.get(gateNum).getxStart() - 21;
+               }
+               else
+               {
+                  g.drawLine(xStart_in, yStart_in, drawnGates.get(gateNum).getxFinish() + 6, yStart_in);
+                  xStart_in = drawnGates.get(gateNum).getxFinish() + 6;
+               }
+            }
+            
             //draw vertically up around the gate
             if(yFinish_in < yStart_in)
             {
-               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyStart() - 7);
-               yStart_in = drawnGates.get(gateNum).getyStart() - 7;
+               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyStart() - 6);
+               yStart_in = drawnGates.get(gateNum).getyStart() - 6;
             }
             //draw vertically below the gate
             else
             {
-               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyFinish() + 7);
-               yStart_in = drawnGates.get(gateNum).getyFinish() + 7;
+               //g.setColor(Color.BLACK);
+               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyFinish() + 6);
+               yStart_in = drawnGates.get(gateNum).getyFinish() + 6;
             }
             
             //now draw horizontally past the gate
-            //draw right
-            
-            if((xFinish_in - 21) > drawnGates.get(gateNum).getxFinish() + 5) //why by 5 instead of 20?
+            //if on right of the gate --> drawing right, only draw up to the end of the gate or just before it
+            if(((xFinish_in - 21) > drawnGates.get(gateNum).getxStart() - 20) && xStart_in < (xFinish_in - 21))
             {
-               if(Math.abs(xStart_in - (xFinish_in - 21)) < 5)
+               if((xFinish_in - 21) < drawnGates.get(gateNum).getxFinish() + 5)
                {
                   g.drawLine(xStart_in, yStart_in, (xFinish_in - 21), yStart_in);
                   xStart_in = (xFinish_in - 21);
                }
                else
                {
-                  g.drawLine(xStart_in, yStart_in, drawnGates.get(gateNum).getxFinish() + 5, yStart_in);
-                  xStart_in = drawnGates.get(gateNum).getxFinish() + 5;
+                  g.drawLine(xStart_in, yStart_in, drawnGates.get(gateNum).getxFinish() + 6, yStart_in);
+                  xStart_in = drawnGates.get(gateNum).getxFinish() + 6;
                }
             }
-            //draw left
-            else
+            //if on left side of the gate --> drawing left, only draw up to the beginning of the gate or just before it
+            else if(((xFinish_in - 21) < drawnGates.get(gateNum).getxFinish() + 5) && xStart_in > (xFinish_in - 21))
             {
-               if((xFinish_in - 21) > drawnGates.get(gateNum).getxStart())
+               if((xFinish_in - 21) > drawnGates.get(gateNum).getxStart() - 21)
                {
                   //g.setColor(Color.GREEN);
                   g.drawLine(xStart_in, yStart_in, (xFinish_in - 21), yStart_in);
@@ -608,13 +760,13 @@ public abstract class Gate
                }
                else
                {  
-                  //g.setColor(Color.BLACK);
-                  //g.setColor(Color.BLACK);
                   g.drawLine(xStart_in, yStart_in, drawnGates.get(gateNum).getxStart() - 21, yStart_in);
                   xStart_in = drawnGates.get(gateNum).getxStart() - 21;
                }
-               
-               //g.setColor(colors.get(colorCount));
+            }
+            else
+            {
+              //System.out.println("another case not accounted for");
             }
          }
          //no gate intersected with in X direction
@@ -631,28 +783,32 @@ public abstract class Gate
       
       while(yStart_in != yFinish_in)
       {
+         //System.out.println("Stuck second loop "+yStart_in+" vs. "+(yFinish_in));
+         closestDist = 100000;
          for(int i = 0; i < drawnGates.size(); i++)
          {
             
             //must also check orifinal and destination gates
+            //if drawing downwards so should be checking the start of a gate!
             if(yStart_in < yFinish_in)
             {
               //System.out.println("1Checking VERT Coll for "+ drawnGates.get(i).getStringType());
-               if((drawnGates.get(i).getyFinish() + 5 > yStart_in && drawnGates.get(i).getyFinish() + 5 < yFinish_in) && drawnGates.get(i).inPath(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyStart()))
+               if((drawnGates.get(i).getyStart() - 5 > yStart_in && drawnGates.get(i).getyStart() - 5 < yFinish_in) && drawnGates.get(i).inPath(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyStart()) && (Math.abs(yStart_in - (drawnGates.get(i).getyStart() - 5)) < closestDist))
                {
                  //System.out.println("issue w/ "+drawnGates.get(i).getStringType()+" num: "+drawnGates.get(i).getGateNum()+" in VERT");
                   gateNum = i;
-                  break;
+                  closestDist = Math.abs(yStart_in - (drawnGates.get(i).getyStart() - 5));
                }
             }
+            //drawing upwards
             else
             {
               //System.out.println("1Checking VERT Coll for "+ drawnGates.get(i).getStringType());
-               if((drawnGates.get(i).getyStart() - 5 < yStart_in && drawnGates.get(i).getyStart() - 5 > yFinish_in) && drawnGates.get(i).inPath(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyStart()))
+               if((drawnGates.get(i).getyFinish() + 5 < yStart_in && drawnGates.get(i).getyFinish() + 5 > yFinish_in) && drawnGates.get(i).inPath(xStart_in, yStart_in, xStart_in, drawnGates.get(i).getyFinish()) && (Math.abs(yStart_in - (drawnGates.get(i).getyFinish() + 5)) < closestDist))
                {
                  //System.out.println("issue w/ "+drawnGates.get(i).getStringType()+" num: "+drawnGates.get(i).getGateNum()+" in VERT");
                   gateNum = i;
-                  break;
+                  closestDist = Math.abs(yStart_in - (drawnGates.get(i).getyFinish() + 5));
                }
             }
             
@@ -671,24 +827,24 @@ public abstract class Gate
             
             int tempX = xStart_in;
             
-            //draw up to the gate first to avoid cutting into other gates when moving right or left
+            //draw vertically up to the gate first to avoid cutting into other gates when moving right or left
             if(yStart_in < drawnGates.get(gateNum).getyStart() - 5)
             {
-               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyStart() - 5);
-               yStart_in = drawnGates.get(gateNum).getyStart() - 5;
+               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyStart() - 6);
+               yStart_in = drawnGates.get(gateNum).getyStart() - 6;
             }
             else
             {
-               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyFinish() + 5);
-               yStart_in = drawnGates.get(gateNum).getyFinish() + 5;
+               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyFinish() + 6);
+               yStart_in = drawnGates.get(gateNum).getyFinish() + 6;
             }
             
             //Only move right to avoid "broken" wires
             //move correct x right/past the gate
             //move right
             //g.setColor(Color.RED);
-            g.drawLine(xStart_in, yStart_in, drawnGates.get(gateNum).getxFinish() + 7, yStart_in);
-            xStart_in = drawnGates.get(gateNum).getxFinish() + 7;
+            g.drawLine(xStart_in, yStart_in, drawnGates.get(gateNum).getxFinish() + 6, yStart_in);
+            xStart_in = drawnGates.get(gateNum).getxFinish() + 6;
                
             //move left
             /*else
@@ -705,30 +861,30 @@ public abstract class Gate
             if(yFinish_in < yStart_in)
             {   
             //g.setColor(Color.BLUE);
-               if(Math.abs(yStart_in - yFinish_in) < 5)
+               if(yFinish_in > drawnGates.get(gateNum).getyStart() - 5)
                {
                   g.drawLine(xStart_in, yStart_in, xStart_in, yFinish_in);
                   yStart_in = yFinish;
                }
                else
                {
-               g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyStart() - 5);
-               yStart_in = drawnGates.get(gateNum).getyStart() - 5;
+                  g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyStart() - 6);
+                  yStart_in = drawnGates.get(gateNum).getyStart() - 6;
                }
             }
             //move down
             else
             {
                //g.setColor(Color.GRAY);
-               if(Math.abs(yStart_in - yFinish_in) < 5)
+               if(yFinish_in < drawnGates.get(gateNum).getyFinish() + 5)
                {
                   g.drawLine(xStart_in, yStart_in, xStart_in, yFinish_in);
                   yStart_in = yFinish;
                }
                else
                {
-                  g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyFinish() + 5);
-                  yStart_in = drawnGates.get(gateNum).getyFinish() + 5;
+                  g.drawLine(xStart_in, yStart_in, xStart_in, drawnGates.get(gateNum).getyFinish() + 6);
+                  yStart_in = drawnGates.get(gateNum).getyFinish() + 6;
                }
             }
             
@@ -757,6 +913,11 @@ public abstract class Gate
    public abstract void redrawGate(Graphics g);
   
    public abstract boolean calculateOutput();
+   
+   public abstract void resetxFinish();
+   
+   public abstract void resetyFinish();
+   
 }
 
 //may delete later

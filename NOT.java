@@ -42,22 +42,65 @@ public class NOT extends Gate
       yPoints[0] = (int)yBaseCoord;
       yPoints[1] = (int)(yBaseCoord + (0.5*95));
       yPoints[2] = (int)(yBaseCoord + 95);
-      g.drawPolygon(xPoints,yPoints,3);
       
       xStart = (int)xBaseCoord;
       yStart = (int)yBaseCoord;
       xFinish = (int) (xBaseCoord + ((95*Math.sqrt(3))/2));
       yFinish = (int) (yBaseCoord + 95);
       
-      //draw little ball at end of triangle
-      g.drawOval((int) (xBaseCoord + ((95*Math.sqrt(3))/2)), (int) ((yBaseCoord + (0.5*95)-5)), 10, 10);
+      //set Gate vs Gate Boundaries
+      xStartB = xStart - 35;
+      yStartB = yStart - 20;
+      xFinishB = xFinish + 20;
+      yFinishB = yFinish + 20;
       
-      xInputWireSlot = (int)xBaseCoord;
+      //color Gate vs Gate Boundary
+if(!validWires)
+      {
+         g.setColor(new Color(225,209,223));
+         g.fillRect(xStartB, yStartB, xFinishB - xStartB, yFinishB - yStartB);
+      }
+      
+      //color Gate vs Line Boundary
+      g.setColor(new Color(220,220,220));
+      g.fillRect(xStart - 20, yStart - 5, (xFinish + 5) - (xStart - 20), (yFinish + 5) - (yStart - 5));
+      
+      if(!isInCircuit())
+        g.setColor(Color.RED);
+      else
+         g.setColor(Color.BLACK);
+         
+      //move the triangle back by 5 within its boundary
+      for(int i = 0; i < xPoints.length; i++)
+      {
+         xPoints[i] -= 8;   
+      }
+      
+      g.drawPolygon(xPoints,yPoints,3);
+
+      //draw little ball at end of triangle
+      g.drawOval((int) ((xBaseCoord + ((95*Math.sqrt(3))/2))) - 8, (int) ((yBaseCoord + (0.5*95)-5)), 10, 10);
+      
+      xInputWireSlot = (int)(xBaseCoord - 8);
       yInputWireSlot = (int)(yBaseCoord + (0.5*95));
-      xOutputWireSlot = (int)(xBaseCoord + ((95*Math.sqrt(3))/2) + 10);
+      xOutputWireSlot = (int)(xBaseCoord + ((95*Math.sqrt(3))/2) + 2);
       yOutputWireSlot = yInputWireSlot;
       
       //System.out.println("NOT drawn at row,column: "+ row + "," +column + " at coord: "+ (int)xBaseCoord + "," + (int)yBaseCoord);
+   }
+   
+   public void resetxFinish()
+   {
+      xBaseCoord = (double)xStart;
+      xFinish = (int) (xBaseCoord + ((95*Math.sqrt(3))/2));
+      xFinishB = xFinish + 20;
+   }
+   
+   public void resetyFinish()
+   {
+      yBaseCoord = (double)yStart;
+      yFinish = (int) (yBaseCoord + 95);
+      yFinishB = yFinish + 20;
    }
    
    public void redrawGate(Graphics g)
@@ -75,14 +118,21 @@ public class NOT extends Gate
       yPoints[0] = (int)yBaseCoord;
       yPoints[1] = (int)(yBaseCoord + (0.5*95));
       yPoints[2] = (int)(yBaseCoord + 95);
+      
+      //move the triangle back by 5 within its boundary
+      for(int i = 0; i < xPoints.length; i++)
+      {
+         xPoints[i] -= 8;   
+      }
+      
       g.drawPolygon(xPoints,yPoints,3);
-      
+
       //draw little ball at end of triangle
-      g.drawOval((int) (xBaseCoord + ((95*Math.sqrt(3))/2)), (int) ((yBaseCoord + (0.5*95)-5)), 10, 10);
+      g.drawOval((int) ((xBaseCoord + ((95*Math.sqrt(3))/2))) - 8, (int) ((yBaseCoord + (0.5*95)-5)), 10, 10);
       
-      xInputWireSlot = (int)xBaseCoord;
+      xInputWireSlot = (int)(xBaseCoord - 8);
       yInputWireSlot = (int)(yBaseCoord + (0.5*95));
-      xOutputWireSlot = (int)(xBaseCoord + ((95*Math.sqrt(3))/2) + 10);
+      xOutputWireSlot = (int)(xBaseCoord + ((95*Math.sqrt(3))/2) + 2);
       yOutputWireSlot = yInputWireSlot;
    }
 }

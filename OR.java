@@ -52,6 +52,18 @@ public class OR extends Gate
       return output;
    }
    
+   public void resetxFinish()
+   {
+      xFinish = xStart + 100;
+      xFinishB = xFinish + 20;
+   }
+   
+   public void resetyFinish()
+   {
+      yFinish = yStart + 95;
+      yFinishB = yFinish + 20;
+   }
+   
    public void drawGate(Graphics g, int row, int column, int maxColumn, int maxRow)
    {
       ////System.out.println("OR drawn");
@@ -60,14 +72,37 @@ public class OR extends Gate
       //The finish points are estimates for now
       xFinish = xStart + 100;
       yFinish = yStart + 95;
-      //draw the first arc
-      g.drawArc(xStart - 105, yStart - 25, 100, 150, 40, -80);
-      //draw second arc
-      g.drawArc(xStart - 100, yStart, 200, 150, 100, -80);
-      //draw third arc
-      g.drawArc(xStart - 100, yStart - 50, 200, 150, -100, 80);
       
-      xInputWireSlot = xStart - 10;
+      //set Gate vs Gate Boundaries
+      xStartB = xStart - 35;
+      yStartB = yStart - 20;
+      xFinishB = xFinish + 20;
+      yFinishB = yFinish + 20;
+      
+      //color Gate vs Gate Boundary
+if(!validWires)
+      {
+         g.setColor(new Color(225,209,223));
+         g.fillRect(xStartB, yStartB, xFinishB - xStartB, yFinishB - yStartB);
+      }
+      
+      //color Gate vs Line Boundary
+      g.setColor(new Color(220,220,220));
+      g.fillRect(xStart - 20, yStart - 5, (xFinish + 5) - (xStart - 20), (yFinish + 5) - (yStart - 5));
+      
+      if(!isInCircuit())
+        g.setColor(Color.RED);
+      else
+         g.setColor(Color.BLACK);
+      
+      //draw the first arc
+      g.drawArc(xStart - 100, yStart - 25, 100, 150, 40, -80);
+      //draw second arc
+      g.drawArc(xStart - 95, yStart, 200, 150, 100, -80);
+      //draw third arc
+      g.drawArc(xStart - 95, yStart - 50, 200, 150, -100, 80);
+      
+      xInputWireSlot = xStart - 5;
       yInputWireSlot = yStart + 47;
       xOutputWireSlot = xInputWireSlot + 105;
       yOutputWireSlot = yInputWireSlot + 3;
@@ -90,13 +125,13 @@ public class OR extends Gate
       yFinish = yStart + 95;
       
       //draw the first arc
-      g.drawArc(xStart - 105, yStart - 25, 100, 150, 40, -80);
+      g.drawArc(xStart - 100, yStart - 25, 100, 150, 40, -80);
       //draw second arc
-      g.drawArc(xStart - 100, yStart, 200, 150, 100, -80);
+      g.drawArc(xStart - 95, yStart, 200, 150, 100, -80);
       //draw third arc
-      g.drawArc(xStart - 100, yStart - 50, 200, 150, -100, 80);
+      g.drawArc(xStart - 95, yStart - 50, 200, 150, -100, 80);
       
-      xInputWireSlot = xStart - 10;
+      xInputWireSlot = xStart - 5;
       yInputWireSlot = yStart + 47;
       xOutputWireSlot = xInputWireSlot + 105;
       yOutputWireSlot = yInputWireSlot + 3;

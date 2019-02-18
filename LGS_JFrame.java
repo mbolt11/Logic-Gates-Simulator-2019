@@ -360,11 +360,81 @@ public class LGS_JFrame extends JFrame
          }
          
          //If the gate clicked index is not -1, move the gate
-         if(gateClickedIndex > -1 && editmode)
+         if(gateClickedIndex > -1 && editmode) //check value of gateDX/gateDY and check which direction it could be colliding
          {  
             //Change the xStart and yStart positions of the gate according to the mouse drag
+            //these methods also update boundary positions
             theCircuit.getAtIndex(gateClickedIndex).setxStart(e.getX()-gateDX);
             theCircuit.getAtIndex(gateClickedIndex).setyStart(e.getY()-gateDY);
+            
+           //System.out.println("Checking Gate vs. Gate Boundaries");
+            
+            //set all gate wire validities to true
+            for(int i = 0; i < theCircuit.size(); i++)
+            {
+               theCircuit.getAtIndex(i).setValidWires(true);
+            }
+            
+            for(int i = 0; i < theCircuit.Nsize(); i++)
+            {
+               theCircuit.getNGate(i).setValidWires(true);
+            }
+            
+            Gate ogate;
+            
+            //check if the new placement makes invalid wires anywhere
+            //must do nested for loop here and check every gate against every other gate
+            for(int i = 0; i < theCircuit.size(); i++)
+            {
+               for(int j = 0; j < theCircuit.size(); j++)
+               {
+                  if(theCircuit.getAtIndex(i) != theCircuit.getAtIndex(j))
+                  {
+                     ogate = theCircuit.getAtIndex(j);
+                     if(theCircuit.getAtIndex(i).gatesCollide(ogate.getxStartB(),ogate.getyStartB(),ogate.getxFinishB(),ogate.getyFinishB()))
+                     {
+                        ogate.setValidWires(false);
+                        theCircuit.getAtIndex(i).setValidWires(false);
+                       //System.out.println(ogate.getStringType()+" is coll w/ "+theCircuit.getAtIndex(i).getStringType());
+                     }
+                  }
+               }
+            }
+            
+            for(int i = 0; i < theCircuit.Nsize(); i++)
+            {
+               for(int j = 0; j < theCircuit.Nsize(); j++)
+               {
+                  ogate = theCircuit.getNGate(j);
+                  if(theCircuit.getNGate(i) != ogate)
+                  {
+                     if(theCircuit.getNGate(i).gatesCollide(ogate.getxStartB(),ogate.getyStartB(),ogate.getxFinishB(),ogate.getyFinishB()))
+                     {
+                        ogate.setValidWires(false);
+                        theCircuit.getNGate(i).setValidWires(false);
+                       //System.out.println(ogate.getStringType()+" is coll w/ "+theCircuit.getNGate(i).getStringType());
+                     }
+                  }
+               }
+            }
+            
+            for(int i = 0; i < theCircuit.size(); i++)
+            {
+               for(int j = 0; j < theCircuit.Nsize(); j++)
+               {
+                  ogate = theCircuit.getNGate(j);
+                  if(theCircuit.getAtIndex(i) != ogate)
+                  {
+                     if(theCircuit.getAtIndex(i).gatesCollide(ogate.getxStartB(),ogate.getyStartB(),ogate.getxFinishB(),ogate.getyFinishB()))
+                     {
+                        ogate.setValidWires(false);
+                        theCircuit.getAtIndex(i).setValidWires(false);
+                       //System.out.println(ogate.getStringType()+" is coll w/ "+theCircuit.getAtIndex(i).getStringType());
+                     }
+                  }
+               }
+            }
+            
             repaint();
          }
          
@@ -373,6 +443,72 @@ public class LGS_JFrame extends JFrame
             //Change the xStart and yStart positions of the gate according to the mouse drag
             theCircuit.getNGate(nGateClicked).setxStart(e.getX()-gateDX);
             theCircuit.getNGate(nGateClicked).setyStart(e.getY()-gateDY);
+            
+            //set all gate wire validities to true
+            for(int i = 0; i < theCircuit.size(); i++)
+            {
+               theCircuit.getAtIndex(i).setValidWires(true);
+            }
+            
+            for(int i = 0; i < theCircuit.Nsize(); i++)
+            {
+               theCircuit.getNGate(i).setValidWires(true);
+            }
+            
+            Gate ogate;
+            
+            //check if the new placement makes invalid wires anywhere
+            //must do nested for loop here and check every gate against every other gate
+            for(int i = 0; i < theCircuit.size(); i++)
+            {
+               for(int j = 0; j < theCircuit.size(); j++)
+               {
+                  if(theCircuit.getAtIndex(i) != theCircuit.getAtIndex(j))
+                  {
+                     ogate = theCircuit.getAtIndex(j);
+                     if(theCircuit.getAtIndex(i).gatesCollide(ogate.getxStartB(),ogate.getyStartB(),ogate.getxFinishB(),ogate.getyFinishB()))
+                     {
+                        ogate.setValidWires(false);
+                        theCircuit.getAtIndex(i).setValidWires(false);
+                       //System.out.println(ogate.getStringType()+" is coll w/ "+theCircuit.getAtIndex(i).getStringType());
+                     }
+                  }
+               }
+            }
+            
+            for(int i = 0; i < theCircuit.Nsize(); i++)
+            {
+               for(int j = 0; j < theCircuit.Nsize(); j++)
+               {
+                  ogate = theCircuit.getNGate(j);
+                  if(theCircuit.getNGate(i) != ogate)
+                  {
+                     if(theCircuit.getNGate(i).gatesCollide(ogate.getxStartB(),ogate.getyStartB(),ogate.getxFinishB(),ogate.getyFinishB()))
+                     {
+                        ogate.setValidWires(false);
+                        theCircuit.getNGate(i).setValidWires(false);
+                       //System.out.println(ogate.getStringType()+" is coll w/ "+theCircuit.getNGate(i).getStringType());
+                     }
+                  }
+               }
+            }
+            
+            for(int i = 0; i < theCircuit.size(); i++)
+            {
+               for(int j = 0; j < theCircuit.Nsize(); j++)
+               {
+                  ogate = theCircuit.getNGate(j);
+                  if(theCircuit.getAtIndex(i) != ogate)
+                  {
+                     if(theCircuit.getAtIndex(i).gatesCollide(ogate.getxStartB(),ogate.getyStartB(),ogate.getxFinishB(),ogate.getyFinishB()))
+                     {
+                        ogate.setValidWires(false);
+                        theCircuit.getAtIndex(i).setValidWires(false);
+                       //System.out.println(ogate.getStringType()+" is coll w/ "+theCircuit.getAtIndex(i).getStringType());
+                     }
+                  }
+               }
+            }
             repaint();
          }  
       }        

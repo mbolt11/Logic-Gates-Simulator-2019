@@ -131,23 +131,46 @@ public class Circuit
    public void AddConnectedInactiveGates()
    {
       //search through each gate in Ngates, and if one of its inputs is active then make active
-      //then research from beginning
+      //then re-search from beginning
+      /*System.out.println("STARTING SEARCH");
       for(int i = 0; i < inactiveGates.size(); i++)
       {
+         System.out.println(inactiveGates.get(i).getStringType()+ " is in Ngates");
+      }
+      
+      System.out.println();*/
+      
+      for(int i = 0; i < inactiveGates.size(); i++)
+      {
+         //System.out.println("i: "+ i);
          for(int j = 0; j < inactiveGates.get(i).getInputs().size(); j++)
          {
+            //System.out.println("-j: "+ j);
             if(inactiveGates.get(i).getInputs().get(j).isInCircuit())
             {
+               //System.out.println("Input "+inactiveGates.get(i).getInputs().get(j).getStringType()+" of "+inactiveGates.get(i).getStringType()+" is in circuit, YAY");
                //add the Ngate to the circuit and reset i = 0
                Gate temp = inactiveGates.get(i);
                addGate(temp);
                removeBebe(temp.getGateNum());
                temp.setIsInCircuit(true);
-               i = 0;
+               i = -1;
                break;
             }
+            else
+            {
+               //System.out.println("Input "+inactiveGates.get(i).getInputs().get(j).getStringType()+" of "+inactiveGates.get(i).getStringType()+" is not in circuit");
+            }
          }
+         //System.out.println("bottom of outer for reached w/ i: "+i);
       }
+      
+      //System.out.println("END SEARCH");
+      /*for(int i = 0; i < inactiveGates.size(); i++)
+      {
+         System.out.println(inactiveGates.get(i).getStringType()+ " is in Ngates");
+      }
+      System.out.println();*/
    }
    
    //Method to sort the gates into number order
