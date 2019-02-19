@@ -11,6 +11,7 @@ public class Circuit
    private ArrayList<Gate> inactiveGates; 
    private int columns = 0;
    private int rows = 0;
+   private int maxDepth = 0;
    
    //Constructor
    public Circuit()
@@ -86,6 +87,14 @@ public class Circuit
    public int Nsize()
    {
       return inactiveGates.size();
+   }
+   
+   public int getMaxDepth()
+   { return maxDepth; }
+   
+   public void setMaxDepth(int depth_in)
+   {
+      maxDepth = depth_in;
    }
    
    
@@ -214,6 +223,15 @@ public class Circuit
       for(int i = 0; i < activeGates.size(); i++)
       {
          activeGates.get(i).calculateDepth();
+         if(activeGates.get(i).getDepth() > maxDepth)
+            maxDepth = activeGates.get(i).getDepth(); 
+      }
+      
+      for(int i = 0; i < inactiveGates.size(); i++)
+      {
+         inactiveGates.get(i).calculateDepth();
+         if(inactiveGates.get(i).getDepth() > maxDepth)
+            maxDepth = inactiveGates.get(i).getDepth();
       }
    }
    

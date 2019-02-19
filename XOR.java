@@ -22,8 +22,8 @@ public class XOR extends Gate
       }
       if(inputs.size() >= 2)
       {
-         boolean wire1 = inputs.get(0).calculateOutput();
-         boolean wire2 = inputs.get(1).calculateOutput();
+         boolean wire1 = inputs.get(0).getOutput();
+         boolean wire2 = inputs.get(1).getOutput();
          result = ((wire1 && !wire2) || (!wire1 && wire2));
       }
       
@@ -68,8 +68,8 @@ if(!validWires)
       }
       
       //color Gate vs Line Boundary
-      g.setColor(new Color(220,220,220));
-      g.fillRect(xStart - 20, yStart - 5, (xFinish + 5) - (xStart - 20), (yFinish + 5) - (yStart - 5));
+      /*g.setColor(new Color(220,220,220));
+      g.fillRect(xStart - 20, yStart - 5, (xFinish + 5) - (xStart - 20), (yFinish + 5) - (yStart - 5));*/
       
       if(!isInCircuit())
         g.setColor(Color.RED);

@@ -89,10 +89,10 @@ public class LGS_JFrame extends JFrame
             else
                headerpanel.setMessage("Play Mode");
             
-            //if the circuit object is empty, look in inactive gates for gates "attatched" to an input
+            /*//if the circuit object is empty, look in inactive gates for gates "attatched" to an input
             //then look for if the same gates are "attatched" to an output
             //does the circuit need to be sorted after adding a gate to it? --> if not optomizing I dont think so
-            if(theCircuit.size() == 0 /*&& !editmode*/)
+            if(theCircuit.size() == 0 /*&& !editmode)
             {
                //System.out.println("Circuit is empty. Searching for valid ouputs and inputs");
                //must search for all outputs connected to inputs first            
@@ -113,6 +113,12 @@ public class LGS_JFrame extends JFrame
                      }
                   }
                }
+            }*/
+            
+            if(!editmode)
+            {
+               theCircuit.calculateAllDepths();
+               bodypanel.allCircuitOutputs(theCircuit);
             }
             
             repaint();
@@ -282,11 +288,13 @@ public class LGS_JFrame extends JFrame
             if((inGate != null) && (inGate.getStringType().equals("INPUT")))
             {
                inGate.setOutput(!inGate.getOutput());
+               //theCircuit.calculateAllDepths();
                bodypanel.allCircuitOutputs(theCircuit);
             }
             else if((outGate != null) && (outGate.getStringType().equals("INPUT")))
             {
                outGate.setOutput(!outGate.getOutput());
+               //theCircuit.calculateAllDepths();
                bodypanel.allCircuitOutputs(theCircuit);
             }
             inGate = null;

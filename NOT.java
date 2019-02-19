@@ -22,7 +22,7 @@ public class NOT extends Gate
    {
       //This is the opposite of its input line
       if(inputs.size() > 0)
-         setOutput(!inputs.get(0).calculateOutput());
+         setOutput(!inputs.get(0).getOutput());
          
       //System.out.println("NOT is:"+output);
          
@@ -62,8 +62,8 @@ if(!validWires)
       }
       
       //color Gate vs Line Boundary
-      g.setColor(new Color(220,220,220));
-      g.fillRect(xStart - 20, yStart - 5, (xFinish + 5) - (xStart - 20), (yFinish + 5) - (yStart - 5));
+      /*g.setColor(new Color(220,220,220));
+      g.fillRect(xStart - 20, yStart - 5, (xFinish + 5) - (xStart - 20), (yFinish + 5) - (yStart - 5));*/
       
       if(!isInCircuit())
         g.setColor(Color.RED);

@@ -537,8 +537,8 @@ public abstract class Gate
       }
       
       //color Gate vs Line Boundary
-      g.setColor(new Color(220,220,220));
-      g.fillRect(xStart - 20, yStart - 5, (xFinish + 5) - (xStart - 20), (yFinish + 5) - (yStart - 5));
+      /*g.setColor(new Color(220,220,220));
+      g.fillRect(xStart - 20, yStart - 5, (xFinish + 5) - (xStart - 20), (yFinish + 5) - (yStart - 5));*/
       
       if(!isInCircuit())
       {
@@ -619,7 +619,7 @@ public abstract class Gate
                if(i > 0)
                {
                   xWireFinish -= 5;
-                  finalx += 5;
+                  finalx += 5*i;
                }
                   
                

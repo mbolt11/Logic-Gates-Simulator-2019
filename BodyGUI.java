@@ -344,14 +344,33 @@ public class BodyGUI extends JPanel
    {
      //System.out.println("------------CalculateOutput-----------------");
       //call functions for calculate output throughout the circuit
-      for(int i = 0; i < circuit_in.size(); i++)
+      /*for(int i = 0; i < circuit_in.size(); i++)
       {
          if(circuit_in.getAtIndex(i).getStringType() == "OUTPUT")
          {
             circuit_in.getAtIndex(i).calculateOutput();
             //System.out.println("--Result:"+circuit_in.getAtIndex(i).getOutput());
          }
-      }
+      }*/
+      
+      for(int i = 1; i <= circuit_in.getMaxDepth(); i++)
+      {
+         for(int j = 0; j < circuit_in.size(); j++)
+         {
+            if(circuit_in.getAtIndex(j).getDepth() == i)
+            {
+               circuit_in.getAtIndex(j).calculateOutput();
+            }
+         }
+         
+         for(int j = 0; j < circuit_in.Nsize(); j++)
+         {
+            if(circuit_in.getNGate(j).getDepth() == i)
+               {
+                  circuit_in.getNGate(j).calculateOutput();
+               }
+         }
+      } 
    }
    
    //overwrites the drawing component to make it draw each of the gates in the circuit
