@@ -602,7 +602,8 @@ public abstract class Gate
       
       //do not draw any of its inputs if the gate is too close to another gate and should not draw its wires
       if(validWires)      
-      {
+      {  
+         int factor = 1;
          //connect to its inputs
          for(int i = 0; i < inputs.size(); i++)
          {        
@@ -618,8 +619,18 @@ public abstract class Gate
                //Adjust the xWireFinish according to how many input wires there are
                if(i > 0)
                {
-                  xWireFinish -= 5;
-                  finalx += 5*i;
+                  if(i % 5 == 0)
+                  {
+                     xWireFinish = xInputWireSlot;
+                     finalx = 21;
+                     factor = 1;
+                  }
+                  else
+                  {
+                     xWireFinish -= 4;
+                     finalx += 4*factor;
+                     factor++;
+                  }
                }
                   
                
